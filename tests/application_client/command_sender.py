@@ -7,11 +7,12 @@ It contains the command sending part.
 """
 
 from typing import Generator, Optional
+from contextlib import contextmanager
 
 from ragger.backend.interface import BackendInterface, RAPDU
 
 from application_client.command_builder import CommandBuilder
-from application_client.app_def import Errors
+from application_client.app_def import Errors, NetworkDesc, AddressType
 
 
 class CommandSender:
@@ -94,3 +95,44 @@ class CommandSender:
         assert rapdu.status == Errors.SW_SUCCESS
         return rapdu.data
 
+
+    @contextmanager
+    def derive_address_async(self,
+                             addrType: AddressType,
+                             netDesc: NetworkDesc,
+                             spendingPath: str,
+                             stakingPath: Optional[str] = None) -> Generator[None, None, None]:
+        """APDU Derive Address
+
+        Args:
+            addrType (AddressType): Address type
+            netDesc (NetworkDesc): Network description
+            spendingPath (str): BIP32 spending path to derive
+            stakingPath (str): BIP32 staking path to derive
+
+        Returns:
+            Generator
+        """
+
+        with self._exchange_async(self._cmd_builder.derive_address(addrType, netDesc, spendingPath, stakingPath)):
+            yield
+
+
+    def derive_address(self,
+                       addrType: AddressType,
+                       netDesc: NetworkDesc,
+                       spendingPath: str,
+                       stakingPath: Optional[str] = None) -> Generator[None, None, None]:
+        """APDU Derive Address
+
+        Args:
+            addrType (AddressType): Address type
+            netDesc (NetworkDesc): Network description
+            spendingPath (str): BIP32 spending path to derive
+            stakingPath (str): BIP32 staking path to derive
+
+        Returns:
+            Generator
+        """
+
+        return self._exchange(self._cmd_builder.derive_address(addrType, netDesc, spendingPath, stakingPath))
