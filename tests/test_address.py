@@ -72,6 +72,43 @@ def test_derive_byron_address(firmware: Firmware,
     assert testCase.result == base58.b58encode(response.data).decode()
 
 
+@pytest.mark.parametrize(
+    "testCase",
+    byronTestCases,
+    ids=idfunc
+)
+def test_derive_byron_show_address(firmware: Firmware,
+                                   backend: BackendInterface,
+                                   navigator: Navigator,
+                                   scenario_navigator: NavigateWithScenario,
+                                   testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Byron Address Show"""
+    if firmware == Firmware.NANOS:
+        pytest.skip("Byron address derivation is not supported on Nano S")
+
+    # Use the app interface instead of raw interface
+    client = CommandSender(backend)
+    if firmware.is_nano:
+        moves = []
+        moves += [NavInsID.BOTH_CLICK] * 3
+        moves += [NavInsID.RIGHT_CLICK]
+        moves += [NavInsID.BOTH_CLICK] * 2
+
+    # Send the APDU
+    with client.derive_address_async(P1Type.P1_DISPLAY,
+                                     testCase.addrType,
+                                     testCase.netDesc,
+                                     testCase.spendingValue,
+                                     testCase.stakingValue):
+        if firmware.is_nano:
+            navigator.navigate(moves)
+        else:
+            scenario_navigator.address_review_approve(do_comparison=False)
+
+    # Check the status (Asynchronous)
+    response = client.get_async_response()
+    assert response and response.status == Errors.SW_SUCCESS
+
 
 @pytest.mark.parametrize(
     "testCase",
