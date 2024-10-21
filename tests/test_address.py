@@ -112,6 +112,36 @@ def test_derive_byron_show_address(firmware: Firmware,
 
 @pytest.mark.parametrize(
     "testCase",
+    shelleyTestCasesNoConfirm + shelleyTestCasesWithConfirm,
+    ids=idfunc
+)
+def test_derive_shelley_show_address(firmware: Firmware,
+                                     backend: BackendInterface,
+                                     scenario_navigator: NavigateWithScenario,
+                                     testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Shelley Address Show without confirmation"""
+    if firmware.is_nano:
+        # Not supported because Navigation should be set for each test case
+        pytest.skip("Shelley Address Show not supported on Nano")
+
+    # Use the app interface instead of raw interface
+    client = CommandSender(backend)
+
+    # Send the APDU
+    with client.derive_address_async(P1Type.P1_DISPLAY,
+                                     testCase.addrType,
+                                     testCase.netDesc,
+                                     testCase.spendingValue,
+                                     testCase.stakingValue):
+        scenario_navigator.address_review_approve(do_comparison=False)
+
+    # Check the status (Asynchronous)
+    response = client.get_async_response()
+    assert response and response.status == Errors.SW_SUCCESS
+
+
+@pytest.mark.parametrize(
+    "testCase",
     shelleyTestCasesNoConfirm,
     ids=idfunc
 )
@@ -192,12 +222,9 @@ def check_shelley_result(response: RAPDU, testCase: DeriveAddressTestCase) -> No
     rejectTestCases,
     ids=idfunc
 )
-def test_reject_address(firmware: Firmware,
-                        backend: BackendInterface,
+def test_reject_address(backend: BackendInterface,
                         testCase: DeriveAddressTestCase) -> None:
     """Check Derive Reject Address Return"""
-    if firmware == Firmware.NANOS:
-        pytest.skip("Byron address derivation is not supported on Nano S")
 
     # Use the app interface instead of raw interface
     client = CommandSender(backend)
@@ -205,6 +232,28 @@ def test_reject_address(firmware: Firmware,
     with pytest.raises(ExceptionRAPDU) as err:
         # Send the APDU
         client.derive_address(P1Type.P1_RETURN,
+                              testCase.addrType,
+                              testCase.netDesc,
+                              testCase.spendingValue,
+                              testCase.stakingValue)
+    assert err.value.status == Errors.SW_REJECTED_BY_POLICY
+
+
+@pytest.mark.parametrize(
+    "testCase",
+    rejectTestCases,
+    ids=idfunc
+)
+def test_reject_show_address(backend: BackendInterface,
+                             testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Reject Address Show"""
+
+    # Use the app interface instead of raw interface
+    client = CommandSender(backend)
+
+    with pytest.raises(ExceptionRAPDU) as err:
+        # Send the APDU
+        client.derive_address(P1Type.P1_DISPLAY,
                               testCase.addrType,
                               testCase.netDesc,
                               testCase.spendingValue,
