@@ -11,7 +11,7 @@ from contextlib import contextmanager
 
 from ragger.backend.interface import BackendInterface, RAPDU
 
-from application_client.command_builder import CommandBuilder
+from application_client.command_builder import CommandBuilder, P1Type
 from application_client.app_def import Errors, NetworkDesc, AddressType
 
 
@@ -98,6 +98,7 @@ class CommandSender:
 
     @contextmanager
     def derive_address_async(self,
+                             p1: P1Type,
                              addrType: AddressType,
                              netDesc: NetworkDesc,
                              spendingPath: str,
@@ -105,6 +106,7 @@ class CommandSender:
         """APDU Derive Address
 
         Args:
+            p1 (P1Type): APDU Parameter 1
             addrType (AddressType): Address type
             netDesc (NetworkDesc): Network description
             spendingPath (str): BIP32 spending path to derive
@@ -114,11 +116,12 @@ class CommandSender:
             Generator
         """
 
-        with self._exchange_async(self._cmd_builder.derive_address(addrType, netDesc, spendingPath, stakingPath)):
+        with self._exchange_async(self._cmd_builder.derive_address(p1, addrType, netDesc, spendingPath, stakingPath)):
             yield
 
 
     def derive_address(self,
+                       p1: P1Type,
                        addrType: AddressType,
                        netDesc: NetworkDesc,
                        spendingPath: str,
@@ -126,6 +129,7 @@ class CommandSender:
         """APDU Derive Address
 
         Args:
+            p1 (P1Type): APDU Parameter 1
             addrType (AddressType): Address type
             netDesc (NetworkDesc): Network description
             spendingPath (str): BIP32 spending path to derive
@@ -135,4 +139,4 @@ class CommandSender:
             Generator
         """
 
-        return self._exchange(self._cmd_builder.derive_address(addrType, netDesc, spendingPath, stakingPath))
+        return self._exchange(self._cmd_builder.derive_address(p1, addrType, netDesc, spendingPath, stakingPath))

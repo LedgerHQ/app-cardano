@@ -7,10 +7,16 @@ It contains the command building part.
 """
 
 from typing import Optional
+from enum import IntEnum
 
 from ragger.bip import pack_derivation_path
 
 from application_client.app_def import InsType, NetworkDesc, AddressType, StakingDataSourceType
+
+
+class P1Type(IntEnum):
+    P1_RETURN = 0x01
+    P1_DISPLAY = 0x02
 
 
 class CommandBuilder:
@@ -44,6 +50,7 @@ class CommandBuilder:
 
 
     def derive_address(self,
+                       p1: P1Type,
                        addrType: AddressType,
                        netDesc: NetworkDesc,
                        spendingValue: str,
@@ -51,6 +58,7 @@ class CommandBuilder:
         """APDU Builder for Derive address
 
         Args:
+            p1 (P1Type): APDU Parameter 1
             addrType (AddressType): Address type
             netDesc (NetworkDesc): Network description
             spendingValue (str): BIP32 spending path
@@ -89,9 +97,12 @@ class CommandBuilder:
         elif spendingValue:
             data += pack_derivation_path(spendingValue)
 
-        if addrType in (AddressType.BYRON, AddressType.ENTERPRISE_KEY, AddressType.ENTERPRISE_SCRIPT):
+        if addrType in (AddressType.BYRON, AddressType.ENTERPRISE_KEY,
+                        AddressType.ENTERPRISE_SCRIPT):
             staking = StakingDataSourceType.NONE
-        elif addrType in (AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT, AddressType.BASE_PAYMENT_SCRIPT_STAKE_SCRIPT, AddressType.REWARD_SCRIPT):
+        elif addrType in (AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
+                          AddressType.BASE_PAYMENT_SCRIPT_STAKE_SCRIPT,
+                          AddressType.REWARD_SCRIPT):
             staking = StakingDataSourceType.SCRIPT_HASH
         elif addrType in (AddressType.POINTER_KEY, AddressType.POINTER_SCRIPT):
             staking = StakingDataSourceType.BLOCKCHAIN_POINTER
@@ -104,9 +115,11 @@ class CommandBuilder:
 
         if staking == StakingDataSourceType.KEY_PATH:
             data += pack_derivation_path(stakingValue)
-        elif staking in (StakingDataSourceType.KEY_HASH, StakingDataSourceType.SCRIPT_HASH, StakingDataSourceType.BLOCKCHAIN_POINTER):
+        elif staking in (StakingDataSourceType.KEY_HASH,
+                         StakingDataSourceType.SCRIPT_HASH,
+                         StakingDataSourceType.BLOCKCHAIN_POINTER):
             data += bytes.fromhex(stakingValue)
         elif staking != StakingDataSourceType.NONE:
             raise NotImplementedError("Not implemented yet")
 
-        return self._serialize(InsType.DERIVE_PUBLIC_ADDR, 0x01, 0x00, data)
+        return self._serialize(InsType.DERIVE_PUBLIC_ADDR, p1, 0x00, data)

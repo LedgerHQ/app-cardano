@@ -5,7 +5,6 @@
 This module provides Ragger tests for Address check
 """
 
-from typing import Union
 import pytest
 import base58
 import bech32m.codecs as bech32
@@ -19,14 +18,15 @@ from ragger.error import ExceptionRAPDU
 
 from application_client.app_def import Errors, AddressType, Testnet
 from application_client.command_sender import CommandSender
+from application_client.command_builder import P1Type
 
 from input_files.derive_address import DeriveAddressTestCase
-from input_files.derive_address import ByronTestCase, byronTestCases, rejectTestCases
-from input_files.derive_address import ShelleyTestCase, shelleyTestCasesNoConfirm, shelleyTestCasesWithConfirm
+from input_files.derive_address import byronTestCases, rejectTestCases
+from input_files.derive_address import shelleyTestCasesNoConfirm, shelleyTestCasesWithConfirm
 
 
 @staticmethod
-def idfunc(val: Union[ByronTestCase, ShelleyTestCase]) -> str:
+def idfunc(val: DeriveAddressTestCase) -> str:
     return val.name
 
 
@@ -39,8 +39,8 @@ def test_derive_byron_address(firmware: Firmware,
                               backend: BackendInterface,
                               navigator: Navigator,
                               scenario_navigator: NavigateWithScenario,
-                              testCase: ByronTestCase) -> None:
-    """Check Derive Byron Address"""
+                              testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Byron Address Return"""
     if firmware == Firmware.NANOS:
         pytest.skip("Byron address derivation is not supported on Nano S")
 
@@ -54,7 +54,8 @@ def test_derive_byron_address(firmware: Firmware,
         valid_instr = [NavInsID.USE_CASE_CHOICE_CONFIRM]
 
     # Send the APDU
-    with client.derive_address_async(testCase.addrType,
+    with client.derive_address_async(P1Type.P1_RETURN,
+                                     testCase.addrType,
                                      testCase.netDesc,
                                      testCase.spendingValue,
                                      testCase.stakingValue):
@@ -74,40 +75,19 @@ def test_derive_byron_address(firmware: Firmware,
 
 @pytest.mark.parametrize(
     "testCase",
-    rejectTestCases,
-    ids=idfunc
-)
-def test_reject_address(firmware: Firmware,
-                        backend: BackendInterface,
-                        testCase: DeriveAddressTestCase) -> None:
-    """Check Derive Byron Address"""
-    if firmware == Firmware.NANOS:
-        pytest.skip("Byron address derivation is not supported on Nano S")
-
-    # Use the app interface instead of raw interface
-    client = CommandSender(backend)
-
-    with pytest.raises(ExceptionRAPDU) as err:
-        # Send the APDU
-        client.derive_address(testCase.addrType, testCase.netDesc, testCase.spendingValue, testCase.stakingValue)
-    assert err.value.status == Errors.SW_REJECTED_BY_POLICY
-
-
-
-@pytest.mark.parametrize(
-    "testCase",
     shelleyTestCasesNoConfirm,
     ids=idfunc
 )
 def test_derive_shelley_address(backend: BackendInterface,
-                                testCase: ShelleyTestCase) -> None:
-    """Check Derive Shelley Address without confirmation"""
+                                testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Shelley Address Return without confirmation"""
 
     # Use the app interface instead of raw interface
     client = CommandSender(backend)
 
     # Send the APDU
-    response = client.derive_address(testCase.addrType,
+    response = client.derive_address(P1Type.P1_RETURN,
+                                     testCase.addrType,
                                      testCase.netDesc,
                                      testCase.spendingValue,
                                      testCase.stakingValue)
@@ -123,8 +103,8 @@ def test_derive_shelley_address_confirm(firmware: Firmware,
                                         backend: BackendInterface,
                                         navigator: Navigator,
                                         scenario_navigator: NavigateWithScenario,
-                                        testCase: ShelleyTestCase) -> None:
-    """Check Derive Shelley Address with confirmation"""
+                                        testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Shelley Address Return with confirmation"""
 
     # Use the app interface instead of raw interface
     client = CommandSender(backend)
@@ -134,12 +114,10 @@ def test_derive_shelley_address_confirm(firmware: Firmware,
             valid_instr = [NavInsID.RIGHT_CLICK]
         else:
             valid_instr = [NavInsID.BOTH_CLICK]
-    else:
-        nav_inst = NavInsID.SWIPE
-        valid_instr = [NavInsID.USE_CASE_CHOICE_CONFIRM]
 
     # Send the APDU
-    with client.derive_address_async(testCase.addrType,
+    with client.derive_address_async(P1Type.P1_RETURN,
+                                     testCase.addrType,
                                      testCase.netDesc,
                                      testCase.spendingValue,
                                      testCase.stakingValue):
@@ -157,7 +135,7 @@ def test_derive_shelley_address_confirm(firmware: Firmware,
 
 
 
-def check_shelley_result(response: RAPDU, testCase: ShelleyTestCase) -> None:
+def check_shelley_result(response: RAPDU, testCase: DeriveAddressTestCase) -> None:
     # Check the status (Asynchronous)
     assert response and response.status == Errors.SW_SUCCESS
     print(f" Address: {response.data.hex()}")
@@ -170,3 +148,28 @@ def check_shelley_result(response: RAPDU, testCase: ShelleyTestCase) -> None:
     if testCase.netDesc == Testnet:
         hrp += "_test"
     assert testCase.result == bech32.bech32_encode(hrp, data5bit, bech32.Encoding.BECH32)
+
+
+@pytest.mark.parametrize(
+    "testCase",
+    rejectTestCases,
+    ids=idfunc
+)
+def test_reject_address(firmware: Firmware,
+                        backend: BackendInterface,
+                        testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Reject Address Return"""
+    if firmware == Firmware.NANOS:
+        pytest.skip("Byron address derivation is not supported on Nano S")
+
+    # Use the app interface instead of raw interface
+    client = CommandSender(backend)
+
+    with pytest.raises(ExceptionRAPDU) as err:
+        # Send the APDU
+        client.derive_address(P1Type.P1_RETURN,
+                              testCase.addrType,
+                              testCase.netDesc,
+                              testCase.spendingValue,
+                              testCase.stakingValue)
+    assert err.value.status == Errors.SW_REJECTED_BY_POLICY
