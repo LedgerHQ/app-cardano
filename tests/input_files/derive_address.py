@@ -14,11 +14,25 @@ from application_client.app_def import NetworkDesc, AddressType, Mainnet, Testne
 
 
 @dataclass
+class DeriveAddressTestCase:
+    name: str
+    netDesc: NetworkDesc
+    addrType: AddressType
+    spendingValue: str      # spending path or keyHash
+    stakingValue: str = ""  # staking path or keyHash
+    result: str = ""
+    nano_nav_list: Optional[List[NavInsID]] = None  # list of specific navigation instructions for Nano
+
+
+@dataclass
 class ByronTestCase:
     name: str
     netDesc: NetworkDesc
-    spendingPath: str
-    result: str
+    addrType: AddressType
+    spendingValue: str  # spending path or keyHash
+    stakingValue: str = ""   # staking path or keyHash
+    result: str = ""
+    nano_nav_list: Optional[List[NavInsID]] = None
 
 
 @dataclass
@@ -27,8 +41,8 @@ class ShelleyTestCase:
     netDesc: NetworkDesc
     addrType: AddressType
     spendingValue: str  # spending path or keyHash
-    stakingValue: str   # staking path or keyHash
-    result: str
+    stakingValue: str = ""   # staking path or keyHash
+    result: str = ""
     nano_nav_list: Optional[List[NavInsID]] = None
 
 
@@ -46,27 +60,97 @@ class Pointer:
         return data
 
 
+# pylint: disable=line-too-long
 byronTestCases = [
     ByronTestCase("Mainnet 1",
                   Mainnet,
+                  AddressType.BYRON,
                   "m/44'/1815'/1'/0/55'",
+                  "",
                   "Ae2tdPwUPEZELF6oijm8VFmhWpujnNzyG2zCf4RxfhmWqQKHo2drRD5Uhah"),
     ByronTestCase("Mainnet 2",
                   Mainnet,
+                  AddressType.BYRON,
                   "m/44'/1815'/1'/0/12'",
+                  "",
                   "Ae2tdPwUPEYyiPZzoMSN9GJMNZnn3S6ZAErrezee9s1bH6tjaX6m9Cyf3Wy"),
     ByronTestCase("Mainnet 3",
                   Mainnet,
+                  AddressType.BYRON,
                   "m/44'/1815'/101'/0/12'",
+                  "",
                   "Ae2tdPwUPEZ8DtpNK9twc8YXCoJ39Uwzc2FWqo1KvGsB8Kvhk14buuESy6g"),
     ByronTestCase("Mainnet 4",
                   Mainnet,
+                  AddressType.BYRON,
                   "m/44'/1815'/0'/0/1000001'",
+                  "",
                   "Ae2tdPwUPEZFxaTJw6iova9Crfc3QuoRJSdudsp5z5a9Ee7gQH7oNKrM6cW"),
     ByronTestCase("Testnet 1",
                   Testnet,
+                  AddressType.BYRON,
                   "m/44'/1815'/1'/0/12'",
+                  "",
                   "2657WMsDfac5GGdHMD6sR22tyhmFvuPrBZ79hvEvuisyUK9XCcB3nu8JecKuCXEkr"),
+]
+
+
+rejectTestCases = [
+    DeriveAddressTestCase("path too short",
+             Mainnet,
+             AddressType.BYRON,
+             "m/44'/1815'/1'"),
+    DeriveAddressTestCase("invalid path",
+             Mainnet,
+             AddressType.BYRON,
+             "m/44'/1815'/1'/5/10'"),
+    DeriveAddressTestCase("Byron with Shelley path",
+             Mainnet,
+             AddressType.BYRON,
+             "m/1852'/1815'/1'/0/10"),
+    DeriveAddressTestCase("base key/key with Byron spending path",
+             Mainnet,
+             AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+             "m/44'/1815'/1'/0/1",
+             "m/1852'/1815'/1'/2/0"),
+    DeriveAddressTestCase("base key/key with wrong spending path",
+             Mainnet,
+             AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+             "m/1852'/1815'/1'/2/0",
+             "m/1852'/1815'/1'/2/0"),
+    DeriveAddressTestCase("base key/key with wrong staking path 1",
+             Mainnet,
+             AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+             "m/1852'/1815'/1'/0/0",
+             "m/1852'/1815'/1'/0/1"),
+    DeriveAddressTestCase("base key/script with Byron spending path",
+             Mainnet,
+             AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
+             "m/44'/1815'/1'/0/1",
+             "222a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277"),
+    DeriveAddressTestCase("base address scripthash/keyhash not allowed",
+             Mainnet,
+             AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
+             "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+             "222a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277"),
+    DeriveAddressTestCase("pointer with Byron spending path",
+             Mainnet,
+             AddressType.POINTER_KEY,
+             "m/44'/1815'/1'/0/0",
+             Pointer(1, 2, 3).to_str()),
+    DeriveAddressTestCase("pointer with wrong spending path",
+             Mainnet,
+             AddressType.POINTER_KEY,
+             "m/1852'/1815'/1'/2/0",
+             Pointer(1, 2, 3).to_str()),
+    DeriveAddressTestCase("enterprise with Byron spending path",
+             Mainnet,
+             AddressType.ENTERPRISE_KEY,
+             "m/44'/1815'/1'/0/0"),
+    DeriveAddressTestCase("enterprise with wrong spending path",
+             Mainnet,
+             AddressType.ENTERPRISE_KEY,
+             "m/1852'/1815'/1'/2/0"),
 ]
 
 

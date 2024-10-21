@@ -15,11 +15,13 @@ from ragger.firmware import Firmware
 from ragger.navigator import Navigator, NavInsID
 from ragger.navigator.navigation_scenario import NavigateWithScenario
 from ragger.backend.interface import RAPDU
+from ragger.error import ExceptionRAPDU
 
 from application_client.app_def import Errors, AddressType, Testnet
 from application_client.command_sender import CommandSender
 
-from input_files.derive_address import ByronTestCase, byronTestCases
+from input_files.derive_address import DeriveAddressTestCase
+from input_files.derive_address import ByronTestCase, byronTestCases, rejectTestCases
 from input_files.derive_address import ShelleyTestCase, shelleyTestCasesNoConfirm, shelleyTestCasesWithConfirm
 
 
@@ -52,7 +54,10 @@ def test_derive_byron_address(firmware: Firmware,
         valid_instr = [NavInsID.USE_CASE_CHOICE_CONFIRM]
 
     # Send the APDU
-    with client.derive_address_async(AddressType.BYRON, testCase.netDesc, testCase.spendingPath):
+    with client.derive_address_async(testCase.addrType,
+                                     testCase.netDesc,
+                                     testCase.spendingValue,
+                                     testCase.stakingValue):
         if firmware.is_nano:
             navigator.navigate_until_text(nav_inst, valid_instr, "Confirm")
         else:
@@ -64,6 +69,29 @@ def test_derive_byron_address(firmware: Firmware,
     print(f" Address: {response.data.hex()}")
 
     assert testCase.result == base58.b58encode(response.data).decode()
+
+
+
+@pytest.mark.parametrize(
+    "testCase",
+    rejectTestCases,
+    ids=idfunc
+)
+def test_reject_address(firmware: Firmware,
+                        backend: BackendInterface,
+                        testCase: DeriveAddressTestCase) -> None:
+    """Check Derive Byron Address"""
+    if firmware == Firmware.NANOS:
+        pytest.skip("Byron address derivation is not supported on Nano S")
+
+    # Use the app interface instead of raw interface
+    client = CommandSender(backend)
+
+    with pytest.raises(ExceptionRAPDU) as err:
+        # Send the APDU
+        client.derive_address(testCase.addrType, testCase.netDesc, testCase.spendingValue, testCase.stakingValue)
+    assert err.value.status == Errors.SW_REJECTED_BY_POLICY
+
 
 
 @pytest.mark.parametrize(
@@ -79,7 +107,10 @@ def test_derive_shelley_address(backend: BackendInterface,
     client = CommandSender(backend)
 
     # Send the APDU
-    response = client.derive_address(testCase.addrType, testCase.netDesc, testCase.spendingValue, testCase.stakingValue)
+    response = client.derive_address(testCase.addrType,
+                                     testCase.netDesc,
+                                     testCase.spendingValue,
+                                     testCase.stakingValue)
     check_shelley_result(response, testCase)
 
 
