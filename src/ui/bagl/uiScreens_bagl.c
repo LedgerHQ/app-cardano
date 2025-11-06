@@ -6,7 +6,7 @@
 #include "textUtils.h"
 #include "signTx.h"
 #include "signTxPoolRegistration.h"
-#include "tokens.h"
+#include "app_tokens.h"
 #include "state.h"
 #include "uiHelpers.h"
 #include "menu.h"

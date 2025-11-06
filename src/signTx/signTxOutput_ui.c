@@ -6,7 +6,7 @@
 #include "textUtils.h"
 #include "bufView.h"
 #include "securityPolicy.h"
-#include "tokens.h"
+#include "app_tokens.h"
 #include "hexUtils.h"
 #include "signTxOutput_ui.h"
 

@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "textUtils.h"
 #include "securityPolicy.h"
-#include "tokens.h"
+#include "app_tokens.h"
 
 #ifdef HAVE_BAGL
 #include "uiScreens_bagl.h"

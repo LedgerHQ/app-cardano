@@ -63,7 +63,7 @@ set(CARDANO_SOURCE
     ${CARDANO_PATH}/src/signTx/signTxPoolRegistration_ui.c
     ${CARDANO_PATH}/src/signTx/signTx_ui.c
     ${CARDANO_PATH}/src/signTx/signTxUtils.c
-    ${CARDANO_PATH}/src/tokens/tokens.c
+    ${CARDANO_PATH}/src/app_tokens/app_tokens.c
     ${CARDANO_PATH}/src/txHashBuilder/txHashBuilder.c
     ${CARDANO_PATH}/src/ui/ui_callback.c
     ${CARDANO_PATH}/src/ui/uiHelpers.c
@@ -112,7 +112,7 @@ include_directories(
     ${CARDANO_PATH}/src/signMsg
     ${CARDANO_PATH}/src/signOpCert
     ${CARDANO_PATH}/src/signTx
-    ${CARDANO_PATH}/src/tokens
+    ${CARDANO_PATH}/src/app_tokens
     ${CARDANO_PATH}/src/txHashBuilder
     ${CARDANO_PATH}/src/votecastHashBuilder
     ${CARDANO_PATH}/src/ui
