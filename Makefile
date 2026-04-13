@@ -71,7 +71,9 @@ endif
 ########################################
 #     Application custom permissions   #
 ########################################
+ifneq ($(TARGET_NAME),TARGET_NANOS2)
 HAVE_APPLICATION_FLAG_BOLOS_SETTINGS = 1
+endif
 
 ########################################
 #         NBGL custom features         #
