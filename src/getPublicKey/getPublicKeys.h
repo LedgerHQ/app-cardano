@@ -31,7 +31,7 @@ typedef struct {
 
 uint16_t getPublicKeys_handleAPDU(uint8_t p1,
                                   uint8_t p2,
-                                  const uint8_t* wireDataBuffer,
+                                  const uint8_t *wireDataBuffer,
                                   size_t wireDataSize,
                                   bool isNewCall);
 

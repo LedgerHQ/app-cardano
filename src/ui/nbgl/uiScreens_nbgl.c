@@ -11,10 +11,10 @@
 
 // encodes a buffer into bech32 and displays it (works for bufferSize <= 150 and prefix length <=
 // 12)
-void ui_getBech32Screen(char* line,
+void ui_getBech32Screen(char *line,
                         const size_t lineSize,
-                        const char* bech32Prefix,
-                        const uint8_t* buffer,
+                        const char *bech32Prefix,
+                        const uint8_t *buffer,
                         size_t bufferSize) {
     {
         // assert inputs
@@ -34,9 +34,9 @@ void ui_getBech32Screen(char* line,
     }
 }
 
-void ui_getHexBufferScreen(char* line,
+void ui_getHexBufferScreen(char *line,
                            const size_t lineSize,
-                           const uint8_t* buffer,
+                           const uint8_t *buffer,
                            size_t bufferSize) {
     ASSERT(bufferSize > 0);
     ASSERT(bufferSize <= 32);  // this is used for hashes, all are <= 32 bytes
@@ -48,21 +48,23 @@ void ui_getHexBufferScreen(char* line,
     ASSERT(length == 2 * bufferSize);
 }
 
-void ui_getPathScreen(char* line, const size_t lineSize, const bip44_path_t* path) {
+void ui_getPathScreen(char *line, const size_t lineSize, const bip44_path_t *path) {
     explicit_bzero(line, lineSize);
     bip44_printToStr(path, line, lineSize);
     ASSERT(strlen(line) + 1 < lineSize);
 }
 
 __noinline_due_to_stack__ static void _ui_getAccountWithDescriptionScreen(
-    char* accountDescription,
+    char *accountDescription,
     const size_t accountDescriptionSize,
-    const bip44_path_t* path) {
+    const bip44_path_t *path) {
     explicit_bzero(accountDescription, accountDescriptionSize);
 
     ASSERT(bip44_hasOrdinaryWalletKeyPrefix(path));
     ASSERT(bip44_containsAccount(path));
-    { bip44_printToStr(path, accountDescription, accountDescriptionSize); }
+    {
+        bip44_printToStr(path, accountDescription, accountDescriptionSize);
+    }
 
     {
         size_t len = strlen(accountDescription);
@@ -71,7 +73,7 @@ __noinline_due_to_stack__ static void _ui_getAccountWithDescriptionScreen(
     }
 }
 
-void ui_getPublicKeyType(char* line, const size_t lineSize, const bip44_path_t* path) {
+void ui_getPublicKeyType(char *line, const size_t lineSize, const bip44_path_t *path) {
     switch (bip44_classifyPath(path)) {
         case PATH_POOL_COLD_KEY: {
             strncpy(line, "Export\nCold public key", lineSize);
@@ -88,11 +90,11 @@ void ui_getPublicKeyType(char* line, const size_t lineSize, const bip44_path_t* 
 
 // the given path typically corresponds to an account
 // if it contains anything more, we display just the whole path
-void ui_getPublicKeyPathScreen(char* line1,
+void ui_getPublicKeyPathScreen(char *line1,
                                const size_t line1Size,
-                               char* line2,
+                               char *line2,
                                const size_t line2Size,
-                               const bip44_path_t* path) {
+                               const bip44_path_t *path) {
     switch (bip44_classifyPath(path)) {
         case PATH_POOL_COLD_KEY: {
             strncpy(line1, "Cold public key", line1Size);
@@ -114,7 +116,7 @@ void ui_getPublicKeyPathScreen(char* line1,
     }
 }
 
-void ui_getStakingKeyScreen(char* line, const size_t lineSize, const bip44_path_t* stakingPath) {
+void ui_getStakingKeyScreen(char *line, const size_t lineSize, const bip44_path_t *stakingPath) {
     ASSERT(bip44_isOrdinaryStakingKeyPath(stakingPath));
 
     explicit_bzero(line, lineSize);
@@ -122,11 +124,11 @@ void ui_getStakingKeyScreen(char* line, const size_t lineSize, const bip44_path_
     _ui_getAccountWithDescriptionScreen(line, lineSize, stakingPath);
 }
 
-void ui_getAccountScreen(char* line1,
+void ui_getAccountScreen(char *line1,
                          const size_t line1Size,
-                         char* line2,
+                         char *line2,
                          const size_t line2Size,
-                         const bip44_path_t* path) {
+                         const bip44_path_t *path) {
     explicit_bzero(line1, line1Size);
     explicit_bzero(line2, line2Size);
 
@@ -145,9 +147,9 @@ void ui_getAccountScreen(char* line1,
 }
 
 // bech32 for Shelley, base58 for Byron
-void ui_getAddressScreen(char* line,
+void ui_getAddressScreen(char *line,
                          const size_t lineSize,
-                         const uint8_t* addressBuffer,
+                         const uint8_t *addressBuffer,
                          size_t addressSize) {
     ASSERT(addressSize > 0);
     ASSERT(addressSize < BUFFER_SIZE_PARANOIA);
@@ -160,11 +162,11 @@ void ui_getAddressScreen(char* line,
 }
 
 // display bech32-encoded reward account preceded by stake key derivation path (if given)
-static void _getRewardAccountWithDescriptionScreen(char* line,
+static void _getRewardAccountWithDescriptionScreen(char *line,
                                                    const size_t lineSize,
                                                    const key_reference_type_t keyReferenceType,
-                                                   const bip44_path_t* path,
-                                                   const uint8_t* rewardAccountBuffer) {
+                                                   const bip44_path_t *path,
+                                                   const uint8_t *rewardAccountBuffer) {
     explicit_bzero(line, lineSize);
     size_t descLen = 0;  // line length
 
@@ -195,11 +197,11 @@ static void _getRewardAccountWithDescriptionScreen(char* line,
 }
 
 // displays bech32-encoded reward account preceded by path (if given)
-void ui_getRewardAccountScreen(char* firstLine,
+void ui_getRewardAccountScreen(char *firstLine,
                                const size_t firstLineSize,
-                               char* secondLine,
+                               char *secondLine,
                                const size_t secondLineSize,
-                               const reward_account_t* rewardAccount,
+                               const reward_account_t *rewardAccount,
                                uint8_t networkId) {
     // WARNING: reward account must be displayed in full (not just a key derivation path)
     // because the network id security policy relies on it
@@ -256,11 +258,11 @@ void ui_getRewardAccountScreen(char* firstLine,
                                            rewardAccountBuffer);
 }
 
-void ui_getPaymentInfoScreen(char* line1,
+void ui_getPaymentInfoScreen(char *line1,
                              const size_t line1Size,
-                             char* line2,
+                             char *line2,
                              const size_t line2Size,
-                             const addressParams_t* addressParams) {
+                             const addressParams_t *addressParams) {
     switch (determinePaymentChoice(addressParams->type)) {
         case PAYMENT_PATH: {
             snprintf(line1, line1Size, "Payment key path");
@@ -291,11 +293,11 @@ static const char STAKING_HEADING_SCRIPT_HASH[] = "Stake script hash";
 static const char STAKING_HEADING_POINTER[] = "Stake key pointer";
 static const char STAKING_HEADING_WARNING[] = "WARNING:";
 
-void ui_getStakingInfoScreen(char* line1,
+void ui_getStakingInfoScreen(char *line1,
                              const size_t line1Size,
-                             char* line2,
+                             char *line2,
                              const size_t line2Size,
-                             const addressParams_t* addressParams) {
+                             const addressParams_t *addressParams) {
     explicit_bzero(line2, line2Size);
 
     switch (addressParams->stakingDataSource) {
@@ -360,10 +362,10 @@ void ui_getStakingInfoScreen(char* line1,
     ASSERT(strlen(line2) + 1 < line2Size);
 }
 
-void ui_getAssetFingerprintScreen(char* line,
+void ui_getAssetFingerprintScreen(char *line,
                                   const size_t lineSize,
-                                  const token_group_t* tokenGroup,
-                                  const uint8_t* assetNameBytes,
+                                  const token_group_t *tokenGroup,
+                                  const uint8_t *assetNameBytes,
                                   size_t assetNameSize) {
     ASSERT(assetNameSize <= ASSET_NAME_SIZE_MAX);
 
@@ -378,15 +380,15 @@ void ui_getAssetFingerprintScreen(char* line,
     ASSERT(strlen(line) + 1 < lineSize);
 }
 
-void ui_getAdaAmountScreen(char* line, const size_t lineSize, uint64_t amount) {
+void ui_getAdaAmountScreen(char *line, const size_t lineSize, uint64_t amount) {
     explicit_bzero(line, lineSize);
     str_formatAdaAmount(amount, line, lineSize);
 }
 
-void ui_getTokenAmountOutputScreen(char* line,
+void ui_getTokenAmountOutputScreen(char *line,
                                    const size_t lineSize,
-                                   const token_group_t* tokenGroup,
-                                   const uint8_t* assetNameBytes,
+                                   const token_group_t *tokenGroup,
+                                   const uint8_t *assetNameBytes,
                                    size_t assetNameSize,
                                    uint64_t tokenAmount) {
     explicit_bzero(line, lineSize);
@@ -398,10 +400,10 @@ void ui_getTokenAmountOutputScreen(char* line,
                                 lineSize);
 }
 
-void ui_getTokenAmountMintScreen(char* line,
+void ui_getTokenAmountMintScreen(char *line,
                                  const size_t lineSize,
-                                 const token_group_t* tokenGroup,
-                                 const uint8_t* assetNameBytes,
+                                 const token_group_t *tokenGroup,
+                                 const uint8_t *assetNameBytes,
                                  size_t assetNameSize,
                                  int64_t tokenAmount) {
     explicit_bzero(line, lineSize);
@@ -413,17 +415,17 @@ void ui_getTokenAmountMintScreen(char* line,
                               lineSize);
 }
 
-void ui_getUint64Screen(char* line, const size_t lineSize, uint64_t value) {
+void ui_getUint64Screen(char *line, const size_t lineSize, uint64_t value) {
     explicit_bzero(line, lineSize);
     str_formatUint64(value, line, lineSize);
 }
 
-void ui_getInt64Screen(char* line, const size_t lineSize, uint64_t value) {
+void ui_getInt64Screen(char *line, const size_t lineSize, uint64_t value) {
     explicit_bzero(line, lineSize);
     str_formatInt64(value, line, lineSize);
 }
 
-void ui_getValidityBoundaryScreen(char* line,
+void ui_getValidityBoundaryScreen(char *line,
                                   const size_t lineSize,
                                   uint64_t boundary,
                                   uint8_t networkId,
@@ -437,7 +439,7 @@ void ui_getValidityBoundaryScreen(char* line,
     }
 }
 
-void ui_getNetworkParamsScreen_1(char* line, const size_t lineSize, uint8_t networkId) {
+void ui_getNetworkParamsScreen_1(char *line, const size_t lineSize, uint8_t networkId) {
     ASSERT(isValidNetworkId(networkId));
 
     explicit_bzero(line, lineSize);
@@ -448,7 +450,7 @@ void ui_getNetworkParamsScreen_1(char* line, const size_t lineSize, uint8_t netw
     ASSERT(strlen(line) + 1 < lineSize);
 }
 
-void ui_getNetworkParamsScreen_2(char* line, const size_t lineSize, uint32_t protocolMagic) {
+void ui_getNetworkParamsScreen_2(char *line, const size_t lineSize, uint32_t protocolMagic) {
     explicit_bzero(line, lineSize);
 
     STATIC_ASSERT(sizeof(protocolMagic) <= sizeof(unsigned), "oversized type for %u");
@@ -457,7 +459,7 @@ void ui_getNetworkParamsScreen_2(char* line, const size_t lineSize, uint32_t pro
     ASSERT(strlen(line) + 1 < lineSize);
 }
 
-void ui_getPoolMarginScreen(char* line1,
+void ui_getPoolMarginScreen(char *line1,
                             size_t lineSize,
                             uint64_t marginNumerator,
                             uint64_t marginDenominator) {
@@ -487,11 +489,11 @@ void ui_getPoolMarginScreen(char* line1,
 
 #ifdef APP_FEATURE_POOL_REGISTRATION
 
-void ui_getPoolOwnerScreen(char* firstLine,
+void ui_getPoolOwnerScreen(char *firstLine,
                            const size_t firstLineSize,
-                           char* secondLine,
+                           char *secondLine,
                            const size_t secondLineSize,
-                           const pool_owner_t* owner,
+                           const pool_owner_t *owner,
                            uint32_t ownerIndex,
                            uint8_t networkId) {
     {
@@ -544,7 +546,7 @@ void ui_getPoolOwnerScreen(char* firstLine,
 }
 
 // displays pool relay index
-void ui_getPoolRelayScreen(char* line, const size_t lineSize, size_t relayIndex) {
+void ui_getPoolRelayScreen(char *line, const size_t lineSize, size_t relayIndex) {
     explicit_bzero(line, lineSize);
     {
         STATIC_ASSERT(sizeof(relayIndex + 1) <= sizeof(unsigned), "oversized type for %u");
@@ -556,7 +558,7 @@ void ui_getPoolRelayScreen(char* line, const size_t lineSize, size_t relayIndex)
     }
 }
 
-void ui_getIpv4Screen(char* ipStr, const size_t ipStrSize, const ipv4_t* ipv4) {
+void ui_getIpv4Screen(char *ipStr, const size_t ipStrSize, const ipv4_t *ipv4) {
     explicit_bzero(ipStr, ipStrSize);
 
     if (ipv4->isNull) {
@@ -569,7 +571,7 @@ void ui_getIpv4Screen(char* ipStr, const size_t ipStrSize, const ipv4_t* ipv4) {
     ASSERT(strlen(ipStr) + 1 < ipStrSize);
 }
 
-void ui_getIpv6Screen(char* ipStr, const size_t ipStrSize, const ipv6_t* ipv6) {
+void ui_getIpv6Screen(char *ipStr, const size_t ipStrSize, const ipv6_t *ipv6) {
     explicit_bzero(ipStr, ipStrSize);
 
     if (ipv6->isNull) {
@@ -582,7 +584,7 @@ void ui_getIpv6Screen(char* ipStr, const size_t ipStrSize, const ipv6_t* ipv6) {
     ASSERT(strlen(ipStr) + 1 < ipStrSize);
 }
 
-void ui_getIpPortScreen(char* portStr, const size_t portStrSize, const ipport_t* port) {
+void ui_getIpPortScreen(char *portStr, const size_t portStrSize, const ipport_t *port) {
     explicit_bzero(portStr, portStrSize);
 
     if (port->isNull) {
@@ -599,10 +601,10 @@ void ui_getIpPortScreen(char* portStr, const size_t portStrSize, const ipport_t*
 
 #endif  // APP_FEATURE_POOL_REGISTRATION
 
-void ui_getInputScreen(char* line,
+void ui_getInputScreen(char *line,
                        const size_t lineSize,
-                       const sign_tx_transaction_input_t* input) {
-    const tx_input_t* inputData = &input->input_data;
+                       const sign_tx_transaction_input_t *input) {
+    const tx_input_t *inputData = &input->input_data;
     ASSERT(SIZEOF(inputData->txHashBuffer) == TX_HASH_LENGTH);
     char txHex[2 * TX_HASH_LENGTH + 1] = {0};
     explicit_bzero(txHex, SIZEOF(txHex));

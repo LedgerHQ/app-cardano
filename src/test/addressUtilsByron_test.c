@@ -7,15 +7,15 @@
 
 #define HD HARDENED_BIP32
 
-static void pathSpec_init(bip44_path_t* pathSpec, const uint32_t* pathArray, uint32_t pathLength) {
+static void pathSpec_init(bip44_path_t *pathSpec, const uint32_t *pathArray, uint32_t pathLength) {
     pathSpec->length = pathLength;
     memmove(pathSpec->path, pathArray, pathLength * 4);
 }
 
-void testcase_deriveAddress_byron(uint32_t* path,
+void testcase_deriveAddress_byron(uint32_t *path,
                                   uint32_t pathLen,
                                   uint32_t protocolMagic,
-                                  const char* expectedHex) {
+                                  const char *expectedHex) {
     PRINTF("testcase_deriveAddressByron ");
 
     bip44_path_t pathSpec;
@@ -34,7 +34,7 @@ void testcase_deriveAddress_byron(uint32_t* path,
     EXPECT_EQ_BYTES(address, expected, expectedSize);
 }
 
-void testcase_extractProtocolMagicSucceeds(const char* addressHex, uint32_t expectedProtocolMagic) {
+void testcase_extractProtocolMagicSucceeds(const char *addressHex, uint32_t expectedProtocolMagic) {
     PRINTF("testcase_extractProtocolMagicSucceeds\n");
 
     uint8_t address[100] = {0};
@@ -45,7 +45,7 @@ void testcase_extractProtocolMagicSucceeds(const char* addressHex, uint32_t expe
     EXPECT_EQ(protocolMagic, expectedProtocolMagic);
 }
 
-void testcase_extractProtocolMagicThrows(const char* addressHex, uint32_t expectedErrorCode) {
+void testcase_extractProtocolMagicThrows(const char *addressHex, uint32_t expectedErrorCode) {
     PRINTF("testcase_extractProtocolMagicThrows\n");
 
     uint8_t address[100] = {0};

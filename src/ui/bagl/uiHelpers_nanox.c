@@ -5,14 +5,13 @@
 #include "uiHelpers.h"
 
 // Helper macro for better astyle formatting of UX_FLOW definitions
-#define LINES(...) \
-    { __VA_ARGS__ }
+#define LINES(...) {__VA_ARGS__}
 
 // ----- Flow paginated text -----
 void paginated_text_confirm() {
     TRY_CATCH_UI({
         assert_uiPaginatedText_magic();
-        paginatedTextState_t* ctx = paginatedTextState;
+        paginatedTextState_t *ctx = paginatedTextState;
         uiCallback_confirm(&ctx->callback);
     });
 }
@@ -20,15 +19,15 @@ void paginated_text_confirm() {
 UX_STEP_CB(ux_display_paginated_text_flow_1_step,
            bnnn_paging,
            paginated_text_confirm(),
-           LINES((char*) &displayState.paginatedText.header,
-                 (char*) &displayState.paginatedText.fullText));
+           LINES((char *) &displayState.paginatedText.header,
+                 (char *) &displayState.paginatedText.fullText));
 
 UX_STEP_CB(ux_display_short_text_flow_1_step,
            pnn,
            paginated_text_confirm(),
            LINES(&C_icon_eye,
-                 (char*) &displayState.paginatedText.header,
-                 (char*) &displayState.paginatedText.fullText));
+                 (char *) &displayState.paginatedText.header,
+                 (char *) &displayState.paginatedText.fullText));
 
 UX_FLOW(ux_paginated_text_flow, &ux_display_paginated_text_flow_1_step);
 
@@ -39,7 +38,7 @@ void ui_displayPaginatedText_run() {
     ux_flow_init(0, ux_short_text_flow, NULL);
     ux_stack_push();
 #else
-    if (strlen((const char*) &displayState.paginatedText.fullText) < 18) {
+    if (strlen((const char *) &displayState.paginatedText.fullText) < 18) {
         ux_flow_init(0, ux_short_text_flow, NULL);
         ux_stack_push();
     } else {
@@ -53,7 +52,7 @@ void ui_displayPaginatedText_run() {
 void prompt_confirm() {
     TRY_CATCH_UI({
         assert_uiPrompt_magic();
-        promptState_t* ctx = promptState;
+        promptState_t *ctx = promptState;
         uiCallback_confirm(&ctx->callback);
     });
 }
@@ -69,8 +68,8 @@ UX_STEP_CB(ux_display_prompt_flow_1_step,
            pbb,
            prompt_confirm(),
            LINES(&C_icon_validate_14,
-                 (char*) &displayState.paginatedText.header,
-                 (char*) &displayState.paginatedText.currentText, ));
+                 (char *) &displayState.paginatedText.header,
+                 (char *) &displayState.paginatedText.currentText, ));
 
 UX_STEP_CB(ux_display_prompt_flow_2_step,
            pbb,

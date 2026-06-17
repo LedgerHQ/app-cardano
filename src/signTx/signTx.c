@@ -19,7 +19,7 @@
 #include "io_swap.h"
 #include "handle_sign_transaction.h"
 
-static ins_sign_tx_context_t* ctx = &(instructionState.signTxContext);
+static ins_sign_tx_context_t *ctx = &(instructionState.signTxContext);
 
 static inline void initTxBodyCtx() {
     explicit_bzero(&ctx->txPartCtx, SIZEOF(ctx->txPartCtx));
@@ -56,7 +56,9 @@ static inline void initTxAuxDataCtx() {
 
 static inline void initTxWitnessCtx() {
     explicit_bzero(&ctx->txPartCtx, SIZEOF(ctx->txPartCtx));
-    { WITNESS_CTX->currentWitness = 0; }
+    {
+        WITNESS_CTX->currentWitness = 0;
+    }
 }
 
 // advances the stage of the main state machine
@@ -478,7 +480,7 @@ static void _parseTxOptions(uint64_t options) {
 }
 
 __noinline_due_to_stack__ static void signTx_handleInitAPDU(uint8_t p2,
-                                                            const uint8_t* wireDataBuffer,
+                                                            const uint8_t *wireDataBuffer,
                                                             size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -533,7 +535,7 @@ __noinline_due_to_stack__ static void signTx_handleInitAPDU(uint8_t p2,
             uint8_t numVotingProcedures[4];
 
             uint8_t numWitnesses[4];
-        }* wireHeader = (void*) wireDataBuffer;
+        } *wireHeader = (void *) wireDataBuffer;
 
         VALIDATE(SIZEOF(*wireHeader) == wireDataSize, ERR_INVALID_DATA);
 
@@ -705,7 +707,7 @@ __noinline_due_to_stack__ static void signTx_handleInitAPDU(uint8_t p2,
 // ============================== AUXILIARY DATA ==============================
 
 __noinline_due_to_stack__ static void signTx_handleAuxDataAPDU(uint8_t p2,
-                                                               const uint8_t* wireDataBuffer,
+                                                               const uint8_t *wireDataBuffer,
                                                                size_t wireDataSize) {
     {
         TRACE_STACK_USAGE();
@@ -816,23 +818,23 @@ static void ui_advanceState_input() {
     }
 }
 
-static void parseInput(const uint8_t* wireDataBuffer, size_t wireDataSize) {
-    sign_tx_transaction_input_t* input = &BODY_CTX->stageData.input;
+static void parseInput(const uint8_t *wireDataBuffer, size_t wireDataSize) {
+    sign_tx_transaction_input_t *input = &BODY_CTX->stageData.input;
 
     struct {
         uint8_t txHash[TX_HASH_LENGTH];
         uint8_t index[4];
-    }* wireUtxo = (void*) wireDataBuffer;
+    } *wireUtxo = (void *) wireDataBuffer;
 
     VALIDATE(wireDataSize == SIZEOF(*wireUtxo), ERR_INVALID_DATA);
 
-    tx_input_t* inputData = &input->input_data;
+    tx_input_t *inputData = &input->input_data;
     memmove(inputData->txHashBuffer, wireUtxo->txHash, SIZEOF(inputData->txHashBuffer));
     inputData->index = u4be_read(wireUtxo->index);
 }
 
-static void constructInputLabel(const char* prefix, uint16_t index) {
-    char* label = BODY_CTX->stageData.input.label;
+static void constructInputLabel(const char *prefix, uint16_t index) {
+    char *label = BODY_CTX->stageData.input.label;
     const size_t labelSize = SIZEOF(BODY_CTX->stageData.input.label);
     explicit_bzero(label, labelSize);
     // indexed from 0 as agreed with IOG on Slack
@@ -858,7 +860,7 @@ static void ui_selectInputStep(security_policy_t policy) {
 }
 
 __noinline_due_to_stack__ static void signTx_handleInputAPDU(uint8_t p2,
-                                                             const uint8_t* wireDataBuffer,
+                                                             const uint8_t *wireDataBuffer,
                                                              size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -901,7 +903,7 @@ __noinline_due_to_stack__ static void signTx_handleInputAPDU(uint8_t p2,
 // ============================== OUTPUTS ==============================
 
 static void signTx_handleOutputAPDU(uint8_t p2,
-                                    const uint8_t* wireDataBuffer,
+                                    const uint8_t *wireDataBuffer,
                                     size_t wireDataSize) {
     {
         TRACE("p2 = %d", p2);
@@ -926,7 +928,7 @@ static void signTx_handleOutputAPDU(uint8_t p2,
 // ============================== FEE ==============================
 
 __noinline_due_to_stack__ static void signTx_handleFeeAPDU(uint8_t p2,
-                                                           const uint8_t* wireDataBuffer,
+                                                           const uint8_t *wireDataBuffer,
                                                            size_t wireDataSize) {
     {
         // sanity checks
@@ -985,7 +987,7 @@ __noinline_due_to_stack__ static void signTx_handleFeeAPDU(uint8_t p2,
 // ============================== TTL ==============================
 
 __noinline_due_to_stack__ static void signTx_handleTtlAPDU(uint8_t p2,
-                                                           const uint8_t* wireDataBuffer,
+                                                           const uint8_t *wireDataBuffer,
                                                            size_t wireDataSize) {
     {
         // sanity checks
@@ -1042,14 +1044,14 @@ __noinline_due_to_stack__ static void signTx_handleTtlAPDU(uint8_t p2,
 
 // ============================== CERTIFICATES ==============================
 
-static void _parsePathSpec(read_view_t* view, bip44_path_t* pathSpec) {
+static void _parsePathSpec(read_view_t *view, bip44_path_t *pathSpec) {
     view_skipBytes(view, bip44_parseFromWire(pathSpec, VIEW_REMAINING_TO_TUPLE_BUF_SIZE(view)));
     TRACE();
     BIP44_PRINTF(pathSpec);
     PRINTF("\n");
 }
 
-static void _parseCredential(read_view_t* view, ext_credential_t* credential) {
+static void _parseCredential(read_view_t *view, ext_credential_t *credential) {
     credential->type = parse_u1be(view);
     switch (credential->type) {
         case EXT_CREDENTIAL_KEY_PATH:
@@ -1072,7 +1074,7 @@ static void _parseCredential(read_view_t* view, ext_credential_t* credential) {
     }
 }
 
-static void _parseDRep(read_view_t* view, ext_drep_t* drep) {
+static void _parseDRep(read_view_t *view, ext_drep_t *drep) {
     drep->type = parse_u1be(view);
     switch (drep->type) {
         case EXT_DREP_KEY_PATH:
@@ -1100,7 +1102,7 @@ static void _parseDRep(read_view_t* view, ext_drep_t* drep) {
     }
 }
 
-static void _parseAnchor(read_view_t* view, anchor_t* anchor) {
+static void _parseAnchor(read_view_t *view, anchor_t *anchor) {
     {
         uint8_t includeAnchorByte = parse_u1be(view);
         anchor->isIncluded = signTx_parseIncluded(includeAnchorByte);
@@ -1128,9 +1130,9 @@ static void _parseAnchor(read_view_t* view, anchor_t* anchor) {
     VALIDATE(view_remainingSize(view) == 0, ERR_INVALID_DATA);
 }
 
-static void _parseCertificateData(const uint8_t* wireDataBuffer,
+static void _parseCertificateData(const uint8_t *wireDataBuffer,
                                   size_t wireDataSize,
-                                  sign_tx_certificate_data_t* certificateData) {
+                                  sign_tx_certificate_data_t *certificateData) {
     TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
     read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
@@ -1215,7 +1217,7 @@ static void _parseCertificateData(const uint8_t* wireDataBuffer,
     VALIDATE(view_remainingSize(&view) == 0, ERR_INVALID_DATA);
 }
 
-static void _setCredential(credential_t* credential, const ext_credential_t* extCredential) {
+static void _setCredential(credential_t *credential, const ext_credential_t *extCredential) {
     switch (extCredential->type) {
         case EXT_CREDENTIAL_KEY_PATH:
             credential->type = CREDENTIAL_KEY_HASH;
@@ -1246,7 +1248,7 @@ static void _setCredential(credential_t* credential, const ext_credential_t* ext
     }
 }
 
-static void _setDRep(drep_t* drep, const ext_drep_t* extDRep) {
+static void _setDRep(drep_t *drep, const ext_drep_t *extDRep) {
     switch (extDRep->type) {
         case EXT_DREP_KEY_PATH:
             drep->type = DREP_KEY_HASH;
@@ -1282,8 +1284,8 @@ static void _setDRep(drep_t* drep, const ext_drep_t* extDRep) {
 }
 
 __noinline_due_to_stack__ static void _addCertificateDataToTx(
-    sign_tx_certificate_data_t* certificateData,
-    tx_hash_builder_t* txHashBuilder) {
+    sign_tx_certificate_data_t *certificateData,
+    tx_hash_builder_t *txHashBuilder) {
     TRACE("Adding certificate (type %d) to tx hash", certificateData->type);
 
     // declared here to save the stack space compiler allocates for this function
@@ -1375,7 +1377,7 @@ __noinline_due_to_stack__ static void _addCertificateDataToTx(
 
         case CERTIFICATE_STAKE_POOL_RETIREMENT: {
             uint8_t hash[ADDRESS_KEY_HASH_LENGTH] = {0};
-            ext_credential_t* extCredential = &BODY_CTX->stageData.certificate.poolCredential;
+            ext_credential_t *extCredential = &BODY_CTX->stageData.certificate.poolCredential;
             ASSERT(extCredential->type == EXT_CREDENTIAL_KEY_PATH);
             bip44_pathToKeyHash(&extCredential->keyPath, hash, SIZEOF(hash));
             txHashBuilder_addCertificate_poolRetirement(txHashBuilder,
@@ -1397,7 +1399,7 @@ __noinline_due_to_stack__ static void _addCertificateDataToTx(
 #ifdef APP_FEATURE_POOL_REGISTRATION
 
 static bool _handlePoolRegistrationIfNeeded(uint8_t p2,
-                                            const uint8_t* wireDataBuffer,
+                                            const uint8_t *wireDataBuffer,
                                             size_t wireDataSize) {
     // delegate to state sub-machine for stake pool registration certificate data
     if (signTxPoolRegistration_isValidInstruction(p2)) {
@@ -1638,7 +1640,7 @@ static void _handleCertificatePoolRetirement() {
 // which makes the code somewhat more readable if read per certificate,
 // but it increases code size and that creates problems for Nano S
 __noinline_due_to_stack__ static void signTx_handleCertificateAPDU(uint8_t p2,
-                                                                   const uint8_t* wireDataBuffer,
+                                                                   const uint8_t *wireDataBuffer,
                                                                    size_t wireDataSize) {
     TRACE_STACK_USAGE();
     ASSERT(BODY_CTX->currentCertificate < ctx->numCertificates);
@@ -1784,7 +1786,7 @@ __noinline_due_to_stack__ static void _addWithdrawalToTxHash(bool validateCanoni
 }
 
 __noinline_due_to_stack__ static void signTx_handleWithdrawalAPDU(uint8_t p2,
-                                                                  const uint8_t* wireDataBuffer,
+                                                                  const uint8_t *wireDataBuffer,
                                                                   size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -1851,7 +1853,7 @@ __noinline_due_to_stack__ static void signTx_handleWithdrawalAPDU(uint8_t p2,
 // ============================== VALIDITY INTERVAL START ==============================
 
 static void signTx_handleValidityIntervalStartAPDU(uint8_t p2,
-                                                   const uint8_t* wireDataBuffer,
+                                                   const uint8_t *wireDataBuffer,
                                                    size_t wireDataSize) {
     {
         // sanity checks
@@ -1910,7 +1912,7 @@ static void signTx_handleValidityIntervalStartAPDU(uint8_t p2,
 
 // ============================== MINT ==============================
 
-static void signTx_handleMintAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void signTx_handleMintAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         TRACE("p2 = %d", p2);
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -1930,7 +1932,7 @@ static void signTx_handleMintAPDU(uint8_t p2, const uint8_t* wireDataBuffer, siz
 // ========================= SCRIPT DATA HASH ==========================
 
 static void signTx_handleScriptDataHashAPDU(uint8_t p2,
-                                            const uint8_t* wireDataBuffer,
+                                            const uint8_t *wireDataBuffer,
                                             size_t wireDataSize) {
     {
         // sanity checks
@@ -2004,7 +2006,7 @@ static void ui_advanceState_collateralInput() {
 }
 
 __noinline_due_to_stack__ static void
-signTx_handleCollateralInputAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize) {
+signTx_handleCollateralInputAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
         // sanity checks
@@ -2048,7 +2050,7 @@ signTx_handleCollateralInputAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size
 // ========================= REQUIRED SIGNERS ===========================
 
 __noinline_due_to_stack__ static void signTx_handleRequiredSignerAPDU(uint8_t p2,
-                                                                      const uint8_t* wireDataBuffer,
+                                                                      const uint8_t *wireDataBuffer,
                                                                       size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -2129,7 +2131,7 @@ __noinline_due_to_stack__ static void signTx_handleRequiredSignerAPDU(uint8_t p2
 // ========================= COLLATERAL RETURN OUTPUT ===========================
 
 static void signTx_handleCollateralOutputAPDU(uint8_t p2,
-                                              const uint8_t* wireDataBuffer,
+                                              const uint8_t *wireDataBuffer,
                                               size_t wireDataSize) {
     {
         TRACE("p2 = %d", p2);
@@ -2152,7 +2154,7 @@ static void signTx_handleCollateralOutputAPDU(uint8_t p2,
 // ========================= TOTAL COLLATERAL ===========================
 
 __noinline_due_to_stack__ static void
-signTx_handleTotalCollateralAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize) {
+signTx_handleTotalCollateralAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STAGE(SIGN_STAGE_BODY_TOTAL_COLLATERAL);
@@ -2223,7 +2225,7 @@ static void ui_advanceState_ReferenceInput() {
 }
 
 __noinline_due_to_stack__ static void signTx_handleReferenceInputAPDU(uint8_t p2,
-                                                                      const uint8_t* wireDataBuffer,
+                                                                      const uint8_t *wireDataBuffer,
                                                                       size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -2266,7 +2268,7 @@ __noinline_due_to_stack__ static void signTx_handleReferenceInputAPDU(uint8_t p2
 
 // ========================= VOTING PROCEDURES ===========================
 
-static void _setVoter(voter_t* voter, const ext_voter_t* extVoter) {
+static void _setVoter(voter_t *voter, const ext_voter_t *extVoter) {
     switch (extVoter->type) {
         case EXT_VOTER_COMMITTEE_HOT_KEY_PATH:
             voter->type = VOTER_COMMITTEE_HOT_KEY_HASH;
@@ -2325,7 +2327,7 @@ static void _setVoter(voter_t* voter, const ext_voter_t* extVoter) {
 }
 
 __noinline_due_to_stack__ static void
-signTx_handleVotingProcedureAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize) {
+signTx_handleVotingProcedureAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
         // sanity checks
@@ -2341,7 +2343,7 @@ signTx_handleVotingProcedureAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size
         read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
         {
             // voter
-            ext_voter_t* voter = &BODY_CTX->stageData.votingProcedure.voter;
+            ext_voter_t *voter = &BODY_CTX->stageData.votingProcedure.voter;
             voter->type = parse_u1be(&view);
             switch (voter->type) {
                 case EXT_VOTER_COMMITTEE_HOT_KEY_PATH:
@@ -2371,13 +2373,13 @@ signTx_handleVotingProcedureAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size
         }
         {
             // gov action id
-            gov_action_id_t* actionId = &BODY_CTX->stageData.votingProcedure.govActionId;
+            gov_action_id_t *actionId = &BODY_CTX->stageData.votingProcedure.govActionId;
             view_parseBuffer(actionId->txHashBuffer, &view, TX_HASH_LENGTH);
             actionId->govActionIndex = parse_u4be(&view);
         }
         {
             // voting procedure
-            voting_procedure_t* procedure = &BODY_CTX->stageData.votingProcedure.votingProcedure;
+            voting_procedure_t *procedure = &BODY_CTX->stageData.votingProcedure.votingProcedure;
             procedure->vote = parse_u1be(&view);
             switch (procedure->vote) {
                 case VOTE_NO:
@@ -2440,7 +2442,7 @@ signTx_handleVotingProcedureAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size
 // ============================== TREASURY ==============================
 
 __noinline_due_to_stack__ static void signTx_handleTreasuryAPDU(uint8_t p2,
-                                                                const uint8_t* wireDataBuffer,
+                                                                const uint8_t *wireDataBuffer,
                                                                 size_t wireDataSize) {
     {
         // sanity checks
@@ -2499,7 +2501,7 @@ __noinline_due_to_stack__ static void signTx_handleTreasuryAPDU(uint8_t p2,
 // ============================== DONATION ==============================
 
 __noinline_due_to_stack__ static void signTx_handleDonationAPDU(uint8_t p2,
-                                                                const uint8_t* wireDataBuffer,
+                                                                const uint8_t *wireDataBuffer,
                                                                 size_t wireDataSize) {
     {
         // sanity checks
@@ -2574,7 +2576,7 @@ static bool _shouldDisplayTxId(sign_tx_signingmode_t signingMode) {
 }
 
 __noinline_due_to_stack__ static void signTx_handleConfirmAPDU(uint8_t p2,
-                                                               const uint8_t* wireDataBuffer
+                                                               const uint8_t *wireDataBuffer
                                                                    MARK_UNUSED,
                                                                size_t wireDataSize) {
     TRACE_STACK_USAGE();
@@ -2632,7 +2634,7 @@ __noinline_due_to_stack__ static void signTx_handleConfirmAPDU(uint8_t p2,
 // ============================== WITNESS ==============================
 
 __noinline_due_to_stack__ static void signTx_handleWitnessAPDU(uint8_t p2,
-                                                               const uint8_t* wireDataBuffer,
+                                                               const uint8_t *wireDataBuffer,
                                                                size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -2717,9 +2719,9 @@ __noinline_due_to_stack__ static void signTx_handleWitnessAPDU(uint8_t p2,
 
 // ============================== MAIN HANDLER ==============================
 
-typedef void subhandler_fn_t(uint8_t p2, const uint8_t* dataBuffer, size_t dataSize);
+typedef void subhandler_fn_t(uint8_t p2, const uint8_t *dataBuffer, size_t dataSize);
 
-static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
+static subhandler_fn_t *lookup_subhandler(uint8_t p1) {
     switch (p1) {
 #define CASE(P1, HANDLER) \
     case P1:              \
@@ -2762,7 +2764,7 @@ static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
 
 uint16_t signTx_handleAPDU(uint8_t p1,
                            uint8_t p2,
-                           const uint8_t* wireDataBuffer,
+                           const uint8_t *wireDataBuffer,
                            size_t wireDataSize,
                            bool isNewCall) {
     TRACE("P1 = 0x%x, P2 = 0x%x, isNewCall = %d", p1, p2, isNewCall);
@@ -2808,13 +2810,13 @@ uint16_t signTx_handleAPDU(uint8_t p1,
             break;
     }
 
-    subhandler_fn_t* subhandler = lookup_subhandler(p1);
+    subhandler_fn_t *subhandler = lookup_subhandler(p1);
     VALIDATE(subhandler != NULL, ERR_INVALID_REQUEST_PARAMETERS);
     subhandler(p2, wireDataBuffer, wireDataSize);
     return ERR_NO_RESPONSE;
 }
 
-ins_sign_tx_aux_data_context_t* accessAuxDataContext() {
+ins_sign_tx_aux_data_context_t *accessAuxDataContext() {
     switch (ctx->stage) {
         case SIGN_STAGE_AUX_DATA:
         case SIGN_STAGE_AUX_DATA_CVOTE_REGISTRATION_SUBMACHINE:
@@ -2827,7 +2829,7 @@ ins_sign_tx_aux_data_context_t* accessAuxDataContext() {
     }
 }
 
-ins_sign_tx_body_context_t* accessBodyContext() {
+ins_sign_tx_body_context_t *accessBodyContext() {
     switch (ctx->stage) {
         case SIGN_STAGE_BODY_INPUTS:
         case SIGN_STAGE_BODY_OUTPUTS:
@@ -2862,7 +2864,7 @@ ins_sign_tx_body_context_t* accessBodyContext() {
     }
 }
 
-ins_sign_tx_witness_context_t* accessWitnessContext() {
+ins_sign_tx_witness_context_t *accessWitnessContext() {
     switch (ctx->stage) {
         case SIGN_STAGE_WITNESSES:
             return &(ctx->txPartCtx.witnesses_ctx);

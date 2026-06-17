@@ -26,12 +26,12 @@ void respondSuccessEmptyMsg() {
 #endif
 }
 
-bool violatesSingleAccountOrStoreIt(const bip44_path_t* path) {
+bool violatesSingleAccountOrStoreIt(const bip44_path_t *path) {
     PRINTF("Considering path ");
     BIP44_PRINTF(path);
     PRINTF(" for single account security model\n");
 
-    single_account_data_t* singleAccountData =
+    single_account_data_t *singleAccountData =
         &(instructionState.signTxContext.commonTxData.singleAccountData);
 
     if (!bip44_hasOrdinaryWalletKeyPrefix(path) || !bip44_containsAccount(path)) {
@@ -59,7 +59,7 @@ bool violatesSingleAccountOrStoreIt(const bip44_path_t* path) {
     return false;
 }
 
-void view_parseDestination(read_view_t* view, tx_output_destination_storage_t* destination) {
+void view_parseDestination(read_view_t *view, tx_output_destination_storage_t *destination) {
     destination->type = parse_u1be(view);
     TRACE("Destination type %d", (int) destination->type);
 

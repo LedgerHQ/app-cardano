@@ -12,11 +12,11 @@
 #include "nbgl_use_case.h"
 #endif
 
-static ins_derive_native_script_hash_context_t* ctx =
+static ins_derive_native_script_hash_context_t *ctx =
     &(instructionState.deriveNativeScriptHashContext);
 
 // UI
-typedef const char* charPtr;
+typedef const char *charPtr;
 const charPtr ui_native_script_header[7] = {"Script - key path",
                                             "Script - key",
                                             "Script - ALL",
@@ -28,7 +28,7 @@ const charPtr ui_native_script_header[7] = {"Script - key path",
 #define ASSERT_UI_SCRIPT_TYPE_SANITY()                    \
     ASSERT(ctx->ui_scriptType >= UI_SCRIPT_PUBKEY_PATH && \
            ctx->ui_scriptType <= UI_SCRIPT_INVALID_HEREAFTER)
-#define HEADER ((const char*) PIC(ui_native_script_header[ctx->ui_scriptType]))
+#define HEADER ((const char *) PIC(ui_native_script_header[ctx->ui_scriptType]))
 
 static uint8_t _getScriptLevelForPosition() {
     // For complex scripts we reduce the current level by 1
@@ -42,7 +42,7 @@ static uint8_t _getScriptLevelForPosition() {
     return ctx->level - levelOffset;
 }
 
-static void deriveScriptHash_display_ui_position(uint8_t level, ui_callback_fn_t* callback) {
+static void deriveScriptHash_display_ui_position(uint8_t level, ui_callback_fn_t *callback) {
     ASSERT_UI_SCRIPT_TYPE_SANITY();
     ASSERT(level > 0);
     TRACE();
@@ -53,8 +53,8 @@ static void deriveScriptHash_display_ui_position(uint8_t level, ui_callback_fn_t
     // 2  - the ending null byte + 1B for checking if all text has been printed
     char positionDescription[10 + 11 * (MAX_SCRIPT_DEPTH - 1) + 2] = {0};
     explicit_bzero(positionDescription, SIZEOF(positionDescription));
-    char* ptr = BEGIN(positionDescription);
-    char* end = END(positionDescription);
+    char *ptr = BEGIN(positionDescription);
+    char *end = END(positionDescription);
 
     snprintf(ptr, (end - ptr), "Position: ");
     // snprintf returns 0, https://github.com/LedgerHQ/nanos-secure-sdk/issues/28
@@ -108,7 +108,7 @@ static void deriveScriptHash_display_ui_runStep_cb(void) {
 }
 #endif  // HAVE_NBGL
 
-static void _displayScriptContent(ui_callback_fn_t* this_fn) {
+static void _displayScriptContent(ui_callback_fn_t *this_fn) {
     switch (ctx->ui_scriptType) {
         case UI_SCRIPT_PUBKEY_PATH: {
 #ifdef HAVE_BAGL
@@ -247,7 +247,7 @@ void deriveScriptHash_display_ui_runStep() {
     TRACE("ui_step = %d", ctx->ui_step);
     ASSERT_UI_SCRIPT_TYPE_SANITY();
 
-    ui_callback_fn_t* this_fn = deriveScriptHash_display_ui_runStep;
+    ui_callback_fn_t *this_fn = deriveScriptHash_display_ui_runStep;
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
     UI_STEP(DISPLAY_UI_STEP_POSITION) {

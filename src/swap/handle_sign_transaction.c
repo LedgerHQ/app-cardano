@@ -15,7 +15,7 @@ typedef struct swap_validated_s {
 static swap_validated_t G_swap_validated;
 
 // Save the data validated during the Exchange app flow
-bool swap_copy_transaction_parameters(create_transaction_parameters_t* params) {
+bool swap_copy_transaction_parameters(create_transaction_parameters_t *params) {
     PRINTF("Inside swap_copy_transaction_parameters\n");
 
     // Ensure no extraid
@@ -70,7 +70,7 @@ bool swap_copy_transaction_parameters(create_transaction_parameters_t* params) {
     return true;
 }
 
-bool swap_check_destination_validity(tx_output_destination_t* destination) {
+bool swap_check_destination_validity(tx_output_destination_t *destination) {
     char rawAddressHuman[MAX_HUMAN_ADDRESS_SIZE] = {0};
     // char rawAddressBuffer[MAX_ADDRESS_SIZE] = {0};
     // size_t nbBytes = 0;

@@ -8,14 +8,14 @@
         ptr++;                  \
     }
 
-size_t str_formatDecimalAmount(uint64_t amount, size_t places, char* out, size_t outSize) {
+size_t str_formatDecimalAmount(uint64_t amount, size_t places, char *out, size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
     ASSERT(places <= UINT8_MAX);
 
     char scratchBuffer[40] = {0};
     explicit_bzero(scratchBuffer, SIZEOF(scratchBuffer));
-    char* ptr = BEGIN(scratchBuffer);
-    char* end = END(scratchBuffer);
+    char *ptr = BEGIN(scratchBuffer);
+    char *end = END(scratchBuffer);
 
     // We print in reverse
 
@@ -56,12 +56,12 @@ size_t str_formatDecimalAmount(uint64_t amount, size_t places, char* out, size_t
     return rawSize;
 }
 
-size_t str_formatAdaAmount(uint64_t amount, char* out, size_t outSize) {
+size_t str_formatAdaAmount(uint64_t amount, char *out, size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
     size_t rawSize = str_formatDecimalAmount(amount, 6, out, outSize);
 
-    const char* suffix = " ADA";
+    const char *suffix = " ADA";
     const size_t suffixLength = strlen(suffix);
 
     // make sure all the information is displayed to the user
@@ -73,9 +73,9 @@ size_t str_formatAdaAmount(uint64_t amount, char* out, size_t outSize) {
     return rawSize + suffixLength;
 }
 
-static size_t stringifyUint64ToBufferReverse(uint64_t number, char* buffer, size_t bufferSize) {
-    char* currChar = buffer;
-    char* const end = buffer + bufferSize;
+static size_t stringifyUint64ToBufferReverse(uint64_t number, char *buffer, size_t bufferSize) {
+    char *currChar = buffer;
+    char *const end = buffer + bufferSize;
 
     // We print in reverse
     // We want at least one iteration
@@ -89,7 +89,7 @@ static size_t stringifyUint64ToBufferReverse(uint64_t number, char* buffer, size
     return printedChars;
 }
 
-static void printReversedStringToBuffer(const char* reversed, char* out, size_t outSize) {
+static void printReversedStringToBuffer(const char *reversed, char *out, size_t outSize) {
     const size_t reversedSize = strlen(reversed);
     ASSERT(outSize >= reversedSize + 1);
 
@@ -101,7 +101,7 @@ static void printReversedStringToBuffer(const char* reversed, char* out, size_t 
     ASSERT(strlen(out) == reversedSize);
 }
 
-size_t str_formatUint64(uint64_t number, char* out, size_t outSize) {
+size_t str_formatUint64(uint64_t number, char *out, size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
     {
@@ -128,7 +128,7 @@ uint64_t abs_int64(int64_t number) {
     }
 }
 
-size_t str_formatInt64(int64_t number, char* out, size_t outSize) {
+size_t str_formatInt64(int64_t number, char *out, size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
     const uint64_t signlessNumber = abs_int64(number);
@@ -149,7 +149,7 @@ size_t str_formatInt64(int64_t number, char* out, size_t outSize) {
 }
 
 #ifdef DEVEL
-void str_traceAdaAmount(const char* prefix, uint64_t amount) {
+void str_traceAdaAmount(const char *prefix, uint64_t amount) {
     char adaAmountStr[100] = {0};
     explicit_bzero(adaAmountStr, SIZEOF(adaAmountStr));
 
@@ -186,7 +186,7 @@ static struct {
     uint64_t slotsInEpoch;
 } EPOCH_SLOTS_CONFIG[] = {{4492800, 208, 432000}, {0, 0, 21600}};
 
-size_t str_formatValidityBoundary(uint64_t slotNumber, char* out, size_t outSize) {
+size_t str_formatValidityBoundary(uint64_t slotNumber, char *out, size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
     unsigned i = 0;
@@ -223,7 +223,7 @@ size_t str_formatValidityBoundary(uint64_t slotNumber, char* out, size_t outSize
 }
 
 // check if a non-null-terminated buffer contains printable ASCII between 33 and 126 (inclusive)
-bool str_isPrintableAsciiWithoutSpaces(const uint8_t* buffer, size_t bufferSize) {
+bool str_isPrintableAsciiWithoutSpaces(const uint8_t *buffer, size_t bufferSize) {
     ASSERT(bufferSize < BUFFER_SIZE_PARANOIA);
 
     for (size_t i = 0; i < bufferSize; i++) {
@@ -235,7 +235,7 @@ bool str_isPrintableAsciiWithoutSpaces(const uint8_t* buffer, size_t bufferSize)
 }
 
 // check if a non-null-terminated buffer contains printable ASCII between 32 and 126 (inclusive)
-bool str_isPrintableAsciiWithSpaces(const uint8_t* buffer, size_t bufferSize) {
+bool str_isPrintableAsciiWithSpaces(const uint8_t *buffer, size_t bufferSize) {
     ASSERT(bufferSize < BUFFER_SIZE_PARANOIA);
 
     for (size_t i = 0; i < bufferSize; i++) {
@@ -247,7 +247,7 @@ bool str_isPrintableAsciiWithSpaces(const uint8_t* buffer, size_t bufferSize) {
 }
 
 // check if the string can be unambiguously displayed to the user
-bool str_isUnambiguousAscii(const uint8_t* buffer, size_t bufferSize) {
+bool str_isUnambiguousAscii(const uint8_t *buffer, size_t bufferSize) {
     ASSERT(bufferSize < BUFFER_SIZE_PARANOIA);
 
     // must not be empty
@@ -276,7 +276,7 @@ bool str_isUnambiguousAscii(const uint8_t* buffer, size_t bufferSize) {
 
 /* cspell:disable-next-line */
 // converts a text to bytes (suitable for CBORization) and validates if chars are allowed
-size_t str_textToBuffer(const char* text, uint8_t* buffer, size_t bufferSize) {
+size_t str_textToBuffer(const char *text, uint8_t *buffer, size_t bufferSize) {
     size_t textLength = strlen(text);
     ASSERT(textLength < BUFFER_SIZE_PARANOIA);
     ASSERT(bufferSize < BUFFER_SIZE_PARANOIA);

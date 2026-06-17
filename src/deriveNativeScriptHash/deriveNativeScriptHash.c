@@ -11,7 +11,7 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-static ins_derive_native_script_hash_context_t* ctx =
+static ins_derive_native_script_hash_context_t *ctx =
     &(instructionState.deriveNativeScriptHashContext);
 
 // Helper functions
@@ -70,7 +70,7 @@ static inline void simpleScriptFinished() {
 
 // Start complex native script
 
-static void deriveNativeScriptHash_handleAll(read_view_t* view) {
+static void deriveNativeScriptHash_handleAll(read_view_t *view) {
     TRACE_WITH_CTX("");
     VALIDATE(view_remainingSize(view) == 0, ERR_INVALID_DATA);
 
@@ -82,7 +82,7 @@ static void deriveNativeScriptHash_handleAll(read_view_t* view) {
     UI_DISPLAY_SCRIPT(UI_SCRIPT_ALL);
 }
 
-static void deriveNativeScriptHash_handleAny(read_view_t* view) {
+static void deriveNativeScriptHash_handleAny(read_view_t *view) {
     TRACE_WITH_CTX("");
     VALIDATE(view_remainingSize(view) == 0, ERR_INVALID_DATA);
 
@@ -94,7 +94,7 @@ static void deriveNativeScriptHash_handleAny(read_view_t* view) {
     UI_DISPLAY_SCRIPT(UI_SCRIPT_ANY);
 }
 
-static void deriveNativeScriptHash_handleNofK(read_view_t* view) {
+static void deriveNativeScriptHash_handleNofK(read_view_t *view) {
     // parse data
     ctx->scriptContent.requiredScripts = parse_u4be(view);
     TRACE_WITH_CTX("required scripts = %u, ", ctx->scriptContent.requiredScripts);
@@ -114,7 +114,7 @@ static void deriveNativeScriptHash_handleNofK(read_view_t* view) {
     UI_DISPLAY_SCRIPT(UI_SCRIPT_N_OF_K);
 }
 
-static void deriveNativeScriptHash_handleComplexScriptStart(read_view_t* view) {
+static void deriveNativeScriptHash_handleComplexScriptStart(read_view_t *view) {
     VALIDATE(areMoreScriptsExpected(), ERR_INVALID_STATE);
 
     // check if we can increase the level without breaking the MAX_SCRIPT_DEPTH constraint
@@ -150,7 +150,7 @@ static void deriveNativeScriptHash_handleComplexScriptStart(read_view_t* view) {
 
 // Simple native scripts
 
-static void deriveNativeScriptHash_handleDeviceOwnedPubkey(read_view_t* view) {
+static void deriveNativeScriptHash_handleDeviceOwnedPubkey(read_view_t *view) {
     view_skipBytes(view,
                    bip44_parseFromWire(&ctx->scriptContent.pubkeyPath,
                                        VIEW_REMAINING_TO_TUPLE_BUF_SIZE(view)));
@@ -167,7 +167,7 @@ static void deriveNativeScriptHash_handleDeviceOwnedPubkey(read_view_t* view) {
     UI_DISPLAY_SCRIPT(UI_SCRIPT_PUBKEY_PATH);
 }
 
-static void deriveNativeScriptHash_handleThirdPartyPubkey(read_view_t* view) {
+static void deriveNativeScriptHash_handleThirdPartyPubkey(read_view_t *view) {
     STATIC_ASSERT(SIZEOF(ctx->scriptContent.pubkeyHash) == ADDRESS_KEY_HASH_LENGTH,
                   "incorrect key hash size in script");
     view_parseBuffer(ctx->scriptContent.pubkeyHash, view, ADDRESS_KEY_HASH_LENGTH);
@@ -182,7 +182,7 @@ static void deriveNativeScriptHash_handleThirdPartyPubkey(read_view_t* view) {
     UI_DISPLAY_SCRIPT(UI_SCRIPT_PUBKEY_HASH);
 }
 
-static void deriveNativeScriptHash_handlePubkey(read_view_t* view) {
+static void deriveNativeScriptHash_handlePubkey(read_view_t *view) {
     uint8_t pubkeyType = parse_u1be(view);
     TRACE("pubkey type = %u", pubkeyType);
 
@@ -199,7 +199,7 @@ static void deriveNativeScriptHash_handlePubkey(read_view_t* view) {
     }
 }
 
-static void deriveNativeScriptHash_handleInvalidBefore(read_view_t* view) {
+static void deriveNativeScriptHash_handleInvalidBefore(read_view_t *view) {
     ctx->scriptContent.timelock = parse_u8be(view);
     TRACE("invalid_before timelock");
     TRACE_UINT64(ctx->scriptContent.timelock);
@@ -211,7 +211,7 @@ static void deriveNativeScriptHash_handleInvalidBefore(read_view_t* view) {
     UI_DISPLAY_SCRIPT(UI_SCRIPT_INVALID_BEFORE);
 }
 
-static void deriveNativeScriptHash_handleInvalidHereafter(read_view_t* view) {
+static void deriveNativeScriptHash_handleInvalidHereafter(read_view_t *view) {
     ctx->scriptContent.timelock = parse_u8be(view);
     TRACE("invalid_hereafter timelock");
     TRACE_UINT64(ctx->scriptContent.timelock);
@@ -226,7 +226,7 @@ static void deriveNativeScriptHash_handleInvalidHereafter(read_view_t* view) {
 
 #undef UI_DISPLAY_SCRIPT
 
-static void deriveNativeScriptHash_handleSimpleScript(read_view_t* view) {
+static void deriveNativeScriptHash_handleSimpleScript(read_view_t *view) {
     VALIDATE(areMoreScriptsExpected(), ERR_INVALID_STATE);
 
     uint8_t nativeScriptType = parse_u1be(view);
@@ -256,7 +256,7 @@ typedef enum {
     DISPLAY_NATIVE_SCRIPT_HASH_POLICY_ID = 2,
 } display_format;
 
-static void deriveNativeScriptHash_handleWholeNativeScriptFinish(read_view_t* view) {
+static void deriveNativeScriptHash_handleWholeNativeScriptFinish(read_view_t *view) {
     // we finish only if there are no more scripts to be processed
     VALIDATE(ctx->level == 0 && ctx->complexScripts[0].remainingScripts == 0, ERR_INVALID_STATE);
 
@@ -283,7 +283,7 @@ static void deriveNativeScriptHash_handleWholeNativeScriptFinish(read_view_t* vi
     }
 }
 
-typedef void subhandler_fn_t(read_view_t* view);
+typedef void subhandler_fn_t(read_view_t *view);
 
 enum {
     STAGE_COMPLEX_SCRIPT_START = 0x01,
@@ -291,7 +291,7 @@ enum {
     STAGE_WHOLE_NATIVE_SCRIPT_FINISH = 0x03,
 };
 
-static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
+static subhandler_fn_t *lookup_subhandler(uint8_t p1) {
     switch (p1) {
 #define CASE(P1, HANDLER) \
     case P1:              \
@@ -310,7 +310,7 @@ static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
 
 uint16_t deriveNativeScriptHash_handleAPDU(uint8_t p1,
                                            uint8_t p2,
-                                           const uint8_t* wireDataBuffer,
+                                           const uint8_t *wireDataBuffer,
                                            size_t wireDataSize,
                                            bool isNewCall) {
     TRACE("P1 = 0x%x, P2 = 0x%x, isNewCall = %u", p1, p2, isNewCall);
@@ -327,7 +327,7 @@ uint16_t deriveNativeScriptHash_handleAPDU(uint8_t p1,
 
     read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
 
-    subhandler_fn_t* subhandler = lookup_subhandler(p1);
+    subhandler_fn_t *subhandler = lookup_subhandler(p1);
     VALIDATE(subhandler != NULL, ERR_INVALID_REQUEST_PARAMETERS);
     subhandler(&view);
     return ERR_NO_RESPONSE;

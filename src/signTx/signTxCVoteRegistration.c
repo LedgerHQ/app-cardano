@@ -11,14 +11,14 @@
 #include "messageSigning.h"
 #include "signTxCVoteRegistration_ui.h"
 
-static common_tx_data_t* commonTxData = &(instructionState.signTxContext.commonTxData);
+static common_tx_data_t *commonTxData = &(instructionState.signTxContext.commonTxData);
 
-static inline cvote_registration_context_t* accessSubContext() {
+static inline cvote_registration_context_t *accessSubContext() {
     return &AUX_DATA_CTX->stageContext.cvote_registration_subctx;
 }
 
 bool signTxCVoteRegistration_isFinished() {
-    const cvote_registration_context_t* subctx = accessSubContext();
+    const cvote_registration_context_t *subctx = accessSubContext();
     TRACE("CIP-36 voting registration submachine state: %d", subctx->state);
     // we are also asserting that the state is valid
     switch (subctx->state) {
@@ -55,7 +55,7 @@ static inline void CHECK_STATE(sign_tx_cvote_registration_state_t expected) {
 }
 
 void voting_registration_advanceState() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("Advancing CIP-36 voting registration state from: %d", subctx->state);
 
     switch (subctx->state) {
@@ -109,11 +109,15 @@ void voting_registration_advanceState() {
 
 // ============================== INIT ==============================
 
-static void signTxCVoteRegistration_handleInitAPDU(const uint8_t* wireDataBuffer,
+static void signTxCVoteRegistration_handleInitAPDU(const uint8_t *wireDataBuffer,
                                                    size_t wireDataSize) {
-    { CHECK_STATE(STATE_CVOTE_REGISTRATION_INIT); }
-    cvote_registration_context_t* subctx = accessSubContext();
-    { explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData)); }
+    {
+        CHECK_STATE(STATE_CVOTE_REGISTRATION_INIT);
+    }
+    cvote_registration_context_t *subctx = accessSubContext();
+    {
+        explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData));
+    }
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
@@ -141,7 +145,7 @@ static void signTxCVoteRegistration_handleInitAPDU(const uint8_t* wireDataBuffer
         }
     }
     {
-        aux_data_hash_builder_t* auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
+        aux_data_hash_builder_t *auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
         auxDataHashBuilder_cVoteRegistration_enter(auxDataHashBuilder, subctx->format);
         auxDataHashBuilder_cVoteRegistration_enterPayload(auxDataHashBuilder);
     }
@@ -152,8 +156,8 @@ static void signTxCVoteRegistration_handleInitAPDU(const uint8_t* wireDataBuffer
 
 // ============================== VOTING KEY ==============================
 
-static void _parseVoteKey(read_view_t* view) {
-    cvote_registration_context_t* subctx = accessSubContext();
+static void _parseVoteKey(read_view_t *view) {
+    cvote_registration_context_t *subctx = accessSubContext();
 
     subctx->stateData.delegation.type = parse_u1be(view);
     TRACE("delegation type = %d", (int) subctx->stateData.delegation.type);
@@ -184,7 +188,7 @@ static void _parseVoteKey(read_view_t* view) {
 }
 
 security_policy_t _determineVoteKeyPolicy() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
 
     switch (subctx->stateData.delegation.type) {
         case DELEGATION_PATH:
@@ -202,11 +206,15 @@ security_policy_t _determineVoteKeyPolicy() {
 }
 
 __noinline_due_to_stack__ static void signTxCVoteRegistration_handleVoteKeyAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
-    { CHECK_STATE(STATE_CVOTE_REGISTRATION_VOTE_KEY); }
-    cvote_registration_context_t* subctx = accessSubContext();
-    { explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData)); }
+    {
+        CHECK_STATE(STATE_CVOTE_REGISTRATION_VOTE_KEY);
+    }
+    cvote_registration_context_t *subctx = accessSubContext();
+    {
+        explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData));
+    }
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
         read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
@@ -222,7 +230,7 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleVoteKeyAPDU(
 
     {
         // add the key to hashbuilder
-        aux_data_hash_builder_t* auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
+        aux_data_hash_builder_t *auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
 
         switch (subctx->stateData.delegation.type) {
             case DELEGATION_KEY: {
@@ -271,14 +279,16 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleVoteKeyAPDU(
 // ============================== DELEGATION ==============================
 
 __noinline_due_to_stack__ static void signTxCVoteRegistration_handleDelegationAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     {
         CHECK_STATE(STATE_CVOTE_REGISTRATION_DELEGATIONS);
         ASSERT(subctx->currentDelegation < subctx->numDelegations);
     }
-    { explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData)); }
+    {
+        explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData));
+    }
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
         read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
@@ -298,7 +308,7 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleDelegationAP
 
     {
         // add the key to hashbuilder
-        aux_data_hash_builder_t* auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
+        aux_data_hash_builder_t *auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
 
         switch (subctx->stateData.delegation.type) {
             case DELEGATION_KEY: {
@@ -349,15 +359,17 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleDelegationAP
 // ============================== STAKE KEY ==============================
 
 __noinline_due_to_stack__ static void signTxCVoteRegistration_handleStakingKeyAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
         // sanity checks
         CHECK_STATE(STATE_CVOTE_REGISTRATION_STAKING_KEY);
     }
-    cvote_registration_context_t* subctx = accessSubContext();
-    { explicit_bzero(&subctx->stakingKeyPath, SIZEOF(subctx->stakingKeyPath)); }
+    cvote_registration_context_t *subctx = accessSubContext();
+    {
+        explicit_bzero(&subctx->stakingKeyPath, SIZEOF(subctx->stakingKeyPath));
+    }
     {
         // parse input
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -405,8 +417,8 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleStakingKeyAP
 
 // ============================== VOTING REWARDS ADDRESS ==============================
 
-size_t _destinationToAddress(tx_output_destination_storage_t* destination,
-                             uint8_t* addressBuffer,
+size_t _destinationToAddress(tx_output_destination_storage_t *destination,
+                             uint8_t *addressBuffer,
                              size_t addressBufferSize) {
     size_t addressSize = 0;
 
@@ -429,13 +441,13 @@ size_t _destinationToAddress(tx_output_destination_storage_t* destination,
 }
 
 __noinline_due_to_stack__ static void signTxCVoteRegistration_handlePaymentAddressAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     {
         // safety checks
         CHECK_STATE(STATE_CVOTE_REGISTRATION_PAYMENT_ADDRESS);
     }
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     {
         explicit_bzero(&subctx->stateData.paymentDestination,
                        SIZEOF(subctx->stateData.paymentDestination));
@@ -490,14 +502,16 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handlePaymentAddre
 // ============================== NONCE ==============================
 
 __noinline_due_to_stack__ static void signTxCVoteRegistration_handleNonceAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_CVOTE_REGISTRATION_NONCE);
     }
-    cvote_registration_context_t* subctx = accessSubContext();
-    { explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData)); }
+    cvote_registration_context_t *subctx = accessSubContext();
+    {
+        explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData));
+    }
     {
         // parse data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -540,11 +554,15 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleNonceAPDU(
 #define DEFAULT_VOTING_PURPOSE (0)
 
 __noinline_due_to_stack__ static void signTxCVoteRegistration_handleVotingPurposeAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
-    { CHECK_STATE(STATE_CVOTE_REGISTRATION_VOTING_PURPOSE); }
-    cvote_registration_context_t* subctx = accessSubContext();
-    { explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData)); }
+    {
+        CHECK_STATE(STATE_CVOTE_REGISTRATION_VOTING_PURPOSE);
+    }
+    cvote_registration_context_t *subctx = accessSubContext();
+    {
+        explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData));
+    }
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
@@ -604,14 +622,16 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleVotingPurpos
 // ============================== CONFIRM ==============================
 
 __noinline_due_to_stack__ static void signTxCVoteRegistration_handleConfirmAPDU(
-    const uint8_t* wireDataBuffer MARK_UNUSED,
+    const uint8_t *wireDataBuffer MARK_UNUSED,
     size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_CVOTE_REGISTRATION_CONFIRM);
     }
-    cvote_registration_context_t* subctx = accessSubContext();
-    { explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData)); }
+    cvote_registration_context_t *subctx = accessSubContext();
+    {
+        explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData));
+    }
 
     {
         // no data to receive
@@ -623,7 +643,7 @@ __noinline_due_to_stack__ static void signTxCVoteRegistration_handleConfirmAPDU(
     ENSURE_NOT_DENIED(policy);
 
     {
-        aux_data_hash_builder_t* auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
+        aux_data_hash_builder_t *auxDataHashBuilder = &AUX_DATA_CTX->auxDataHashBuilder;
         {
             uint8_t payloadHashBuffer[CVOTE_REGISTRATION_PAYLOAD_HASH_LENGTH] = {0};
             auxDataHashBuilder_cVoteRegistration_finalizePayload(auxDataHashBuilder,
@@ -693,7 +713,7 @@ bool signTxCVoteRegistration_isValidInstruction(uint8_t p2) {
 }
 
 void signTxCVoteRegistration_handleAPDU(uint8_t p2,
-                                        const uint8_t* wireDataBuffer,
+                                        const uint8_t *wireDataBuffer,
                                         size_t wireDataSize) {
     if (p2 == APDU_INSTRUCTION_CONFIRM) {
         ASSERT(wireDataBuffer == NULL);

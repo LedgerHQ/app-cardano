@@ -50,42 +50,42 @@ typedef struct {
     blake2b_256_context_t auxDataHash;
 } aux_data_hash_builder_t;
 
-void auxDataHashBuilder_init(aux_data_hash_builder_t* builder);
+void auxDataHashBuilder_init(aux_data_hash_builder_t *builder);
 
-void auxDataHashBuilder_cVoteRegistration_enter(aux_data_hash_builder_t* builder,
+void auxDataHashBuilder_cVoteRegistration_enter(aux_data_hash_builder_t *builder,
                                                 cvote_registration_format_t format);
-void auxDataHashBuilder_cVoteRegistration_enterPayload(aux_data_hash_builder_t* builder);
-void auxDataHashBuilder_cVoteRegistration_addVoteKey(aux_data_hash_builder_t* builder,
-                                                     const uint8_t* votePubKeyBuffer,
+void auxDataHashBuilder_cVoteRegistration_enterPayload(aux_data_hash_builder_t *builder);
+void auxDataHashBuilder_cVoteRegistration_addVoteKey(aux_data_hash_builder_t *builder,
+                                                     const uint8_t *votePubKeyBuffer,
                                                      size_t votePubKeySize);
-void auxDataHashBuilder_cVoteRegistration_enterDelegations(aux_data_hash_builder_t* builder,
+void auxDataHashBuilder_cVoteRegistration_enterDelegations(aux_data_hash_builder_t *builder,
                                                            size_t numDelegations);
-void auxDataHashBuilder_cVoteRegistration_addDelegation(aux_data_hash_builder_t* builder,
-                                                        const uint8_t* votePubKeyBuffer,
+void auxDataHashBuilder_cVoteRegistration_addDelegation(aux_data_hash_builder_t *builder,
+                                                        const uint8_t *votePubKeyBuffer,
                                                         size_t votePubKeySize,
                                                         uint32_t weight);
-void auxDataHashBuilder_cVoteRegistration_addStakingKey(aux_data_hash_builder_t* builder,
-                                                        const uint8_t* stakingPubKeyBuffer,
+void auxDataHashBuilder_cVoteRegistration_addStakingKey(aux_data_hash_builder_t *builder,
+                                                        const uint8_t *stakingPubKeyBuffer,
                                                         size_t stakingPubKeySize);
-void auxDataHashBuilder_cVoteRegistration_addPaymentAddress(aux_data_hash_builder_t* builder,
-                                                            const uint8_t* addressBuffer,
+void auxDataHashBuilder_cVoteRegistration_addPaymentAddress(aux_data_hash_builder_t *builder,
+                                                            const uint8_t *addressBuffer,
                                                             size_t addressSize);
-void auxDataHashBuilder_cVoteRegistration_addNonce(aux_data_hash_builder_t* builder,
+void auxDataHashBuilder_cVoteRegistration_addNonce(aux_data_hash_builder_t *builder,
                                                    uint64_t nonce);
-void auxDataHashBuilder_cVoteRegistration_addVotingPurpose(aux_data_hash_builder_t* builder,
+void auxDataHashBuilder_cVoteRegistration_addVotingPurpose(aux_data_hash_builder_t *builder,
                                                            uint64_t votingPurpose);
-void auxDataHashBuilder_cVoteRegistration_finalizePayload(aux_data_hash_builder_t* builder,
-                                                          uint8_t* outBuffer,
+void auxDataHashBuilder_cVoteRegistration_finalizePayload(aux_data_hash_builder_t *builder,
+                                                          uint8_t *outBuffer,
                                                           size_t outSize);
 
-void auxDataHashBuilder_cVoteRegistration_addSignature(aux_data_hash_builder_t* builder,
-                                                       const uint8_t* signatureBuffer,
+void auxDataHashBuilder_cVoteRegistration_addSignature(aux_data_hash_builder_t *builder,
+                                                       const uint8_t *signatureBuffer,
                                                        size_t signatureSize);
 
-void auxDataHashBuilder_cVoteRegistration_addAuxiliaryScripts(aux_data_hash_builder_t* builder);
+void auxDataHashBuilder_cVoteRegistration_addAuxiliaryScripts(aux_data_hash_builder_t *builder);
 
-void auxDataHashBuilder_finalize(aux_data_hash_builder_t* builder,
-                                 uint8_t* outBuffer,
+void auxDataHashBuilder_finalize(aux_data_hash_builder_t *builder,
+                                 uint8_t *outBuffer,
                                  size_t outSize);
 
 #endif  // H_CARDANO_APP_AUX_DATA_HASH_BUILDER

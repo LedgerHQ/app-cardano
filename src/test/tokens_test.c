@@ -12,9 +12,9 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-void testcase_assetFingerprint(const char* policyIdHex,
-                               const char* assetNameHex,
-                               const char* expected) {
+void testcase_assetFingerprint(const char *policyIdHex,
+                               const char *assetNameHex,
+                               const char *expected) {
     PRINTF("testcase %s %s\n", policyIdHex, assetNameHex);
 
     uint8_t policyId[28] = {0};

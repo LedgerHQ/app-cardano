@@ -13,7 +13,7 @@
 #define STATIC_ASSERT _Static_assert
 #endif
 
-extern void assert(int cond, const char* msgStr);
+extern void assert(int cond, const char *msgStr);
 
 // Note(ppershing): I like macro-like uppercase version better
 // because it captures reader's attention.

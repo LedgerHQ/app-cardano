@@ -22,7 +22,7 @@ void assert_uiPrompt_magic() {
     ASSERT(promptState->initMagic == INIT_MAGIC_PROMPT);
 }
 
-void uiCallback_confirm(ui_callback_t* cb) {
+void uiCallback_confirm(ui_callback_t *cb) {
     if (!cb->confirm) return;
 
     switch (cb->state) {
@@ -39,7 +39,7 @@ void uiCallback_confirm(ui_callback_t* cb) {
     }
 }
 
-void uiCallback_reject(ui_callback_t* cb) {
+void uiCallback_reject(ui_callback_t *cb) {
     if (!cb->reject) return;
 
     switch (cb->state) {
@@ -97,18 +97,18 @@ void autoconfirmPaginatedText() {
 
 #endif  // HEADLESS
 
-static void uiCallback_init(ui_callback_t* cb,
-                            ui_callback_fn_t* confirm,
-                            ui_callback_fn_t* reject) {
+static void uiCallback_init(ui_callback_t *cb,
+                            ui_callback_fn_t *confirm,
+                            ui_callback_fn_t *reject) {
     cb->state = CALLBACK_NOT_RUN;
     cb->confirm = confirm;
     cb->reject = reject;
 }
 
-void ui_displayPrompt(const char* headerStr,
-                      const char* bodyStr,
-                      ui_callback_fn_t* confirm,
-                      ui_callback_fn_t* reject) {
+void ui_displayPrompt(const char *headerStr,
+                      const char *bodyStr,
+                      ui_callback_fn_t *confirm,
+                      ui_callback_fn_t *reject) {
     TRACE_STACK_USAGE();
     TRACE("%s", headerStr);
     TRACE("%s", bodyStr);
@@ -121,7 +121,7 @@ void ui_displayPrompt(const char* headerStr,
 
     // clear all memory
     explicit_bzero(&displayState, SIZEOF(displayState));
-    promptState_t* ctx = promptState;
+    promptState_t *ctx = promptState;
 
     // Copy data
     memmove(ctx->header, headerStr, header_len + 1);
@@ -141,9 +141,9 @@ void ui_displayPrompt(const char* headerStr,
 #endif  // HEADLESS
 }
 
-void ui_displayPaginatedText(const char* headerStr,
-                             const char* bodyStr,
-                             ui_callback_fn_t* callback) {
+void ui_displayPaginatedText(const char *headerStr,
+                             const char *bodyStr,
+                             ui_callback_fn_t *callback) {
     TRACE_STACK_USAGE();
     TRACE("%s", headerStr);
     TRACE("%s", bodyStr);
@@ -152,7 +152,7 @@ void ui_displayPaginatedText(const char* headerStr,
     ASSERT(uiPaginatedText_canFitStringIntoHeader(headerStr));
     ASSERT(uiPaginatedText_canFitStringIntoFullText(bodyStr));
 
-    paginatedTextState_t* ctx = paginatedTextState;
+    paginatedTextState_t *ctx = paginatedTextState;
     size_t header_len = strlen(headerStr);
     size_t body_len = strlen(bodyStr);
 
@@ -184,7 +184,7 @@ void ui_displayPaginatedText(const char* headerStr,
 }
 #endif  // HAVE_BAGL
 
-void ui_displayUnusualWarning(ui_callback_fn_t* cb) {
+void ui_displayUnusualWarning(ui_callback_fn_t *cb) {
 #ifdef HAVE_BAGL
     ui_displayPaginatedText("Unusual request", "Proceed with care", cb);
 #elif defined(HAVE_NBGL)
@@ -198,10 +198,10 @@ void respond_with_user_reject() {
     ui_idle();
 }
 
-bool uiPaginatedText_canFitStringIntoHeader(const char* str) {
+bool uiPaginatedText_canFitStringIntoHeader(const char *str) {
     return strlen(str) < SIZEOF(paginatedTextState->header);
 }
 
-bool uiPaginatedText_canFitStringIntoFullText(const char* str) {
+bool uiPaginatedText_canFitStringIntoFullText(const char *str) {
     return strlen(str) < SIZEOF(paginatedTextState->fullText);
 }

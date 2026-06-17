@@ -52,13 +52,13 @@ typedef struct {
 typedef cbor_token_t token_t;  // legacy
 
 // Serializes token into buffer, returning number of written bytes
-size_t cbor_writeToken(uint8_t type, uint64_t value, uint8_t* buffer, size_t bufferSize);
+size_t cbor_writeToken(uint8_t type, uint64_t value, uint8_t *buffer, size_t bufferSize);
 
-cbor_token_t cbor_parseToken(const uint8_t* buf, size_t size);
+cbor_token_t cbor_parseToken(const uint8_t *buf, size_t size);
 
-bool cbor_mapKeyFulfillsCanonicalOrdering(const uint8_t* previousBuffer,
+bool cbor_mapKeyFulfillsCanonicalOrdering(const uint8_t *previousBuffer,
                                           size_t previousSize,
-                                          const uint8_t* nextBuffer,
+                                          const uint8_t *nextBuffer,
                                           size_t nextSize);
 
 #endif  // H_CARDANO_APP_CBOR

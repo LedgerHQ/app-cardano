@@ -19,14 +19,14 @@ typedef struct {
     blake2b_256_context_t hash;
 } votecast_hash_builder_t;
 
-void votecastHashBuilder_init(votecast_hash_builder_t* builder, size_t remainingBytes);
+void votecastHashBuilder_init(votecast_hash_builder_t *builder, size_t remainingBytes);
 
-void votecastHashBuilder_chunk(votecast_hash_builder_t* builder,
-                               const uint8_t* chunk,
+void votecastHashBuilder_chunk(votecast_hash_builder_t *builder,
+                               const uint8_t *chunk,
                                size_t chunkSize);
 
-void votecastHashBuilder_finalize(votecast_hash_builder_t* builder,
-                                  uint8_t* outBuffer,
+void votecastHashBuilder_finalize(votecast_hash_builder_t *builder,
+                                  uint8_t *outBuffer,
                                   size_t outSize);
 
 #endif  // H_CARDANO_APP_VOTECAST_HASH_BUILDER

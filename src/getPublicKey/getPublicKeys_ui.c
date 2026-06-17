@@ -13,7 +13,7 @@
 
 static int16_t RESPONSE_READY_MAGIC = 23456;
 
-static ins_get_keys_context_t* ctx = &(instructionState.getKeysContext);
+static ins_get_keys_context_t *ctx = &(instructionState.getKeysContext);
 
 // ============================== derivation and UI state machine for one key
 // ==============================
@@ -32,7 +32,7 @@ static void getPublicKeys_respondOneKey_ui_cb(void) {
 
 void getPublicKeys_respondOneKey_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = getPublicKeys_respondOneKey_ui_runStep;
+    ui_callback_fn_t *this_fn = getPublicKeys_respondOneKey_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
     UI_STEP(GET_KEY_UI_STEP_WARNING) {
@@ -78,7 +78,7 @@ void getPublicKeys_respondOneKey_ui_runStep() {
     UI_STEP(GET_KEY_UI_STEP_RESPOND) {
         ASSERT(ctx->responseReadyMagic == RESPONSE_READY_MAGIC);
 
-        io_send_buf(SUCCESS, (uint8_t*) &ctx->extPubKey, SIZEOF(ctx->extPubKey));
+        io_send_buf(SUCCESS, (uint8_t *) &ctx->extPubKey, SIZEOF(ctx->extPubKey));
         ctx->responseReadyMagic = 0;  // just for safety
 #ifdef HAVE_BAGL
         ui_displayBusy();  // needs to happen after I/O
@@ -108,7 +108,7 @@ void getPublicKeys_respondOneKey_ui_runStep() {
 
 void getPublicKeys_handleInit_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = getPublicKeys_handleInit_ui_runStep;
+    ui_callback_fn_t *this_fn = getPublicKeys_handleInit_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
     UI_STEP(HANDLE_INIT_UI_STEP_CONFIRM) {

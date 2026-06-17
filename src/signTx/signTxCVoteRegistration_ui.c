@@ -11,14 +11,14 @@
 #include "messageSigning.h"
 #include "signTxCVoteRegistration_ui.h"
 
-static inline cvote_registration_context_t* accessSubContext() {
+static inline cvote_registration_context_t *accessSubContext() {
     return &AUX_DATA_CTX->stageContext.cvote_registration_subctx;
 }
 
 // ============================== VOTING KEY ==============================
 
 static void _displayVoteKey(ui_callback_fn_t callback) {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     switch (subctx->stateData.delegation.type) {
         case DELEGATION_KEY: {
             STATIC_ASSERT(
@@ -69,10 +69,10 @@ static void _displayVoteKey(ui_callback_fn_t callback) {
 }
 
 void signTxCVoteRegistration_handleVoteKey_ui_runStep() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxCVoteRegistration_handleVoteKey_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxCVoteRegistration_handleVoteKey_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -97,10 +97,10 @@ void signTxCVoteRegistration_handleVoteKey_ui_runStep() {
 // ============================== DELEGATION ==============================
 
 void signTxCVoteRegistration_handleDelegation_ui_runStep() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxCVoteRegistration_handleDelegation_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxCVoteRegistration_handleDelegation_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -139,7 +139,7 @@ void signTxCVoteRegistration_handleDelegation_ui_runStep() {
 
 #ifdef HAVE_NBGL
 static void signTxCVoteRegistration_handleStakingKey_ui_cb(void) {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     char line1[30] = {0};
     char pathStr[MAX(160, BIP44_PATH_STRING_SIZE_MAX + 1)] = {0};
     ui_getPublicKeyPathScreen(line1,
@@ -155,10 +155,10 @@ static void signTxCVoteRegistration_handleStakingKey_ui_cb(void) {
 #endif  // HAVE_NBGL
 
 void signTxCVoteRegistration_handleStakingKey_ui_runStep() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxCVoteRegistration_handleStakingKey_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxCVoteRegistration_handleStakingKey_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -196,10 +196,10 @@ void signTxCVoteRegistration_handleStakingKey_ui_runStep() {
 // ============================== VOTING REWARDS ADDRESS ==============================
 
 __noinline_due_to_stack__ void signTxCVoteRegistration_handlePaymentAddress_ui_runStep() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxCVoteRegistration_handlePaymentAddress_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxCVoteRegistration_handlePaymentAddress_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -234,10 +234,10 @@ __noinline_due_to_stack__ void signTxCVoteRegistration_handlePaymentAddress_ui_r
 // ============================== NONCE ==============================
 
 void signTxCVoteRegistration_handleNonce_ui_runStep() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxCVoteRegistration_handleNonce_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxCVoteRegistration_handleNonce_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -260,10 +260,10 @@ void signTxCVoteRegistration_handleNonce_ui_runStep() {
 // ============================== VOTING PURPOSE ==============================
 
 void signTxCVoteRegistration_handleVotingPurpose_ui_runStep() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxCVoteRegistration_handleVotingPurpose_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxCVoteRegistration_handleVotingPurpose_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -286,10 +286,10 @@ void signTxCVoteRegistration_handleVotingPurpose_ui_runStep() {
 // ============================== CONFIRM ==============================
 
 void signTxCVoteRegistration_handleConfirm_ui_runStep() {
-    cvote_registration_context_t* subctx = accessSubContext();
+    cvote_registration_context_t *subctx = accessSubContext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxCVoteRegistration_handleConfirm_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxCVoteRegistration_handleConfirm_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
     UI_STEP(HANDLE_CONFIRM_STEP_FINAL_CONFIRM) {
@@ -343,7 +343,7 @@ void signTxCVoteRegistration_handleConfirm_ui_runStep() {
                 subctx->stateData.registrationSignature,
                 ED25519_SIGNATURE_LENGTH);
 
-        io_send_buf(SUCCESS, (uint8_t*) &wireResponse, SIZEOF(wireResponse));
+        io_send_buf(SUCCESS, (uint8_t *) &wireResponse, SIZEOF(wireResponse));
         voting_registration_advanceState();
     }
     UI_STEP_END(HANDLE_CONFIRM_STEP_INVALID);

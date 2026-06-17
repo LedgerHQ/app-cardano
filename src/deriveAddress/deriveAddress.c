@@ -16,7 +16,7 @@
 
 static uint16_t RESPONSE_READY_MAGIC = 11223;
 
-static ins_derive_address_context_t* ctx = &(instructionState.deriveAddressContext);
+static ins_derive_address_context_t *ctx = &(instructionState.deriveAddressContext);
 
 enum {
     P1_RETURN = 0x01,
@@ -39,7 +39,7 @@ static void prepareResponse() {
 
 /* ========================== RETURN ADDRESS ========================== */
 
-static void _displayExportAddress(ui_callback_fn_t* this_fn) {
+static void _displayExportAddress(ui_callback_fn_t *this_fn) {
 #ifdef HAVE_BAGL
     ui_displayPaginatedText("Export", "address", this_fn);
 #elif defined(HAVE_NBGL)
@@ -48,7 +48,7 @@ static void _displayExportAddress(ui_callback_fn_t* this_fn) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayPaymentInfo_returnAddr(ui_callback_fn_t* this_fn) {
+static void _displayPaymentInfo_returnAddr(ui_callback_fn_t *this_fn) {
 #ifdef HAVE_BAGL
     ui_displayPaymentInfoScreen(&ctx->addressParams, this_fn);
 #elif defined(HAVE_NBGL)
@@ -64,7 +64,7 @@ static void _displayPaymentInfo_returnAddr(ui_callback_fn_t* this_fn) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayStakingInfo_returnAddr(ui_callback_fn_t* this_fn) {
+static void _displayStakingInfo_returnAddr(ui_callback_fn_t *this_fn) {
 #ifdef HAVE_BAGL
     ui_displayStakingInfoScreen(&ctx->addressParams, this_fn);
 #elif defined(HAVE_NBGL)
@@ -79,7 +79,7 @@ static void _displayStakingInfo_returnAddr(ui_callback_fn_t* this_fn) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayConfirmExportAddressPrompt(ui_callback_fn_t* this_fn) {
+static void _displayConfirmExportAddressPrompt(ui_callback_fn_t *this_fn) {
 #ifdef HAVE_BAGL
     ui_displayPrompt("Confirm", "export address?", this_fn, respond_with_user_reject);
 #elif defined(HAVE_NBGL)
@@ -130,7 +130,7 @@ static void deriveAddress_handleReturn() {
 static void deriveAddress_return_ui_runStep() {
     TRACE("step %d", ctx->ui_step);
     ASSERT(ctx->responseReadyMagic == RESPONSE_READY_MAGIC);
-    ui_callback_fn_t* this_fn = deriveAddress_return_ui_runStep;
+    ui_callback_fn_t *this_fn = deriveAddress_return_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -165,7 +165,7 @@ static void deriveAddress_return_ui_runStep() {
 
 /* ========================== DISPLAY ADDRESS ========================== */
 
-static void _displaypaymentInfo_displayAddr(ui_callback_fn_t* this_fn) {
+static void _displaypaymentInfo_displayAddr(ui_callback_fn_t *this_fn) {
 #ifdef HAVE_BAGL
     ui_displayPaymentInfoScreen(&ctx->addressParams, this_fn);
 #elif defined(HAVE_NBGL)
@@ -181,7 +181,7 @@ static void _displaypaymentInfo_displayAddr(ui_callback_fn_t* this_fn) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayStakingInfo_displayAddr(ui_callback_fn_t* this_fn) {
+static void _displayStakingInfo_displayAddr(ui_callback_fn_t *this_fn) {
 #ifdef HAVE_BAGL
     ui_displayStakingInfoScreen(&ctx->addressParams, this_fn);
 #elif defined(HAVE_NBGL)
@@ -196,18 +196,18 @@ static void _displayStakingInfo_displayAddr(ui_callback_fn_t* this_fn) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayAddress(ui_callback_fn_t* this_fn) {
+static void _displayAddress(ui_callback_fn_t *this_fn) {
     ASSERT(ctx->address.size <= SIZEOF(ctx->address.buffer));
 #ifdef HAVE_BAGL
     ui_displayAddressScreen("Address", ctx->address.buffer, ctx->address.size, this_fn);
 #elif defined(HAVE_NBGL)
     char humanAddress[MAX_HUMAN_ADDRESS_SIZE] = {0};
     ui_getAddressScreen(humanAddress, SIZEOF(humanAddress), ctx->address.buffer, ctx->address.size);
-    fill_address_data((char*) "Address", humanAddress, this_fn);
+    fill_address_data((char *) "Address", humanAddress, this_fn);
 #endif  // HAVE_BAGL
 }
 
-static void _displayConfirmAddressPrompt(ui_callback_fn_t* this_fn) {
+static void _displayConfirmAddressPrompt(ui_callback_fn_t *this_fn) {
 #ifdef HAVE_BAGL
     ui_displayPrompt("Confirm", "address?", this_fn, respond_with_user_reject);
 #elif defined(HAVE_NBGL)
@@ -251,7 +251,7 @@ static void deriveAddress_handleDisplay() {
 
 static void deriveAddress_display_ui_runStep() {
     ASSERT(ctx->responseReadyMagic == RESPONSE_READY_MAGIC);
-    ui_callback_fn_t* this_fn = deriveAddress_display_ui_runStep;
+    ui_callback_fn_t *this_fn = deriveAddress_display_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -285,7 +285,7 @@ static void deriveAddress_display_ui_runStep() {
 
 uint16_t deriveAddress_handleAPDU(uint8_t p1,
                                   uint8_t p2,
-                                  const uint8_t* wireDataBuffer,
+                                  const uint8_t *wireDataBuffer,
                                   size_t wireDataSize,
                                   bool isNewCall) {
     VALIDATE(p2 == P2_UNUSED, ERR_INVALID_REQUEST_PARAMETERS);

@@ -4,7 +4,7 @@
 #include "hexUtils.h"
 #include "testUtils.h"
 
-void testcase_bech32(const char* hrp, const char* inputBytesHex, const char* expectedStr) {
+void testcase_bech32(const char *hrp, const char *inputBytesHex, const char *expectedStr) {
     PRINTF("testcase_bech32: %s %s\n", hrp, inputBytesHex);
     uint8_t inputBuffer[100] = {0};
     size_t inputSize;
@@ -31,9 +31,9 @@ void testcase_bech32(const char* hrp, const char* inputBytesHex, const char* exp
 
 void run_bech32_test() {
     struct {
-        const char* hrp;
-        const char* inputBytesHex;
-        const char* expectedHex;
+        const char *hrp;
+        const char *inputBytesHex;
+        const char *expectedHex;
     } testVectors[] = {
         /* cspell:disable */
         {"a", "", "a12uel5l"},
@@ -56,8 +56,7 @@ void run_bech32_test() {
          "009493315cd92eb5d8c4304e67b7e16ae36d61d34502694657811a2c8e32c728d3861e164cab28cb8f0064481"
          "39c8f1740ffb8e7aa9e5232dc",
          "addr1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn6"
-         "48jjxtwqcyl47r"}
-        /* cspell:enable */
+         "48jjxtwqcyl47r"} /* cspell:enable */
     };
     ITERATE(it, testVectors) {
         testcase_bech32(PTR_PIC(it->hrp), PTR_PIC(it->inputBytesHex), PTR_PIC(it->expectedHex));

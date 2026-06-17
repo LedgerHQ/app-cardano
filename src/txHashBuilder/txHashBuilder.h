@@ -73,10 +73,10 @@ typedef struct {
     tx_output_destination_type_t type;
     union {
         struct {
-            uint8_t* buffer;
+            uint8_t *buffer;
             size_t size;
         } address;
-        addressParams_t* params;
+        addressParams_t *params;
     };
 } tx_output_destination_t;
 
@@ -263,7 +263,7 @@ typedef struct {
     bool includeRefScript;
 } tx_output_description_t;
 
-void txHashBuilder_init(tx_hash_builder_t* builder,
+void txHashBuilder_init(tx_hash_builder_t *builder,
                         bool tagCborSets,
                         uint16_t numInputs,
                         uint16_t numOutputs,
@@ -284,88 +284,88 @@ void txHashBuilder_init(tx_hash_builder_t* builder,
                         bool includeTreasury,
                         bool includeDonation);
 
-void txHashBuilder_enterInputs(tx_hash_builder_t* builder);
+void txHashBuilder_enterInputs(tx_hash_builder_t *builder);
 
-void txHashBuilder_addInput(tx_hash_builder_t* builder, const tx_input_t* input);
+void txHashBuilder_addInput(tx_hash_builder_t *builder, const tx_input_t *input);
 
-void txHashBuilder_enterOutputs(tx_hash_builder_t* builder);
+void txHashBuilder_enterOutputs(tx_hash_builder_t *builder);
 
-void txHashBuilder_addOutput_topLevelData(tx_hash_builder_t* builder,
-                                          const tx_output_description_t* output);
+void txHashBuilder_addOutput_topLevelData(tx_hash_builder_t *builder,
+                                          const tx_output_description_t *output);
 
-void txHashBuilder_addOutput_tokenGroup(tx_hash_builder_t* builder,
-                                        const uint8_t* policyIdBuffer,
+void txHashBuilder_addOutput_tokenGroup(tx_hash_builder_t *builder,
+                                        const uint8_t *policyIdBuffer,
                                         size_t policyIdSize,
                                         uint16_t numTokens);
 
-void txHashBuilder_addOutput_token(tx_hash_builder_t* builder,
-                                   const uint8_t* assetNameBuffer,
+void txHashBuilder_addOutput_token(tx_hash_builder_t *builder,
+                                   const uint8_t *assetNameBuffer,
                                    size_t assetNameSize,
                                    uint64_t amount);
 
-void txHashBuilder_addOutput_datum(tx_hash_builder_t* builder,
+void txHashBuilder_addOutput_datum(tx_hash_builder_t *builder,
                                    datum_type_t datumType,
-                                   const uint8_t* buffer,
+                                   const uint8_t *buffer,
                                    size_t bufferSize);
 
-void txHashBuilder_addOutput_datum_inline_chunk(tx_hash_builder_t* builder,
-                                                const uint8_t* buffer,
+void txHashBuilder_addOutput_datum_inline_chunk(tx_hash_builder_t *builder,
+                                                const uint8_t *buffer,
                                                 size_t bufferSize);
 
-void txHashBuilder_addOutput_referenceScript(tx_hash_builder_t* builder, size_t bufferSize);
+void txHashBuilder_addOutput_referenceScript(tx_hash_builder_t *builder, size_t bufferSize);
 
-void txHashBuilder_addOutput_referenceScript_dataChunk(tx_hash_builder_t* builder,
-                                                       const uint8_t* buffer,
+void txHashBuilder_addOutput_referenceScript_dataChunk(tx_hash_builder_t *builder,
+                                                       const uint8_t *buffer,
                                                        size_t bufferSize);
 
-void txHashBuilder_addFee(tx_hash_builder_t* builder, uint64_t fee);
+void txHashBuilder_addFee(tx_hash_builder_t *builder, uint64_t fee);
 
-void txHashBuilder_addTtl(tx_hash_builder_t* builder, uint64_t ttl);
+void txHashBuilder_addTtl(tx_hash_builder_t *builder, uint64_t ttl);
 
-void txHashBuilder_enterCertificates(tx_hash_builder_t* builder);
+void txHashBuilder_enterCertificates(tx_hash_builder_t *builder);
 
-void txHashBuilder_addCertificate_stakingOld(tx_hash_builder_t* builder,
+void txHashBuilder_addCertificate_stakingOld(tx_hash_builder_t *builder,
                                              const certificate_type_t certificateType,
-                                             const credential_t* stakingCredential);
-void txHashBuilder_addCertificate_staking(tx_hash_builder_t* builder,
+                                             const credential_t *stakingCredential);
+void txHashBuilder_addCertificate_staking(tx_hash_builder_t *builder,
                                           const certificate_type_t certificateType,
-                                          const credential_t* stakeCredential,
+                                          const credential_t *stakeCredential,
                                           uint64_t deposit);
 
-void txHashBuilder_addCertificate_stakeDelegation(tx_hash_builder_t* builder,
-                                                  const credential_t* stakeCredential,
-                                                  const uint8_t* poolKeyHash,
+void txHashBuilder_addCertificate_stakeDelegation(tx_hash_builder_t *builder,
+                                                  const credential_t *stakeCredential,
+                                                  const uint8_t *poolKeyHash,
                                                   size_t poolKeyHashSize);
 
-void txHashBuilder_addCertificate_voteDelegation(tx_hash_builder_t* builder,
-                                                 const credential_t* stakeCredential,
-                                                 const drep_t* drep);
+void txHashBuilder_addCertificate_voteDelegation(tx_hash_builder_t *builder,
+                                                 const credential_t *stakeCredential,
+                                                 const drep_t *drep);
 
-void txHashBuilder_addCertificate_committeeAuthHot(tx_hash_builder_t* builder,
-                                                   const credential_t* coldCredential,
-                                                   const credential_t* hotCredential);
+void txHashBuilder_addCertificate_committeeAuthHot(tx_hash_builder_t *builder,
+                                                   const credential_t *coldCredential,
+                                                   const credential_t *hotCredential);
 
-void txHashBuilder_addCertificate_committeeResign(tx_hash_builder_t* builder,
-                                                  const credential_t* coldCredential,
-                                                  const anchor_t* anchor);
+void txHashBuilder_addCertificate_committeeResign(tx_hash_builder_t *builder,
+                                                  const credential_t *coldCredential,
+                                                  const anchor_t *anchor);
 
-void txHashBuilder_addCertificate_dRepRegistration(tx_hash_builder_t* builder,
-                                                   const credential_t* dRepCredential,
+void txHashBuilder_addCertificate_dRepRegistration(tx_hash_builder_t *builder,
+                                                   const credential_t *dRepCredential,
                                                    uint64_t deposit,
-                                                   const anchor_t* anchor);
+                                                   const anchor_t *anchor);
 
-void txHashBuilder_addCertificate_dRepDeregistration(tx_hash_builder_t* builder,
-                                                     const credential_t* dRepCredential,
+void txHashBuilder_addCertificate_dRepDeregistration(tx_hash_builder_t *builder,
+                                                     const credential_t *dRepCredential,
                                                      uint64_t deposit);
 
-void txHashBuilder_addCertificate_dRepUpdate(tx_hash_builder_t* builder,
-                                             const credential_t* dRepCredential,
-                                             const anchor_t* anchor);
+void txHashBuilder_addCertificate_dRepUpdate(tx_hash_builder_t *builder,
+                                             const credential_t *dRepCredential,
+                                             const anchor_t *anchor);
 
 #ifdef APP_FEATURE_POOL_RETIREMENT
 
-void txHashBuilder_addCertificate_poolRetirement(tx_hash_builder_t* builder,
-                                                 const uint8_t* poolKeyHash,
+void txHashBuilder_addCertificate_poolRetirement(tx_hash_builder_t *builder,
+                                                 const uint8_t *poolKeyHash,
                                                  size_t poolKeyHashSize,
                                                  uint64_t epoch);
 
@@ -373,123 +373,123 @@ void txHashBuilder_addCertificate_poolRetirement(tx_hash_builder_t* builder,
 
 #ifdef APP_FEATURE_POOL_REGISTRATION
 
-void txHashBuilder_poolRegistrationCertificate_enter(tx_hash_builder_t* builder,
+void txHashBuilder_poolRegistrationCertificate_enter(tx_hash_builder_t *builder,
                                                      uint16_t numOwners,
                                                      uint16_t numRelays);
 
-void txHashBuilder_poolRegistrationCertificate_poolKeyHash(tx_hash_builder_t* builder,
-                                                           const uint8_t* poolKeyHash,
+void txHashBuilder_poolRegistrationCertificate_poolKeyHash(tx_hash_builder_t *builder,
+                                                           const uint8_t *poolKeyHash,
                                                            size_t poolKeyHashSize);
 
-void txHashBuilder_poolRegistrationCertificate_vrfKeyHash(tx_hash_builder_t* builder,
-                                                          const uint8_t* vrfKeyHash,
+void txHashBuilder_poolRegistrationCertificate_vrfKeyHash(tx_hash_builder_t *builder,
+                                                          const uint8_t *vrfKeyHash,
                                                           size_t vrfKeyHashSize);
 
-void txHashBuilder_poolRegistrationCertificate_financials(tx_hash_builder_t* builder,
+void txHashBuilder_poolRegistrationCertificate_financials(tx_hash_builder_t *builder,
                                                           uint64_t pledge,
                                                           uint64_t cost,
                                                           uint64_t marginNumerator,
                                                           uint64_t marginDenominator);
 
-void txHashBuilder_poolRegistrationCertificate_rewardAccount(tx_hash_builder_t* builder,
-                                                             const uint8_t* rewardAccount,
+void txHashBuilder_poolRegistrationCertificate_rewardAccount(tx_hash_builder_t *builder,
+                                                             const uint8_t *rewardAccount,
                                                              size_t rewardAccountSize);
 
-void txHashBuilder_addPoolRegistrationCertificate_enterOwners(tx_hash_builder_t* builder);
+void txHashBuilder_addPoolRegistrationCertificate_enterOwners(tx_hash_builder_t *builder);
 
-void txHashBuilder_addPoolRegistrationCertificate_addOwner(tx_hash_builder_t* builder,
-                                                           const uint8_t* stakingKeyHash,
+void txHashBuilder_addPoolRegistrationCertificate_addOwner(tx_hash_builder_t *builder,
+                                                           const uint8_t *stakingKeyHash,
                                                            size_t stakingKeyHashSize);
 
-void txHashBuilder_addPoolRegistrationCertificate_enterRelays(tx_hash_builder_t* builder);
+void txHashBuilder_addPoolRegistrationCertificate_enterRelays(tx_hash_builder_t *builder);
 
-void txHashBuilder_addPoolRegistrationCertificate_addRelay(tx_hash_builder_t* builder,
-                                                           const pool_relay_t* relay);
+void txHashBuilder_addPoolRegistrationCertificate_addRelay(tx_hash_builder_t *builder,
+                                                           const pool_relay_t *relay);
 
-void txHashBuilder_addPoolRegistrationCertificate_addPoolMetadata(tx_hash_builder_t* builder,
-                                                                  const uint8_t* url,
+void txHashBuilder_addPoolRegistrationCertificate_addPoolMetadata(tx_hash_builder_t *builder,
+                                                                  const uint8_t *url,
                                                                   size_t urlSize,
-                                                                  const uint8_t* metadataHash,
+                                                                  const uint8_t *metadataHash,
                                                                   size_t metadataHashSize);
 
-void txHashBuilder_addPoolRegistrationCertificate_addPoolMetadata_null(tx_hash_builder_t* builder);
+void txHashBuilder_addPoolRegistrationCertificate_addPoolMetadata_null(tx_hash_builder_t *builder);
 
 #endif  // APP_FEATURE_POOL_REGISTRATION
 
-void txHashBuilder_enterWithdrawals(tx_hash_builder_t* builder);
+void txHashBuilder_enterWithdrawals(tx_hash_builder_t *builder);
 
-void txHashBuilder_addWithdrawal(tx_hash_builder_t* builder,
-                                 const uint8_t* rewardAddressBuffer,
+void txHashBuilder_addWithdrawal(tx_hash_builder_t *builder,
+                                 const uint8_t *rewardAddressBuffer,
                                  size_t rewardAddressSize,
                                  uint64_t amount);
 
-void txHashBuilder_addAuxData(tx_hash_builder_t* builder,
-                              const uint8_t* auxDataHashBuffer,
+void txHashBuilder_addAuxData(tx_hash_builder_t *builder,
+                              const uint8_t *auxDataHashBuffer,
                               size_t auxDataHashSize);
 
-void txHashBuilder_addValidityIntervalStart(tx_hash_builder_t* builder,
+void txHashBuilder_addValidityIntervalStart(tx_hash_builder_t *builder,
                                             uint64_t validityIntervalStart);
 
-void txHashBuilder_enterMint(tx_hash_builder_t* builder);
+void txHashBuilder_enterMint(tx_hash_builder_t *builder);
 
-void txHashBuilder_addMint_topLevelData(tx_hash_builder_t* builder, uint16_t numAssetGroups);
+void txHashBuilder_addMint_topLevelData(tx_hash_builder_t *builder, uint16_t numAssetGroups);
 
-void txHashBuilder_addMint_tokenGroup(tx_hash_builder_t* builder,
-                                      const uint8_t* policyIdBuffer,
+void txHashBuilder_addMint_tokenGroup(tx_hash_builder_t *builder,
+                                      const uint8_t *policyIdBuffer,
                                       size_t policyIdSize,
                                       uint16_t numTokens);
 
-void txHashBuilder_addMint_token(tx_hash_builder_t* builder,
-                                 const uint8_t* assetNameBuffer,
+void txHashBuilder_addMint_token(tx_hash_builder_t *builder,
+                                 const uint8_t *assetNameBuffer,
                                  size_t assetNameSize,
                                  int64_t amount);
 
-void txHashBuilder_addScriptDataHash(tx_hash_builder_t* builder,
-                                     const uint8_t* scriptHashData,
+void txHashBuilder_addScriptDataHash(tx_hash_builder_t *builder,
+                                     const uint8_t *scriptHashData,
                                      size_t scriptHashDataSize);
 
-void txHashBuilder_enterCollateralInputs(tx_hash_builder_t* builder);
+void txHashBuilder_enterCollateralInputs(tx_hash_builder_t *builder);
 
-void txHashBuilder_addCollateralInput(tx_hash_builder_t* builder, const tx_input_t* collInput);
+void txHashBuilder_addCollateralInput(tx_hash_builder_t *builder, const tx_input_t *collInput);
 
-void txHashBuilder_enterRequiredSigners(tx_hash_builder_t* builder);
+void txHashBuilder_enterRequiredSigners(tx_hash_builder_t *builder);
 
-void txHashBuilder_addRequiredSigner(tx_hash_builder_t* builder,
-                                     const uint8_t* vkeyBuffer,
+void txHashBuilder_addRequiredSigner(tx_hash_builder_t *builder,
+                                     const uint8_t *vkeyBuffer,
                                      size_t vkeySize);
 
-void txHashBuilder_addNetworkId(tx_hash_builder_t* builder, uint8_t networkId);
+void txHashBuilder_addNetworkId(tx_hash_builder_t *builder, uint8_t networkId);
 
-void txHashBuilder_addCollateralOutput(tx_hash_builder_t* builder,
-                                       const tx_output_description_t* output);
+void txHashBuilder_addCollateralOutput(tx_hash_builder_t *builder,
+                                       const tx_output_description_t *output);
 
-void txHashBuilder_addCollateralOutput_tokenGroup(tx_hash_builder_t* builder,
-                                                  const uint8_t* policyIdBuffer,
+void txHashBuilder_addCollateralOutput_tokenGroup(tx_hash_builder_t *builder,
+                                                  const uint8_t *policyIdBuffer,
                                                   size_t policyIdSize,
                                                   uint16_t numTokens);
 
-void txHashBuilder_addCollateralOutput_token(tx_hash_builder_t* builder,
-                                             const uint8_t* assetNameBuffer,
+void txHashBuilder_addCollateralOutput_token(tx_hash_builder_t *builder,
+                                             const uint8_t *assetNameBuffer,
                                              size_t assetNameSize,
                                              uint64_t amount);
 
-void txHashBuilder_addTotalCollateral(tx_hash_builder_t* builder, uint64_t txColl);
+void txHashBuilder_addTotalCollateral(tx_hash_builder_t *builder, uint64_t txColl);
 
-void txHashBuilder_enterReferenceInputs(tx_hash_builder_t* builder);
+void txHashBuilder_enterReferenceInputs(tx_hash_builder_t *builder);
 
-void txHashBuilder_addReferenceInput(tx_hash_builder_t* builder, const tx_input_t* refInput);
+void txHashBuilder_addReferenceInput(tx_hash_builder_t *builder, const tx_input_t *refInput);
 
-void txHashBuilder_enterVotingProcedures(tx_hash_builder_t* builder);
+void txHashBuilder_enterVotingProcedures(tx_hash_builder_t *builder);
 
-void txHashBuilder_addVotingProcedure(tx_hash_builder_t* builder,
-                                      voter_t* voter,
-                                      gov_action_id_t* govActionId,
-                                      voting_procedure_t* votingProcedure);
+void txHashBuilder_addVotingProcedure(tx_hash_builder_t *builder,
+                                      voter_t *voter,
+                                      gov_action_id_t *govActionId,
+                                      voting_procedure_t *votingProcedure);
 
-void txHashBuilder_addTreasury(tx_hash_builder_t* builder, uint64_t treasury);
+void txHashBuilder_addTreasury(tx_hash_builder_t *builder, uint64_t treasury);
 
-void txHashBuilder_addDonation(tx_hash_builder_t* builder, uint64_t donation);
+void txHashBuilder_addDonation(tx_hash_builder_t *builder, uint64_t donation);
 
-void txHashBuilder_finalize(tx_hash_builder_t* builder, uint8_t* outBuffer, size_t outSize);
+void txHashBuilder_finalize(tx_hash_builder_t *builder, uint8_t *outBuffer, size_t outSize);
 
 #endif  // H_CARDANO_APP_TX_HASH_BUILDER

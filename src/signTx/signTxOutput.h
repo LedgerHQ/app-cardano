@@ -33,10 +33,10 @@ typedef enum {
 typedef struct {
     sign_tx_output_state_t state;
     int ui_step;
-    const char* ui_text1;
-    const char* ui_text2;
-    const char* ui_text3;
-    const char* ui_text4;
+    const char *ui_text1;
+    const char *ui_text2;
+    const char *ui_text3;
+    const char *ui_text4;
 
     tx_output_serialization_format_t serializationFormat;
     uint16_t numAssetGroups;  // positive if there are tokens
@@ -93,11 +93,11 @@ void initializeOutputSubmachine();
 bool isCurrentOutputFinished();
 
 bool signTxOutput_isValidInstruction(uint8_t p2);
-void signTxOutput_handleAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize);
+void signTxOutput_handleAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize);
 
 bool signTxCollateralOutput_isValidInstruction(uint8_t p2);
 void signTxCollateralOutput_handleAPDU(uint8_t p2,
-                                       const uint8_t* wireDataBuffer,
+                                       const uint8_t *wireDataBuffer,
                                        size_t wireDataSize);
 
 void tx_output_advanceState();

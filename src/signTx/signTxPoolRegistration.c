@@ -21,10 +21,10 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-static ins_sign_tx_context_t* ctx = &(instructionState.signTxContext);
-static common_tx_data_t* commonTxData = &(instructionState.signTxContext.commonTxData);
+static ins_sign_tx_context_t *ctx = &(instructionState.signTxContext);
+static common_tx_data_t *commonTxData = &(instructionState.signTxContext.commonTxData);
 
-static pool_registration_context_t* accessSubcontext() {
+static pool_registration_context_t *accessSubcontext() {
     return &BODY_CTX->stageContext.pool_registration_subctx;
 }
 
@@ -57,7 +57,7 @@ void signTxPoolRegistration_init() {
 }
 
 static inline void CHECK_STATE(sign_tx_pool_registration_state_t expected) {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("Pool registration certificate stage: current %d, expected %d", subctx->state, expected);
     VALIDATE(subctx->state == expected, ERR_INVALID_STATE);
 }
@@ -65,14 +65,14 @@ static inline void CHECK_STATE(sign_tx_pool_registration_state_t expected) {
 // ============================== INIT ==============================
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handleInitAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
         // sanity checks
         CHECK_STATE(STAKE_POOL_REGISTRATION_INIT);
     }
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     {
         // initialization
         subctx->currentOwner = 0;
@@ -87,7 +87,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleInitAPDU(
         struct {
             uint8_t numOwners[4];
             uint8_t numRelays[4];
-        }* wireHeader = (void*) wireDataBuffer;
+        } *wireHeader = (void *) wireDataBuffer;
 
         // can't use SIZEOF because it fails for x86 for fuzzing
         VALIDATE(wireDataSize == sizeof(*wireHeader), ERR_INVALID_DATA);
@@ -122,7 +122,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleInitAPDU(
 
 // ============================== POOL KEY HASH / ID ==============================
 
-static void _toPoolKeyHash(const pool_id_t* poolId, uint8_t* poolKeyHash) {
+static void _toPoolKeyHash(const pool_id_t *poolId, uint8_t *poolKeyHash) {
     switch (poolId->keyReferenceType) {
         case KEY_REFERENCE_HASH: {
             STATIC_ASSERT(SIZEOF(poolId->hash) == POOL_KEY_HASH_LENGTH,
@@ -139,8 +139,8 @@ static void _toPoolKeyHash(const pool_id_t* poolId, uint8_t* poolKeyHash) {
     }
 }
 
-static void _parsePoolId(read_view_t* view) {
-    pool_id_t* key = &accessSubcontext()->stateData.poolId;
+static void _parsePoolId(read_view_t *view) {
+    pool_id_t *key = &accessSubcontext()->stateData.poolId;
 
     key->keyReferenceType = parse_u1be(view);
 
@@ -166,7 +166,7 @@ static void _parsePoolId(read_view_t* view) {
 }
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolKeyAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -185,7 +185,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolKeyAPDU(
         VALIDATE(view_remainingSize(&view) == 0, ERR_INVALID_DATA);
     }
 
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     security_policy_t policy =
         policyForSignTxStakePoolRegistrationPoolId(commonTxData->txSigningMode,
                                                    &subctx->stateData.poolId);
@@ -239,14 +239,14 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolKeyAPDU(
 // ============================== VRF KEY HASH ==============================
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handleVrfKeyAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
         // sanity checks
         CHECK_STATE(STAKE_POOL_REGISTRATION_VRF_KEY);
     }
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     {
         // parse data
 
@@ -295,14 +295,14 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleVrfKeyAPDU(
 // ============================== POOL FINANCIALS ==============================
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolFinancialsAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
         // sanity checks
         CHECK_STATE(STAKE_POOL_REGISTRATION_FINANCIALS);
     }
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     {
         // parse data
 
@@ -313,7 +313,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolFinancial
             uint8_t cost[8];
             uint8_t marginNumerator[8];
             uint8_t marginDenominator[8];
-        }* wireHeader = (void*) wireDataBuffer;
+        } *wireHeader = (void *) wireDataBuffer;
 
         VALIDATE(wireDataSize == SIZEOF(*wireHeader), ERR_INVALID_DATA);
 
@@ -330,12 +330,12 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolFinancial
 
             ASSERT_TYPE(subctx->stateData.marginNumerator, uint64_t);
             subctx->stateData.marginNumerator = u8be_read(wireHeader->marginNumerator);
-            TRACE_BUFFER((uint8_t*) &subctx->stateData.marginNumerator, 8);
+            TRACE_BUFFER((uint8_t *) &subctx->stateData.marginNumerator, 8);
             VALIDATE(subctx->stateData.marginNumerator <= MARGIN_DENOMINATOR_MAX, ERR_INVALID_DATA);
 
             ASSERT_TYPE(subctx->stateData.marginDenominator, uint64_t);
             subctx->stateData.marginDenominator = u8be_read(wireHeader->marginDenominator);
-            TRACE_BUFFER((uint8_t*) &subctx->stateData.marginDenominator, 8);
+            TRACE_BUFFER((uint8_t *) &subctx->stateData.marginDenominator, 8);
             VALIDATE(subctx->stateData.marginDenominator != 0, ERR_INVALID_DATA);
             VALIDATE(subctx->stateData.marginDenominator <= MARGIN_DENOMINATOR_MAX,
                      ERR_INVALID_DATA);
@@ -357,8 +357,8 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolFinancial
 
 // ============================== POOL REWARD ACCOUNT ==============================
 
-static void _parsePoolRewardAccount(read_view_t* view) {
-    reward_account_t* rewardAccount = &accessSubcontext()->stateData.poolRewardAccount;
+static void _parsePoolRewardAccount(read_view_t *view) {
+    reward_account_t *rewardAccount = &accessSubcontext()->stateData.poolRewardAccount;
 
     rewardAccount->keyReferenceType = parse_u1be(view);
 
@@ -393,7 +393,7 @@ static void _parsePoolRewardAccount(read_view_t* view) {
 }
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handleRewardAccountAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -412,7 +412,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleRewardAccount
         VALIDATE(view_remainingSize(&view) == 0, ERR_INVALID_DATA);
     }
 
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     security_policy_t policy =
         policyForSignTxStakePoolRegistrationRewardAccount(commonTxData->txSigningMode,
                                                           &subctx->stateData.poolRewardAccount);
@@ -452,7 +452,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleRewardAccount
 // ============================== OWNER ==============================
 
 __noinline_due_to_stack__ static void _addOwnerToTxHash() {
-    pool_owner_t* owner = &accessSubcontext()->stateData.owner;
+    pool_owner_t *owner = &accessSubcontext()->stateData.owner;
 
     uint8_t ownerKeyHash[ADDRESS_KEY_HASH_LENGTH] = {0};
 
@@ -478,7 +478,7 @@ __noinline_due_to_stack__ static void _addOwnerToTxHash() {
 }
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handleOwnerAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -486,8 +486,8 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleOwnerAPDU(
         CHECK_STATE(STAKE_POOL_REGISTRATION_OWNERS);
     }
 
-    pool_registration_context_t* subctx = accessSubcontext();
-    pool_owner_t* owner = &subctx->stateData.owner;
+    pool_registration_context_t *subctx = accessSubcontext();
+    pool_owner_t *owner = &subctx->stateData.owner;
 
     explicit_bzero(owner, SIZEOF(*owner));
 
@@ -560,7 +560,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleOwnerAPDU(
 
 // ============================== RELAY ==============================
 
-static void _parsePort(ipport_t* port, read_view_t* view) {
+static void _parsePort(ipport_t *port, read_view_t *view) {
     uint8_t isPortGiven = parse_u1be(view);
     if (isPortGiven == ITEM_INCLUDED_YES) {
         port->isNull = false;
@@ -573,7 +573,7 @@ static void _parsePort(ipport_t* port, read_view_t* view) {
     }
 }
 
-static void _parseIpv4(ipv4_t* ipv4, read_view_t* view) {
+static void _parseIpv4(ipv4_t *ipv4, read_view_t *view) {
     uint8_t isIpv4Given = parse_u1be(view);
     if (isIpv4Given == ITEM_INCLUDED_YES) {
         ipv4->isNull = false;
@@ -588,7 +588,7 @@ static void _parseIpv4(ipv4_t* ipv4, read_view_t* view) {
     }
 }
 
-static void _parseIpv6(ipv6_t* ipv6, read_view_t* view) {
+static void _parseIpv6(ipv6_t *ipv6, read_view_t *view) {
     uint8_t isIpv6Given = parse_u1be(view);
     if (isIpv6Given == ITEM_INCLUDED_YES) {
         ipv6->isNull = false;
@@ -602,7 +602,7 @@ static void _parseIpv6(ipv6_t* ipv6, read_view_t* view) {
     }
 }
 
-static void _parseDnsName(pool_relay_t* relay, read_view_t* view) {
+static void _parseDnsName(pool_relay_t *relay, read_view_t *view) {
     relay->dnsNameSize = view_remainingSize(view);
     VALIDATE(relay->dnsNameSize <= DNS_NAME_SIZE_MAX, ERR_INVALID_DATA);
     VALIDATE(str_isUnambiguousAscii(VIEW_REMAINING_TO_TUPLE_BUF_SIZE(view)), ERR_INVALID_DATA);
@@ -625,7 +625,7 @@ format 2 multi_host_name:
 [0-64B dns_name]
 */
 __noinline_due_to_stack__ static void signTxPoolRegistration_handleRelayAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -633,7 +633,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleRelayAPDU(
         CHECK_STATE(STAKE_POOL_REGISTRATION_RELAYS);
     }
 
-    pool_relay_t* relay = &accessSubcontext()->stateData.relay;
+    pool_relay_t *relay = &accessSubcontext()->stateData.relay;
     {
         // parse data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -766,7 +766,7 @@ static void handleNullMetadata() {
 }
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolMetadataAPDU(
-    const uint8_t* wireDataBuffer,
+    const uint8_t *wireDataBuffer,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -774,14 +774,14 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolMetadataA
         CHECK_STATE(STAKE_POOL_REGISTRATION_METADATA);
     }
 
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     explicit_bzero(&subctx->stateData.metadata, SIZEOF(subctx->stateData.metadata));
 
     {
         // parse data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
-        pool_metadata_t* md = &subctx->stateData.metadata;
+        pool_metadata_t *md = &subctx->stateData.metadata;
 
         read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
 
@@ -852,7 +852,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handlePoolMetadataA
 // ============================== CONFIRM ==============================
 
 __noinline_due_to_stack__ static void signTxPoolRegistration_handleConfirmAPDU(
-    const uint8_t* wireDataBuffer MARK_UNUSED,
+    const uint8_t *wireDataBuffer MARK_UNUSED,
     size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -865,7 +865,7 @@ __noinline_due_to_stack__ static void signTxPoolRegistration_handleConfirmAPDU(
         VALIDATE(wireDataSize == 0, ERR_INVALID_DATA);
     }
 
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     security_policy_t policy =
         policyForSignTxStakePoolRegistrationConfirm(subctx->numOwners, subctx->numRelays);
     TRACE("Policy: %d", (int) policy);
@@ -923,7 +923,7 @@ bool signTxPoolRegistration_isValidInstruction(uint8_t p2) {
 }
 
 void signTxPoolRegistration_handleAPDU(uint8_t p2,
-                                       const uint8_t* wireDataBuffer,
+                                       const uint8_t *wireDataBuffer,
                                        size_t wireDataSize) {
     TRACE_STACK_USAGE();
     TRACE("p2 = 0x%x", p2);
@@ -935,7 +935,7 @@ void signTxPoolRegistration_handleAPDU(uint8_t p2,
         ASSERT(wireDataSize < BUFFER_SIZE_PARANOIA);
     }
 
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     explicit_bzero(&subctx->stateData, SIZEOF(subctx->stateData));
 
     switch (p2) {

@@ -30,7 +30,7 @@ typedef enum {
     REWARD_SCRIPT = 0b1111,
 } address_type_t;
 
-uint8_t getAddressHeader(const uint8_t* addressBuffer, size_t addressSize);
+uint8_t getAddressHeader(const uint8_t *addressBuffer, size_t addressSize);
 
 address_type_t getAddressType(uint8_t addressHeader);
 bool isSupportedAddressType(uint8_t addressHeader);
@@ -85,14 +85,14 @@ typedef struct {
     };
 } addressParams_t;
 
-bool isStakingInfoConsistentWithAddressType(const addressParams_t* addressParams);
+bool isStakingInfoConsistentWithAddressType(const addressParams_t *addressParams);
 staking_data_source_t determineStakingChoice(address_type_t addressType);
 
-size_t deriveAddress(const addressParams_t* addressParams, uint8_t* outBuffer, size_t outSize);
+size_t deriveAddress(const addressParams_t *addressParams, uint8_t *outBuffer, size_t outSize);
 
-__noinline_due_to_stack__ size_t constructRewardAddressFromKeyPath(const bip44_path_t* path,
+__noinline_due_to_stack__ size_t constructRewardAddressFromKeyPath(const bip44_path_t *path,
                                                                    uint8_t networkId,
-                                                                   uint8_t* outBuffer,
+                                                                   uint8_t *outBuffer,
                                                                    size_t outSize);
 
 typedef enum {
@@ -102,18 +102,18 @@ typedef enum {
 
 __noinline_due_to_stack__ size_t constructRewardAddressFromHash(uint8_t networkId,
                                                                 reward_address_hash_source_t source,
-                                                                const uint8_t* hashBuffer,
+                                                                const uint8_t *hashBuffer,
                                                                 size_t hashSize,
-                                                                uint8_t* outBuffer,
+                                                                uint8_t *outBuffer,
                                                                 size_t outSize);
 
-void printBlockchainPointerToStr(blockchainPointer_t blockchainPointer, char* out, size_t outSize);
+void printBlockchainPointerToStr(blockchainPointer_t blockchainPointer, char *out, size_t outSize);
 
-size_t humanReadableAddress(const uint8_t* address, size_t addressSize, char* out, size_t outSize);
+size_t humanReadableAddress(const uint8_t *address, size_t addressSize, char *out, size_t outSize);
 
-void view_parseAddressParams(read_view_t* view, addressParams_t* params);
+void view_parseAddressParams(read_view_t *view, addressParams_t *params);
 
-bool isValidAddressParams(const addressParams_t* addressParams);
+bool isValidAddressParams(const addressParams_t *addressParams);
 payment_choice_t determinePaymentChoice(address_type_t addressType);
 
 #endif  // H_CARDANO_APP_ADDRESS_UTILS_SHELLEY

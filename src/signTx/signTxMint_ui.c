@@ -14,12 +14,12 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-static mint_context_t* accessSubcontext() {
+static mint_context_t *accessSubcontext() {
     return &BODY_CTX->stageContext.mint_subctx;
 }
 
 static inline void advanceState() {
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     TRACE("Advancing mint state from: %d", subctx->state);
 
     switch (subctx->state) {
@@ -66,10 +66,10 @@ static inline void advanceState() {
 }
 
 __noinline_due_to_stack__ void signTxMint_handleTopLevelData_ui_runStep() {
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
 
-    ui_callback_fn_t* this_fn = signTxMint_handleTopLevelData_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxMint_handleTopLevelData_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -94,10 +94,10 @@ __noinline_due_to_stack__ void signTxMint_handleTopLevelData_ui_runStep() {
 }
 
 void signTxMint_handleAssetGroup_ui_runStep() {
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
 
-    ui_callback_fn_t* this_fn = signTxMint_handleAssetGroup_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxMint_handleAssetGroup_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -109,9 +109,9 @@ void signTxMint_handleAssetGroup_ui_runStep() {
 }
 
 void signTxMint_handleToken_ui_runStep() {
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTxMint_handleToken_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxMint_handleToken_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -169,9 +169,9 @@ void signTxMint_handleToken_ui_runStep() {
 }
 
 void signTxMint_handleConfirm_ui_runStep() {
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTxMint_handleConfirm_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxMint_handleConfirm_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 

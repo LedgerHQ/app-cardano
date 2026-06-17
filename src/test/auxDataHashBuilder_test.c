@@ -9,21 +9,21 @@
 void test_CIP15() {
     PRINTF("CIP15 voting registration\n");
 
-    static const char* voteKey = "3B40265111D8BB3C3C608D95B3A0BF83461ACE32D79336579A1939B3AAD1C0B7";
-    static const char* stakingKey =
+    static const char *voteKey = "3B40265111D8BB3C3C608D95B3A0BF83461ACE32D79336579A1939B3AAD1C0B7";
+    static const char *stakingKey =
         "BC65BE1B0B9D7531778A1317C2AA6DE936963C3F9AC7D5EE9E9EDA25E0C97C5E";
-    static const char* paymentAddress =
+    static const char *paymentAddress =
         "0180F9E2C88E6C817008F3A812ED889B4A4DA8E0BD103F86E7335422AA122A946B9AD3D2DDF029D3A828F0468A"
         "ECE76895F15C9EFBD69B4277";
     static uint64_t nonce = 22634813;
 
-    static const char* cVoteRegistrationSignature =
+    static const char *cVoteRegistrationSignature =
         "0EA4A424522DD485F16466CD5A754F3C8DBD4D1976C912624E3465C540B1D0776C92633FC64BE057F947AAC561"
         "012FE55ACD3C54EF7BECE0DA0B90CF02DC760D";
 
-    static const char* expectedCVoteRegistrationPayloadHashHex =
+    static const char *expectedCVoteRegistrationPayloadHashHex =
         "2EEA6A5168066BDA411F80BE10B50646378616C3414C711A61D363C7879B5CBC";
-    static const char* expectedAuxDataHashHex =
+    static const char *expectedAuxDataHashHex =
         "07cdec3a795626019739f275582433eabe32da80f82aeb74e4916b547c01a589";
 
     aux_data_hash_builder_t builder;
@@ -92,27 +92,27 @@ void test_CIP36() {
 
     // data from https://cips.cardano.org/cips/cip36/test-vector.md.html
 
-    static const char* delegationKey1 =
+    static const char *delegationKey1 =
         "a6a3c0447aeb9cc54cf6422ba32b294e5e1c3ef6d782f2acff4a70694c4d1663";
     static const uint64_t delegationWeight1 = 1;
-    static const char* delegationKey2 =
+    static const char *delegationKey2 =
         "00588e8e1d18cba576a4d35758069fe94e53f638b6faf7c07b8abd2bc5c5cdee";
     static const uint64_t delegationWeight2 = 3;
 
-    static const char* stakingKey =
+    static const char *stakingKey =
         "86870efc99c453a873a16492ce87738ec79a0ebd064379a62e2c9cf4e119219e";
-    static const char* paymentAddress =
+    static const char *paymentAddress =
         "e0ae3a0a7aeda4aea522e74e4fe36759fca80789a613a58a4364f6ecef";
     static const uint64_t nonce = 1234;
     static const uint64_t votingPurpose = 0;
 
-    static const char* cVoteRegistrationSignature =
+    static const char *cVoteRegistrationSignature =
         "0ea4a424522dd485f16466cd5a754f3c8dbd4d1976c912624e3465c540b1d0776c92633fc64be057f947aac561"
         "012fe55acd3c54ef7bece0da0b90cf02dc760d";
 
-    static const char* expectedCVoteRegistrationPayloadHashHex =
+    static const char *expectedCVoteRegistrationPayloadHashHex =
         "5bc0681f173efd76e1989037a3694b8a7abea22053f5940cbb5cfcdf721007d7";
-    static const char* expectedAuxDataHashHex =
+    static const char *expectedAuxDataHashHex =
         "3786b3ad677129e43dbb3456e45e5af589e9aae81062ef7e26f15fde00df421d";
 
     aux_data_hash_builder_t builder;

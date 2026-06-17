@@ -35,8 +35,8 @@ enum {
 
 static nbgl_layoutSwitch_t switches[NB_SETTINGS_SWITCHES];
 
-static const char* const infoTypes[NB_INFO_FIELDS] = {"Version", "Developer", "Copyright"};
-static const char* const infoContents[NB_INFO_FIELDS] = {APPVERSION,
+static const char *const infoTypes[NB_INFO_FIELDS] = {"Version", "Developer", "Copyright"};
+static const char *const infoContents[NB_INFO_FIELDS] = {APPVERSION,
                                                          "Vacuumlabs",
                                                          "(c) 2022 Ledger"};
 

@@ -12,8 +12,7 @@ static void h_expert_toggle();
 void h_expert_update();
 
 // Helper macro for better astyle formatting of UX_FLOW definitions
-#define LINES(...) \
-    { __VA_ARGS__ }
+#define LINES(...) {__VA_ARGS__}
 
 UX_STEP_NOCB(ux_idle_flow_1_step,
              pbb,
