@@ -7,7 +7,7 @@
 #define DEFAULT_DECIMALS 6
 
 /* Set empty printable_amount on error, printable amount otherwise */
-void swap_handle_get_printable_amount(get_printable_amount_parameters_t* params) {
+void swap_handle_get_printable_amount(get_printable_amount_parameters_t *params) {
     uint8_t decimals = 0;
     char ticker[MAX_TICKER_LEN];
     uint64_t amount;

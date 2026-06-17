@@ -12,12 +12,12 @@
 #include "nbgl_use_case.h"
 #endif
 
-static ins_sign_cvote_context_t* ctx = &(instructionState.signCVoteContext);
+static ins_sign_cvote_context_t *ctx = &(instructionState.signCVoteContext);
 
 // ============================== INIT ==============================
 
 void signCVote_handleInit_ui_runStep() {
-    ui_callback_fn_t* this_fn = signCVote_handleInit_ui_runStep;
+    ui_callback_fn_t *this_fn = signCVote_handleInit_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -74,7 +74,7 @@ void signCVote_handleInit_ui_runStep() {
 void signCVote_handleConfirm_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signCVote_handleConfirm_ui_runStep;
+    ui_callback_fn_t *this_fn = signCVote_handleConfirm_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -112,7 +112,7 @@ static void _wipeWitnessSignature() {
 void handleWitness_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handleWitness_ui_runStep;
+    ui_callback_fn_t *this_fn = handleWitness_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 

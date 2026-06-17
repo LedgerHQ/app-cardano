@@ -14,25 +14,25 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-static common_tx_data_t* commonTxData = &(instructionState.signTxContext.commonTxData);
+static common_tx_data_t *commonTxData = &(instructionState.signTxContext.commonTxData);
 
-static mint_context_t* accessSubcontext() {
+static mint_context_t *accessSubcontext() {
     return &BODY_CTX->stageContext.mint_subctx;
 }
 
 static inline void CHECK_STATE(sign_tx_mint_state_t expected) {
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     TRACE("Mint submachine state: current %d, expected %d", subctx->state, expected);
     VALIDATE(subctx->state == expected, ERR_INVALID_STATE);
 }
 
-static void signTxMint_handleTopLevelDataAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void signTxMint_handleTopLevelDataAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // safety checks
         CHECK_STATE(STATE_MINT_TOP_LEVEL_DATA);
     }
     TRACE_BUFFER(wireDataBuffer, wireDataSize);
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     {
         read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
 
@@ -56,14 +56,14 @@ static void signTxMint_handleTopLevelDataAPDU(const uint8_t* wireDataBuffer, siz
     signTxMint_handleTopLevelData_ui_runStep();
 }
 
-static void signTxMint_handleAssetGroupAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void signTxMint_handleAssetGroupAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_MINT_ASSET_GROUP);
     }
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     {
-        token_group_t* tokenGroup = &subctx->stateData.tokenGroup;
+        token_group_t *tokenGroup = &subctx->stateData.tokenGroup;
 
         // parse data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -110,14 +110,14 @@ static void signTxMint_handleAssetGroupAPDU(const uint8_t* wireDataBuffer, size_
     signTxMint_handleAssetGroup_ui_runStep();
 }
 
-static void signTxMint_handleTokenAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void signTxMint_handleTokenAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_MINT_TOKEN);
     }
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     {
-        mint_token_amount_t* token = &subctx->stateData.token;
+        mint_token_amount_t *token = &subctx->stateData.token;
 
         // parse data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -177,7 +177,7 @@ static void signTxMint_handleTokenAPDU(const uint8_t* wireDataBuffer, size_t wir
     signTxMint_handleToken_ui_runStep();
 }
 
-static void signTxMint_handleConfirmAPDU(const uint8_t* wireDataBuffer MARK_UNUSED,
+static void signTxMint_handleConfirmAPDU(const uint8_t *wireDataBuffer MARK_UNUSED,
                                          size_t wireDataSize) {
     {
         // sanity checks
@@ -189,7 +189,7 @@ static void signTxMint_handleConfirmAPDU(const uint8_t* wireDataBuffer MARK_UNUS
         VALIDATE(wireDataSize == 0, ERR_INVALID_DATA);
     }
 
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     security_policy_t policy = policyForSignTxMintConfirm(subctx->mintSecurityPolicy);
     TRACE("Policy: %d", (int) policy);
     ENSURE_NOT_DENIED(policy);
@@ -234,12 +234,14 @@ bool signTxMint_isValidInstruction(uint8_t p2) {
 }
 
 void signTxMint_init() {
-    { explicit_bzero(&BODY_CTX->stageContext, SIZEOF(BODY_CTX->stageContext)); }
+    {
+        explicit_bzero(&BODY_CTX->stageContext, SIZEOF(BODY_CTX->stageContext));
+    }
 
     accessSubcontext()->state = STATE_MINT_TOP_LEVEL_DATA;
 }
 
-void signTxMint_handleAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize) {
+void signTxMint_handleAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize) {
     if (p2 == APDU_INSTRUCTION_CONFIRM) {
         ASSERT(wireDataBuffer == NULL);
         ASSERT(wireDataSize == 0);
@@ -272,7 +274,7 @@ void signTxMint_handleAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wir
 }
 
 bool signTxMint_isFinished() {
-    mint_context_t* subctx = accessSubcontext();
+    mint_context_t *subctx = accessSubcontext();
     TRACE("Mint submachine state: %d", subctx->state);
     // we are also asserting that the state is valid
     switch (subctx->state) {

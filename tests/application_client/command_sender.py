@@ -80,7 +80,7 @@ class CommandSender:
         header.append(p1)
         header.append(p2)
         header.append(len(payload))
-        return self._exchange(header + payload)
+        return self._exchange(bytes(header + payload))
 
 
     def get_version(self) -> bytes:

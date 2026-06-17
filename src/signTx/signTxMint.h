@@ -49,7 +49,7 @@ typedef struct {
 bool signTxMint_isValidInstruction(uint8_t p2);
 
 void signTxMint_init();
-void signTxMint_handleAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize);
+void signTxMint_handleAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize);
 
 bool signTxMint_isFinished();
 

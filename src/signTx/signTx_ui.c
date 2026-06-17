@@ -23,11 +23,11 @@
 #include "nbgl_use_case.h"
 #endif
 
-static ins_sign_tx_context_t* ctx = &(instructionState.signTxContext);
+static ins_sign_tx_context_t *ctx = &(instructionState.signTxContext);
 
 // ============================== INIT ==============================
 
-static const char* _newTxLine1(sign_tx_signingmode_t txSigningMode) {
+static const char *_newTxLine1(sign_tx_signingmode_t txSigningMode) {
     switch (txSigningMode) {
         case SIGN_TX_SIGNINGMODE_ORDINARY_TX:
 #ifdef HAVE_BAGL
@@ -90,7 +90,7 @@ static void signTx_handleInit_ui_runStep_cb(void) {
 void signTx_handleInit_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTx_handleInit_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleInit_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -210,7 +210,7 @@ void signTx_handleInit_ui_runStep() {
 void signTx_handleAuxDataArbitraryHash_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTx_handleAuxDataArbitraryHash_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleAuxDataArbitraryHash_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -242,7 +242,7 @@ void signTx_handleAuxDataArbitraryHash_ui_runStep() {
 void signTx_handleAuxDataCVoteRegistration_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTx_handleAuxDataCVoteRegistration_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleAuxDataCVoteRegistration_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -266,7 +266,7 @@ void signTx_handleAuxDataCVoteRegistration_ui_runStep() {
 
 void signTx_handleInput_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleInput_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleInput_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -301,7 +301,7 @@ void signTx_handleInput_ui_runStep() {
 
 void signTx_handleFee_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleFee_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleFee_ui_runStep;
 
     TRACE_ADA_AMOUNT("fee ", BODY_CTX->stageData.fee);
 
@@ -333,7 +333,7 @@ void signTx_handleFee_ui_runStep() {
 
 void signTx_handleTtl_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleTtl_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleTtl_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -368,7 +368,7 @@ void signTx_handleTtl_ui_runStep() {
 
 #ifdef HAVE_NBGL
 static void signTx_handleCertificate_ui_delegation_cb(void) {
-    sign_tx_certificate_data_t* cert = &BODY_CTX->stageData.certificate;
+    sign_tx_certificate_data_t *cert = &BODY_CTX->stageData.certificate;
 
     char encodedStr[BECH32_STRING_SIZE_MAX] = {0};
     ASSERT(cert->poolCredential.type == EXT_CREDENTIAL_KEY_HASH);
@@ -384,7 +384,7 @@ static void signTx_handleCertificate_ui_delegation_cb(void) {
 }
 #endif
 
-static void _displayKeyPath(ui_callback_fn_t* callback, bip44_path_t* path, const char* label) {
+static void _displayKeyPath(ui_callback_fn_t *callback, bip44_path_t *path, const char *label) {
 #ifdef HAVE_BAGL
     ui_displayPathScreen(label, path, callback);
 #elif defined(HAVE_NBGL)
@@ -396,10 +396,10 @@ static void _displayKeyPath(ui_callback_fn_t* callback, bip44_path_t* path, cons
 #endif  // HAVE_BAGL
 }
 
-static void _displayKeyHash(ui_callback_fn_t* callback,
+static void _displayKeyHash(ui_callback_fn_t *callback,
                             uint8_t keyHash[static ADDRESS_KEY_HASH_LENGTH],
-                            const char* label,
-                            const char* bech32Prefix) {
+                            const char *label,
+                            const char *bech32Prefix) {
 #ifdef HAVE_BAGL
     ui_displayBech32Screen(label, bech32Prefix, keyHash, ADDRESS_KEY_HASH_LENGTH, callback);
 #elif defined(HAVE_NBGL)
@@ -415,10 +415,10 @@ static void _displayKeyHash(ui_callback_fn_t* callback,
 #endif  // HAVE_BAGL
 }
 
-static void _displayScriptHash(ui_callback_fn_t* callback,
+static void _displayScriptHash(ui_callback_fn_t *callback,
                                uint8_t scriptHash[static SCRIPT_HASH_LENGTH],
-                               const char* label,
-                               const char* bech32Prefix) {
+                               const char *label,
+                               const char *bech32Prefix) {
 #ifdef HAVE_BAGL
     ui_displayBech32Screen(label, bech32Prefix, scriptHash, SCRIPT_HASH_LENGTH, callback);
 #elif defined(HAVE_NBGL)
@@ -434,13 +434,13 @@ static void _displayScriptHash(ui_callback_fn_t* callback,
 #endif  // HAVE_BAGL
 }
 
-static void _displayCredential(ui_callback_fn_t* callback,
-                               ext_credential_t* credential,
-                               const char* keyPathLabel,
-                               const char* keyHashLabel,
-                               const char* keyHashPrefix,
-                               const char* scriptHashLabel,
-                               const char* scriptHashPrefix) {
+static void _displayCredential(ui_callback_fn_t *callback,
+                               ext_credential_t *credential,
+                               const char *keyPathLabel,
+                               const char *keyHashLabel,
+                               const char *keyHashPrefix,
+                               const char *scriptHashLabel,
+                               const char *scriptHashPrefix) {
     switch (credential->type) {
         case EXT_CREDENTIAL_KEY_PATH:
             _displayKeyPath(callback, &credential->keyPath, keyPathLabel);
@@ -457,7 +457,7 @@ static void _displayCredential(ui_callback_fn_t* callback,
     }
 }
 
-static void _displayDeposit(ui_callback_fn_t* callback, uint64_t deposit) {
+static void _displayDeposit(ui_callback_fn_t *callback, uint64_t deposit) {
 #ifdef HAVE_BAGL
     ui_displayAdaAmountScreen("Deposit", deposit, callback);
 #elif defined(HAVE_NBGL)
@@ -467,7 +467,7 @@ static void _displayDeposit(ui_callback_fn_t* callback, uint64_t deposit) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayAnchorNull(ui_callback_fn_t* callback) {
+static void _displayAnchorNull(ui_callback_fn_t *callback) {
 #ifdef HAVE_BAGL
     ui_displayPaginatedText("Anchor", "null", callback);
 #elif defined(HAVE_NBGL)
@@ -475,12 +475,14 @@ static void _displayAnchorNull(ui_callback_fn_t* callback) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayAnchorUrl(ui_callback_fn_t* callback, anchor_t* anchor) {
+static void _displayAnchorUrl(ui_callback_fn_t *callback, anchor_t *anchor) {
     char urlStr[1 + ANCHOR_URL_LENGTH_MAX] = {0};
     explicit_bzero(urlStr, SIZEOF(urlStr));
     ASSERT(anchor->urlLength <= ANCHOR_URL_LENGTH_MAX);
-    memmove(urlStr, anchor->url, anchor->urlLength);
-    urlStr[anchor->urlLength] = '\0';
+    if (anchor->urlLength <= ANCHOR_URL_LENGTH_MAX) {
+        memmove(urlStr, anchor->url, anchor->urlLength);
+        urlStr[anchor->urlLength] = '\0';
+    }
     ASSERT(strlen(urlStr) == anchor->urlLength);
 
 #ifdef HAVE_BAGL
@@ -490,7 +492,7 @@ static void _displayAnchorUrl(ui_callback_fn_t* callback, anchor_t* anchor) {
 #endif  // HAVE_BAGL
 }
 
-static void _displayAnchorHash(ui_callback_fn_t* callback, anchor_t* anchor) {
+static void _displayAnchorHash(ui_callback_fn_t *callback, anchor_t *anchor) {
     char hex[1 + 2 * ANCHOR_HASH_LENGTH] = {0};
     explicit_bzero(hex, SIZEOF(hex));
     size_t len = encode_hex(anchor->hash, SIZEOF(anchor->hash), hex, SIZEOF(hex));
@@ -505,8 +507,8 @@ static void _displayAnchorHash(ui_callback_fn_t* callback, anchor_t* anchor) {
 
 void signTx_handleCertificateStaking_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleCertificateStaking_ui_runStep;
-    sign_tx_certificate_data_t* cert = &BODY_CTX->stageData.certificate;
+    ui_callback_fn_t *this_fn = signTx_handleCertificateStaking_ui_runStep;
+    sign_tx_certificate_data_t *cert = &BODY_CTX->stageData.certificate;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -650,8 +652,8 @@ void signTx_handleCertificateStaking_ui_runStep() {
 
 void signTx_handleCertificateVoteDeleg_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleCertificateVoteDeleg_ui_runStep;
-    sign_tx_certificate_data_t* cert = &BODY_CTX->stageData.certificate;
+    ui_callback_fn_t *this_fn = signTx_handleCertificateVoteDeleg_ui_runStep;
+    sign_tx_certificate_data_t *cert = &BODY_CTX->stageData.certificate;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -729,8 +731,8 @@ void signTx_handleCertificateVoteDeleg_ui_runStep() {
 
 void signTx_handleCertificateCommitteeAuth_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleCertificateCommitteeAuth_ui_runStep;
-    sign_tx_certificate_data_t* cert = &BODY_CTX->stageData.certificate;
+    ui_callback_fn_t *this_fn = signTx_handleCertificateCommitteeAuth_ui_runStep;
+    sign_tx_certificate_data_t *cert = &BODY_CTX->stageData.certificate;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -782,8 +784,8 @@ void signTx_handleCertificateCommitteeAuth_ui_runStep() {
 
 void signTx_handleCertificateCommitteeResign_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleCertificateCommitteeResign_ui_runStep;
-    sign_tx_certificate_data_t* cert = &BODY_CTX->stageData.certificate;
+    ui_callback_fn_t *this_fn = signTx_handleCertificateCommitteeResign_ui_runStep;
+    sign_tx_certificate_data_t *cert = &BODY_CTX->stageData.certificate;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -841,8 +843,8 @@ void signTx_handleCertificateCommitteeResign_ui_runStep() {
 
 void signTx_handleCertificateDRep_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleCertificateDRep_ui_runStep;
-    sign_tx_certificate_data_t* cert = &BODY_CTX->stageData.certificate;
+    ui_callback_fn_t *this_fn = signTx_handleCertificateDRep_ui_runStep;
+    sign_tx_certificate_data_t *cert = &BODY_CTX->stageData.certificate;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -992,8 +994,8 @@ void signTx_handleCertificateDRep_ui_runStep() {
 void signTx_handleCertificatePoolRetirement_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
 
-    ui_callback_fn_t* this_fn = signTx_handleCertificatePoolRetirement_ui_runStep;
-    sign_tx_certificate_data_t* cert = &BODY_CTX->stageData.certificate;
+    ui_callback_fn_t *this_fn = signTx_handleCertificatePoolRetirement_ui_runStep;
+    sign_tx_certificate_data_t *cert = &BODY_CTX->stageData.certificate;
     ASSERT(cert->type == CERTIFICATE_STAKE_POOL_RETIREMENT);
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
@@ -1055,7 +1057,7 @@ void signTx_handleCertificatePoolRetirement_ui_runStep() {
 void signTx_handleWithdrawal_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTx_handleWithdrawal_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleWithdrawal_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -1141,7 +1143,7 @@ void signTx_handleWithdrawal_ui_runStep() {
 
 void signTx_handleValidityInterval_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleValidityInterval_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleValidityInterval_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -1176,7 +1178,7 @@ void signTx_handleValidityInterval_ui_runStep() {
 
 void signTx_handleScriptDataHash_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleScriptDataHash_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleScriptDataHash_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -1211,7 +1213,7 @@ void signTx_handleScriptDataHash_ui_runStep() {
 
 void signTx_handleRequiredSigner_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleRequiredSigner_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleRequiredSigner_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -1280,7 +1282,7 @@ void signTx_handleRequiredSigner_ui_runStep() {
 
 void signTx_handleTotalCollateral_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleTotalCollateral_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleTotalCollateral_ui_runStep;
 
     TRACE_ADA_AMOUNT("total collateral ", BODY_CTX->stageData.totalCollateral);
 
@@ -1311,8 +1313,8 @@ void signTx_handleTotalCollateral_ui_runStep() {
 
 void signTx_handleVotingProcedure_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleVotingProcedure_ui_runStep;
-    sign_tx_voting_procedure_t* vp = &BODY_CTX->stageData.votingProcedure;
+    ui_callback_fn_t *this_fn = signTx_handleVotingProcedure_ui_runStep;
+    sign_tx_voting_procedure_t *vp = &BODY_CTX->stageData.votingProcedure;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -1453,7 +1455,7 @@ void signTx_handleVotingProcedure_ui_runStep() {
 
 void signTx_handleTreasury_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleTreasury_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleTreasury_ui_runStep;
 
     TRACE_ADA_AMOUNT("treasury ", BODY_CTX->stageData.treasury);
 
@@ -1482,7 +1484,7 @@ void signTx_handleTreasury_ui_runStep() {
 
 void signTx_handleDonation_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleDonation_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleDonation_ui_runStep;
 
     TRACE_ADA_AMOUNT("donation ", BODY_CTX->stageData.donation);
 
@@ -1509,7 +1511,7 @@ void signTx_handleDonation_ui_runStep() {
 void signTx_handleConfirm_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTx_handleConfirm_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleConfirm_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -1560,7 +1562,7 @@ static void _wipeWitnessSignature() {
 void signTx_handleWitness_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTx_handleWitness_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleWitness_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 

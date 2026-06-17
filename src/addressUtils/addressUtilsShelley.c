@@ -7,7 +7,7 @@
 #include "base58.h"
 #include "bech32.h"
 
-uint8_t getAddressHeader(const uint8_t* addressBuffer, size_t addressSize) {
+uint8_t getAddressHeader(const uint8_t *addressBuffer, size_t addressSize) {
     ASSERT(addressSize > 0);
     ASSERT(addressSize < BUFFER_SIZE_PARANOIA);
 
@@ -85,7 +85,7 @@ bool isValidStakingChoice(staking_data_source_t stakingDataSource) {
     }
 }
 
-bool isStakingInfoConsistentWithAddressType(const addressParams_t* addressParams) {
+bool isStakingInfoConsistentWithAddressType(const addressParams_t *addressParams) {
 #define CONSISTENT_WITH(STAKING_CHOICE) \
     if (addressParams->stakingDataSource == (STAKING_CHOICE)) return true
 
@@ -150,8 +150,8 @@ staking_data_source_t determineStakingChoice(address_type_t addressType) {
 }
 
 __noinline_due_to_stack__ static size_t view_appendAddressPublicKeyHash(
-    write_view_t* view,
-    const bip44_path_t* keyDerivationPath) {
+    write_view_t *view,
+    const bip44_path_t *keyDerivationPath) {
     TRACE_STACK_USAGE();
 
     uint8_t hashedPubKey[ADDRESS_KEY_HASH_LENGTH] = {0};
@@ -174,8 +174,8 @@ static bool _isBaseAddress(address_type_t addressType) {
     }
 }
 
-static size_t deriveAddress_base(const addressParams_t* addressParams,
-                                 uint8_t* outBuffer,
+static size_t deriveAddress_base(const addressParams_t *addressParams,
+                                 uint8_t *outBuffer,
                                  size_t outSize) {
     ASSERT(_isBaseAddress(addressParams->type));
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
@@ -232,7 +232,7 @@ static size_t deriveAddress_base(const addressParams_t* addressParams,
     return size;
 }
 
-static size_t view_appendVariableLengthUInt(write_view_t* view, uint64_t value) {
+static size_t view_appendVariableLengthUInt(write_view_t *view, uint64_t value) {
     ASSERT(value < (1llu << 63));  // avoid accidental cast from negative signed value
 
     if (value == 0) {
@@ -265,8 +265,8 @@ static size_t view_appendVariableLengthUInt(write_view_t* view, uint64_t value) 
     return outputSize;
 }
 
-static size_t deriveAddress_pointer(const addressParams_t* addressParams,
-                                    uint8_t* outBuffer,
+static size_t deriveAddress_pointer(const addressParams_t *addressParams,
+                                    uint8_t *outBuffer,
                                     size_t outSize) {
     const address_type_t addressType = addressParams->type;
     ASSERT(addressType == POINTER_KEY || addressType == POINTER_SCRIPT);
@@ -276,7 +276,9 @@ static size_t deriveAddress_pointer(const addressParams_t* addressParams,
         constructShelleyAddressHeader(addressType, addressParams->networkId);
 
     write_view_t out = make_write_view(outBuffer, outBuffer + outSize);
-    { view_appendBuffer(&out, &addressHeader, 1); }
+    {
+        view_appendBuffer(&out, &addressHeader, 1);
+    }
     {
         if (addressType == POINTER_KEY) {
             view_appendAddressPublicKeyHash(&out, &addressParams->paymentKeyPath);
@@ -289,7 +291,7 @@ static size_t deriveAddress_pointer(const addressParams_t* addressParams,
         ASSERT(view_processedSize(&out) == ADDRESS_LENGTH);
     }
     {
-        const blockchainPointer_t* stakingKeyBlockchainPointer =
+        const blockchainPointer_t *stakingKeyBlockchainPointer =
             &addressParams->stakingKeyBlockchainPointer;
         view_appendVariableLengthUInt(&out, stakingKeyBlockchainPointer->blockIndex);
         view_appendVariableLengthUInt(&out, stakingKeyBlockchainPointer->txIndex);
@@ -299,8 +301,8 @@ static size_t deriveAddress_pointer(const addressParams_t* addressParams,
     return view_processedSize(&out);
 }
 
-static size_t deriveAddress_enterprise(const addressParams_t* addressParams,
-                                       uint8_t* outBuffer,
+static size_t deriveAddress_enterprise(const addressParams_t *addressParams,
+                                       uint8_t *outBuffer,
                                        size_t outSize) {
     const address_type_t addressType = addressParams->type;
     ASSERT(addressType == ENTERPRISE_KEY || addressType == ENTERPRISE_SCRIPT);
@@ -310,7 +312,9 @@ static size_t deriveAddress_enterprise(const addressParams_t* addressParams,
         constructShelleyAddressHeader(addressType, addressParams->networkId);
 
     write_view_t out = make_write_view(outBuffer, outBuffer + outSize);
-    { view_appendBuffer(&out, &addressHeader, 1); }
+    {
+        view_appendBuffer(&out, &addressHeader, 1);
+    }
     {
         if (addressType == ENTERPRISE_KEY) {
             view_appendAddressPublicKeyHash(&out, &addressParams->paymentKeyPath);
@@ -329,8 +333,8 @@ static size_t deriveAddress_enterprise(const addressParams_t* addressParams,
     return ADDRESS_LENGTH;
 }
 
-static size_t deriveAddress_reward(const addressParams_t* addressParams,
-                                   uint8_t* outBuffer,
+static size_t deriveAddress_reward(const addressParams_t *addressParams,
+                                   uint8_t *outBuffer,
                                    size_t outSize) {
     TRACE_STACK_USAGE();
     const address_type_t addressType = addressParams->type;
@@ -341,13 +345,15 @@ static size_t deriveAddress_reward(const addressParams_t* addressParams,
         constructShelleyAddressHeader(addressType, addressParams->networkId);
 
     write_view_t out = make_write_view(outBuffer, outBuffer + outSize);
-    { view_appendBuffer(&out, &addressHeader, 1); }
+    {
+        view_appendBuffer(&out, &addressHeader, 1);
+    }
     {
         // no payment data
     }
     {
         if (addressType == REWARD_KEY) {
-            const bip44_path_t* stakingKeyPath = &addressParams->stakingKeyPath;
+            const bip44_path_t *stakingKeyPath = &addressParams->stakingKeyPath;
             // stake key path expected (corresponds to reward account)
             BIP44_PRINTF(stakingKeyPath);
             PRINTF("\n");
@@ -365,9 +371,9 @@ static size_t deriveAddress_reward(const addressParams_t* addressParams,
     return ADDRESS_LENGTH;
 }
 
-size_t constructRewardAddressFromKeyPath(const bip44_path_t* path,
+size_t constructRewardAddressFromKeyPath(const bip44_path_t *path,
                                          uint8_t networkId,
-                                         uint8_t* outBuffer,
+                                         uint8_t *outBuffer,
                                          size_t outSize) {
     ASSERT(outSize == REWARD_ACCOUNT_SIZE);
     ASSERT(bip44_isOrdinaryStakingKeyPath(path));
@@ -384,9 +390,9 @@ size_t constructRewardAddressFromKeyPath(const bip44_path_t* path,
 
 size_t constructRewardAddressFromHash(uint8_t networkId,
                                       reward_address_hash_source_t source,
-                                      const uint8_t* hashBuffer,
+                                      const uint8_t *hashBuffer,
                                       size_t hashSize,
-                                      uint8_t* outBuffer,
+                                      uint8_t *outBuffer,
                                       size_t outSize) {
     ASSERT(isValidNetworkId(networkId));
     ASSERT(hashSize == ADDRESS_KEY_HASH_LENGTH);
@@ -400,7 +406,9 @@ size_t constructRewardAddressFromHash(uint8_t networkId,
             networkId);
         view_appendBuffer(&out, &addressHeader, 1);
     }
-    { view_appendBuffer(&out, hashBuffer, hashSize); }
+    {
+        view_appendBuffer(&out, hashBuffer, hashSize);
+    }
 
     const int ADDRESS_LENGTH = REWARD_ACCOUNT_SIZE;
     ASSERT(view_processedSize(&out) == ADDRESS_LENGTH);
@@ -408,7 +416,7 @@ size_t constructRewardAddressFromHash(uint8_t networkId,
     return ADDRESS_LENGTH;
 }
 
-size_t deriveAddress(const addressParams_t* addressParams, uint8_t* outBuffer, size_t outSize) {
+size_t deriveAddress(const addressParams_t *addressParams, uint8_t *outBuffer, size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
     ASSERT(isValidAddressParams(addressParams));
 
@@ -444,7 +452,7 @@ size_t deriveAddress(const addressParams_t* addressParams, uint8_t* outBuffer, s
     return BUFFER_SIZE_PARANOIA + 1;
 }
 
-void printBlockchainPointerToStr(blockchainPointer_t blockchainPointer, char* out, size_t outSize) {
+void printBlockchainPointerToStr(blockchainPointer_t blockchainPointer, char *out, size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
     STATIC_ASSERT(sizeof(blockchainIndex_t) <= sizeof(unsigned), "oversized type for %u");
@@ -464,7 +472,7 @@ void printBlockchainPointerToStr(blockchainPointer_t blockchainPointer, char* ou
 }
 
 // bech32 for Shelley, base58 for Byron
-size_t humanReadableAddress(const uint8_t* address, size_t addressSize, char* out, size_t outSize) {
+size_t humanReadableAddress(const uint8_t *address, size_t addressSize, char *out, size_t outSize) {
     ASSERT(addressSize > 0);
     ASSERT(addressSize < BUFFER_SIZE_PARANOIA);
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
@@ -521,7 +529,7 @@ size_t humanReadableAddress(const uint8_t* address, size_t addressSize, char* ou
  *
  * (see also enums in addressUtilsShelley.h)
  */
-void view_parseAddressParams(read_view_t* view, addressParams_t* params) {
+void view_parseAddressParams(read_view_t *view, addressParams_t *params) {
     // address type
     params->type = parse_u1be(view);
     TRACE("Address type: 0x%x", params->type);
@@ -623,7 +631,7 @@ void view_parseAddressParams(read_view_t* view, addressParams_t* params) {
     }
 }
 
-static inline bool isValidStakingInfo(const addressParams_t* params) {
+static inline bool isValidStakingInfo(const addressParams_t *params) {
 #define CHECK(cond) \
     if (!(cond)) return false
     CHECK(isStakingInfoConsistentWithAddressType(params));
@@ -634,7 +642,7 @@ static inline bool isValidStakingInfo(const addressParams_t* params) {
 #undef CHECK
 }
 
-static inline bool isValidPaymentInfo(const addressParams_t* params) {
+static inline bool isValidPaymentInfo(const addressParams_t *params) {
 #define CHECK(cond) \
     if (!(cond)) return false
     switch (params->type) {
@@ -668,7 +676,7 @@ static inline bool isValidPaymentInfo(const addressParams_t* params) {
 #undef CHECK
 }
 
-bool isValidAddressParams(const addressParams_t* params) {
+bool isValidAddressParams(const addressParams_t *params) {
 #define CHECK(cond) \
     if (!(cond)) return false
     if (params->type != BYRON) {

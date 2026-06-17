@@ -6,23 +6,21 @@
 #include "uiElements.h"
 
 #ifdef HEADLESS
-#define HEADLESS_UI_ELEMENT()                                         \
-    {                                                                 \
-        {BAGL_LABELINE,                                               \
-         ID_HEADLESS,                                                 \
-         0,                                                           \
-         12,                                                          \
-         128,                                                         \
-         12,                                                          \
-         0,                                                           \
-         0,                                                           \
-         0,                                                           \
-         0xFFFFFF,                                                    \
-         0,                                                           \
-         BAGL_FONT_OPEN_SANS_REGULAR_11px | BAGL_FONT_ALIGNMENT_LEFT, \
-         0},                                                          \
-            "HEADLESS "                                               \
-    }
+#define HEADLESS_UI_ELEMENT()                                      \
+    {{BAGL_LABELINE,                                               \
+      ID_HEADLESS,                                                 \
+      0,                                                           \
+      12,                                                          \
+      128,                                                         \
+      12,                                                          \
+      0,                                                           \
+      0,                                                           \
+      0,                                                           \
+      0xFFFFFF,                                                    \
+      0,                                                           \
+      BAGL_FONT_OPEN_SANS_REGULAR_11px | BAGL_FONT_ALIGNMENT_LEFT, \
+      0},                                                          \
+     "HEADLESS "}
 #endif  // HEADLESS
 
 enum {
@@ -46,7 +44,7 @@ static unsigned int ui_busy_button(unsigned int button_mask MARK_UNUSED,
 }
 
 static void scroll_update_display_content() {
-    paginatedTextState_t* ctx = paginatedTextState;
+    paginatedTextState_t *ctx = paginatedTextState;
     assert_uiPaginatedText_magic();
     ASSERT(ctx->currentText[SIZEOF(ctx->currentText) - 1] == '\0');
     ASSERT(ctx->scrollIndex + SIZEOF(ctx->currentText) <= SIZEOF(ctx->fullText));
@@ -55,7 +53,7 @@ static void scroll_update_display_content() {
 }
 
 static void scroll_left() {
-    paginatedTextState_t* ctx = paginatedTextState;
+    paginatedTextState_t *ctx = paginatedTextState;
     assert_uiPaginatedText_magic();
     if (ctx->scrollIndex > 0) {
         ctx->scrollIndex--;
@@ -64,7 +62,7 @@ static void scroll_left() {
 }
 
 static void scroll_right() {
-    paginatedTextState_t* ctx = paginatedTextState;
+    paginatedTextState_t *ctx = paginatedTextState;
     assert_uiPaginatedText_magic();
     if (ctx->scrollIndex + SIZEOF(ctx->currentText) < 1 + strlen(ctx->fullText)) {
         paginatedTextState->scrollIndex++;
@@ -74,7 +72,7 @@ static void scroll_right() {
 
 unsigned int ui_paginatedText_button(unsigned int button_mask,
                                      unsigned int button_mask_counter MARK_UNUSED) {
-    paginatedTextState_t* ctx = paginatedTextState;
+    paginatedTextState_t *ctx = paginatedTextState;
     TRY_CATCH_UI({
         assert_uiPaginatedText_magic();
         ASSERT(io_state == IO_EXPECT_UI);
@@ -131,8 +129,8 @@ static const bagl_element_t ui_paginatedText[] = {
 #endif  // HEADLESS
 };
 
-static const bagl_element_t* ui_prepro_paginatedText(const bagl_element_t* element) {
-    paginatedTextState_t* ctx = paginatedTextState;
+static const bagl_element_t *ui_prepro_paginatedText(const bagl_element_t *element) {
+    paginatedTextState_t *ctx = paginatedTextState;
     assert_uiPaginatedText_magic();
 
     bool textFitsSinglePage = strlen(ctx->currentText) >= strlen(ctx->fullText);
@@ -161,8 +159,8 @@ static const bagl_element_t ui_prompt[] = {
 #endif  // HEADLESS
 };
 
-static const bagl_element_t* ui_prepro_prompt(const bagl_element_t* element) {
-    promptState_t* ctx = promptState;
+static const bagl_element_t *ui_prepro_prompt(const bagl_element_t *element) {
+    promptState_t *ctx = promptState;
 
     assert_uiPrompt_magic();
     switch (element->component.userid) {

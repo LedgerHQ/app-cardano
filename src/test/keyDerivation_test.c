@@ -4,12 +4,12 @@
 #include "hexUtils.h"
 #include "testUtils.h"
 
-static void pathSpec_init(bip44_path_t* pathSpec, const uint32_t* pathArray, uint32_t pathLength) {
+static void pathSpec_init(bip44_path_t *pathSpec, const uint32_t *pathArray, uint32_t pathLength) {
     pathSpec->length = pathLength;
     memmove(pathSpec->path, pathArray, pathLength * 4);
 }
 
-void testcase_derivePublicKey(uint32_t* path, uint32_t pathLen, const char* expected) {
+void testcase_derivePublicKey(uint32_t *path, uint32_t pathLen, const char *expected) {
     PRINTF("testcase_derivePublicKey ");
 
     bip44_path_t pathSpec;

@@ -6,15 +6,15 @@
 
 #define HD HARDENED_BIP32
 
-static void pathSpec_init(bip44_path_t* pathSpec, const uint32_t* pathArray, uint32_t pathLength) {
+static void pathSpec_init(bip44_path_t *pathSpec, const uint32_t *pathArray, uint32_t pathLength) {
     pathSpec->length = pathLength;
     memmove(pathSpec->path, pathArray, pathLength * 4);
 }
 
-void testcase_printToStr(const uint32_t* path,
+void testcase_printToStr(const uint32_t *path,
                          uint32_t pathLen,
                          size_t outputSize,
-                         const char* expected) {
+                         const char *expected) {
     PRINTF("testcase_bip44_printToStr %s\n", expected);
 
     bip44_path_t pathSpec;

@@ -22,26 +22,26 @@
     BUF_FROM_STR(name, SCRIPT_HASH_LENGTH); \
     EXPECT_EQ_BYTES(result, name, SCRIPT_HASH_LENGTH);
 
-static const char* pubkeyHashStr = "3a55d9f68255dfbefa1efd711f82d005fae1be2e145d616c90cf0fa9";
-static const char* expectedPubkeyScriptHashStr =
+static const char *pubkeyHashStr = "3a55d9f68255dfbefa1efd711f82d005fae1be2e145d616c90cf0fa9";
+static const char *expectedPubkeyScriptHashStr =
     "855228f5ecececf9c85618007cc3c2e5bdf5e6d41ef8d6fa793fe0eb";
 
 static const uint64_t invalidBefore = 42;
-static const char* expectedInvalidBeforeScriptHashStr =
+static const char *expectedInvalidBeforeScriptHashStr =
     "2a25e608a683057e32ea38b50ce8875d5b34496b393da8d25d314c4e";
 
 static const uint64_t invalidHereafter = 42;
-static const char* expectedInvalidHereafterScriptHashStr =
+static const char *expectedInvalidHereafterScriptHashStr =
     "1620dc65993296335183f23ff2f7747268168fabbeecbf24c8a20194";
 
-static const char* expectedEmptyAllScriptHashStr =
+static const char *expectedEmptyAllScriptHashStr =
     "d441227553a0f1a965fee7d60a0f724b368dd1bddbc208730fccebcf";
-static const char* expectedEmptyAnyScriptHashStr =
+static const char *expectedEmptyAnyScriptHashStr =
     "52dc3d43b6d2465e96109ce75ab61abe5e9c1d8a3c9ce6ff8a3af528";
-static const char* expectedEmptyNofKScriptHashStr =
+static const char *expectedEmptyNofKScriptHashStr =
     "3530cc9ae7f2895111a99b7a02184dd7c0cea7424f1632d73951b1d7";
 
-static const char* expectedNestedComplexScriptsStr =
+static const char *expectedNestedComplexScriptsStr =
     "1f292766b9b0db263f8ecc087478f6aeea3c9fe091674153084e5668";
 
 void run_nativeScriptHashBuilder_test() {

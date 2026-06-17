@@ -16,7 +16,7 @@ void reset_app_callback(void);
 
 #ifdef HAVE_BAGL
 typedef void timeout_callback_fn_t(bool ux_allowed);
-extern timeout_callback_fn_t* timeout_cb;
-void set_timer(int ms, timeout_callback_fn_t* cb);
+extern timeout_callback_fn_t *timeout_cb;
+void set_timer(int ms, timeout_callback_fn_t *cb);
 void clear_timer();
 #endif

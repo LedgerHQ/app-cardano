@@ -43,7 +43,7 @@ uint16_t getVersion_handleAPDU(uint8_t p1, uint8_t p2, size_t wireDataSize) {
     response.flags |= FLAG_APP_XS;
 #endif  // APP_XS
 
-    io_send_buf(SUCCESS, (uint8_t*) &response, sizeof(response));
+    io_send_buf(SUCCESS, (uint8_t *) &response, sizeof(response));
     ui_idle();
     return ERR_NO_RESPONSE;
 }

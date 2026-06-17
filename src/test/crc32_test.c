@@ -6,7 +6,7 @@
 
 void run_crc32_test() {
     const struct {
-        const char* inputHex;
+        const char *inputHex;
         const uint32_t expected;
     } testVectors[] = {
         {"", 0x00000000},

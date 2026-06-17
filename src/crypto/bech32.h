@@ -17,10 +17,10 @@
 
  * The output buffer must be capable of storing one more character.
  */
-size_t bech32_encode(const char* hrp,
-                     const uint8_t* bytes,
+size_t bech32_encode(const char *hrp,
+                     const uint8_t *bytes,
                      size_t bytesSize,
-                     char* output,
+                     char *output,
                      size_t maxOutputSize);
 
 #endif  // H_CARDANO_APP_BECH32

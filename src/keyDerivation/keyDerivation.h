@@ -20,6 +20,6 @@ typedef struct {
     uint8_t chainCode[CHAIN_CODE_SIZE];
 } extendedPublicKey_t;
 
-void deriveExtendedPublicKey(const bip44_path_t* pathSpec, extendedPublicKey_t* out);
+void deriveExtendedPublicKey(const bip44_path_t *pathSpec, extendedPublicKey_t *out);
 
 #endif  // H_CARDANO_APP_KEY_DERIVATION

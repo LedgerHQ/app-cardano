@@ -10,7 +10,7 @@ static const uint64_t VALUE_W2_UPPER_THRESHOLD = (uint64_t) 1 << 8;
 static const uint64_t VALUE_W4_UPPER_THRESHOLD = (uint64_t) 1 << 16;
 static const uint64_t VALUE_W8_UPPER_THRESHOLD = (uint64_t) 1 << 32;
 
-cbor_token_t cbor_parseToken(const uint8_t* buf, size_t size) {
+cbor_token_t cbor_parseToken(const uint8_t *buf, size_t size) {
 #define ENSURE_AVAILABLE_BYTES(x) \
     if (x > size) THROW(ERR_NOT_ENOUGH_INPUT);
     ENSURE_AVAILABLE_BYTES(1);
@@ -106,7 +106,7 @@ cbor_token_t cbor_parseToken(const uint8_t* buf, size_t size) {
 #undef ENSURE_AVAILABLE_BYTES
 }
 
-size_t cbor_writeToken(uint8_t type, uint64_t value, uint8_t* buffer, size_t bufferSize) {
+size_t cbor_writeToken(uint8_t type, uint64_t value, uint8_t *buffer, size_t bufferSize) {
     ASSERT(bufferSize < BUFFER_SIZE_PARANOIA);
 
 #define CHECK_BUF_LEN(requiredSize) \
@@ -179,9 +179,9 @@ size_t cbor_writeToken(uint8_t type, uint64_t value, uint8_t* buffer, size_t buf
 #undef CHECK_BUF_LEN
 }
 
-bool cbor_mapKeyFulfillsCanonicalOrdering(const uint8_t* previousBuffer,
+bool cbor_mapKeyFulfillsCanonicalOrdering(const uint8_t *previousBuffer,
                                           size_t previousSize,
-                                          const uint8_t* nextBuffer,
+                                          const uint8_t *nextBuffer,
                                           size_t nextSize) {
     ASSERT(previousSize < BUFFER_SIZE_PARANOIA);
     ASSERT(nextSize < BUFFER_SIZE_PARANOIA);

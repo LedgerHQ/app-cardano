@@ -39,9 +39,9 @@ void ui_idle(void) {
 
 // encodes a buffer into bech32 and displays it (works for bufferSize <= 150 and prefix length <=
 // 12)
-void ui_displayBech32Screen(const char* firstLine,
-                            const char* bech32Prefix,
-                            const uint8_t* buffer,
+void ui_displayBech32Screen(const char *firstLine,
+                            const char *bech32Prefix,
+                            const uint8_t *buffer,
                             size_t bufferSize,
                             ui_callback_fn_t callback) {
     {
@@ -70,8 +70,8 @@ void ui_displayBech32Screen(const char* firstLine,
     ui_displayPaginatedText(firstLine, encodedStr, callback);
 }
 
-void ui_displayHexBufferScreen(const char* firstLine,
-                               const uint8_t* buffer,
+void ui_displayHexBufferScreen(const char *firstLine,
+                               const uint8_t *buffer,
                                size_t bufferSize,
                                ui_callback_fn_t callback) {
     ASSERT(strlen(firstLine) > 0);
@@ -89,8 +89,8 @@ void ui_displayHexBufferScreen(const char* firstLine,
     ui_displayPaginatedText(firstLine, bufferHex, callback);
 }
 
-void ui_displayPathScreen(const char* firstLine,
-                          const bip44_path_t* path,
+void ui_displayPathScreen(const char *firstLine,
+                          const bip44_path_t *path,
                           ui_callback_fn_t callback) {
     ASSERT(strlen(firstLine) > 0);
     ASSERT(strlen(firstLine) < BUFFER_SIZE_PARANOIA);
@@ -104,8 +104,8 @@ void ui_displayPathScreen(const char* firstLine,
 }
 
 __noinline_due_to_stack__ static void _ui_displayAccountWithDescriptionScreen(
-    const char* firstLine,
-    const bip44_path_t* path,
+    const char *firstLine,
+    const bip44_path_t *path,
     bool showAccountDescription,
     ui_callback_fn_t callback) {
     ASSERT(strlen(firstLine) > 0);
@@ -151,7 +151,7 @@ __noinline_due_to_stack__ static void _ui_displayAccountWithDescriptionScreen(
 
 // the given path typically corresponds to an account
 // if it contains anything more, we display just the whole path
-void ui_displayGetPublicKeyPathScreen(const bip44_path_t* path, ui_callback_fn_t callback) {
+void ui_displayGetPublicKeyPathScreen(const bip44_path_t *path, ui_callback_fn_t callback) {
     switch (bip44_classifyPath(path)) {
         case PATH_POOL_COLD_KEY: {
             ui_displayPathScreen("Export cold public key", path, callback);
@@ -169,7 +169,7 @@ void ui_displayGetPublicKeyPathScreen(const bip44_path_t* path, ui_callback_fn_t
     }
 }
 
-void ui_displayStakingKeyScreen(const bip44_path_t* stakingPath, ui_callback_fn_t callback) {
+void ui_displayStakingKeyScreen(const bip44_path_t *stakingPath, ui_callback_fn_t callback) {
     ASSERT(bip44_isOrdinaryStakingKeyPath(stakingPath));
 
     bool showAccountDescription = bip44_isPathReasonable(stakingPath);
@@ -181,8 +181,8 @@ void ui_displayStakingKeyScreen(const bip44_path_t* stakingPath, ui_callback_fn_
 }
 
 // bech32 for Shelley, base58 for Byron
-void ui_displayAddressScreen(const char* firstLine,
-                             const uint8_t* addressBuffer,
+void ui_displayAddressScreen(const char *firstLine,
+                             const uint8_t *addressBuffer,
                              size_t addressSize,
                              ui_callback_fn_t callback) {
     ASSERT(strlen(firstLine) > 0);
@@ -203,9 +203,9 @@ void ui_displayAddressScreen(const char* firstLine,
 
 // display bech32-encoded reward account preceded by stake key derivation path (if given)
 static void _displayRewardAccountWithDescriptionScreen(const key_reference_type_t keyReferenceType,
-                                                       const bip44_path_t* path,
-                                                       const uint8_t* rewardAccountBuffer,
-                                                       const char* firstLine,
+                                                       const bip44_path_t *path,
+                                                       const uint8_t *rewardAccountBuffer,
+                                                       const char *firstLine,
                                                        ui_callback_fn_t callback) {
     char description[BIP44_PATH_STRING_SIZE_MAX + MAX_HUMAN_REWARD_ACCOUNT_SIZE + 2] = {0};
     explicit_bzero(description, SIZEOF(description));
@@ -219,9 +219,8 @@ static void _displayRewardAccountWithDescriptionScreen(const key_reference_type_
         ASSERT(descLen < BIP44_PATH_STRING_SIZE_MAX);
         ASSERT(descLen + 1 < SIZEOF(description));
 
-        if (descLen > 0) {
+        if ((descLen > 0) && (descLen < SIZEOF(description) - 2)) {
             // add a space after path if the path is present
-            ASSERT(descLen + 2 < SIZEOF(description));
             description[descLen++] = ' ';
             description[descLen] = '\0';
         }
@@ -240,7 +239,7 @@ static void _displayRewardAccountWithDescriptionScreen(const key_reference_type_
 }
 
 // displays bech32-encoded reward account preceded by path (if given)
-void ui_displayRewardAccountScreen(const reward_account_t* rewardAccount,
+void ui_displayRewardAccountScreen(const reward_account_t *rewardAccount,
                                    uint8_t networkId,
                                    ui_callback_fn_t callback) {
     // WARNING: reward account must be displayed in full (not just a key derivation path)
@@ -299,7 +298,7 @@ void ui_displayRewardAccountScreen(const reward_account_t* rewardAccount,
                                                callback);
 }
 
-void ui_displayPaymentInfoScreen(const addressParams_t* addressParams, ui_callback_fn_t callback) {
+void ui_displayPaymentInfoScreen(const addressParams_t *addressParams, ui_callback_fn_t callback) {
     switch (determinePaymentChoice(addressParams->type)) {
         case PAYMENT_PATH: {
             ui_displayPathScreen("Payment key path", &addressParams->paymentKeyPath, callback);
@@ -328,8 +327,8 @@ static const char STAKING_HEADING_SCRIPT_HASH[] = "Stake script hash";
 static const char STAKING_HEADING_POINTER[] = "Stake key pointer";
 static const char STAKING_HEADING_WARNING[] = "WARNING:";
 
-void ui_displayStakingInfoScreen(const addressParams_t* addressParams, ui_callback_fn_t callback) {
-    const char* heading = NULL;
+void ui_displayStakingInfoScreen(const addressParams_t *addressParams, ui_callback_fn_t callback) {
+    const char *heading = NULL;
     char stakingInfo[120] = {0};
     explicit_bzero(stakingInfo, SIZEOF(stakingInfo));
 
@@ -399,8 +398,8 @@ void ui_displayStakingInfoScreen(const addressParams_t* addressParams, ui_callba
     ui_displayPaginatedText(heading, stakingInfo, callback);
 }
 
-void ui_displayAssetFingerprintScreen(const token_group_t* tokenGroup,
-                                      const uint8_t* assetNameBytes,
+void ui_displayAssetFingerprintScreen(const token_group_t *tokenGroup,
+                                      const uint8_t *assetNameBytes,
                                       size_t assetNameSize,
                                       ui_callback_fn_t callback) {
     ASSERT(assetNameSize <= ASSET_NAME_SIZE_MAX);
@@ -419,7 +418,7 @@ void ui_displayAssetFingerprintScreen(const token_group_t* tokenGroup,
     ui_displayPaginatedText("Asset fingerprint", fingerprint, callback);
 }
 
-void ui_displayAdaAmountScreen(const char* firstLine, uint64_t amount, ui_callback_fn_t callback) {
+void ui_displayAdaAmountScreen(const char *firstLine, uint64_t amount, ui_callback_fn_t callback) {
     ASSERT(strlen(firstLine) > 0);
     ASSERT(strlen(firstLine) < BUFFER_SIZE_PARANOIA);
 
@@ -430,8 +429,8 @@ void ui_displayAdaAmountScreen(const char* firstLine, uint64_t amount, ui_callba
     ui_displayPaginatedText(firstLine, adaAmountStr, callback);
 }
 
-void ui_displayTokenAmountOutputScreen(const token_group_t* tokenGroup,
-                                       const uint8_t* assetNameBytes,
+void ui_displayTokenAmountOutputScreen(const token_group_t *tokenGroup,
+                                       const uint8_t *assetNameBytes,
                                        size_t assetNameSize,
                                        uint64_t tokenAmount,
                                        ui_callback_fn_t callback) {
@@ -447,8 +446,8 @@ void ui_displayTokenAmountOutputScreen(const token_group_t* tokenGroup,
     ui_displayPaginatedText("Token amount", tokenAmountStr, callback);
 }
 
-void ui_displayTokenAmountMintScreen(const token_group_t* tokenGroup,
-                                     const uint8_t* assetNameBytes,
+void ui_displayTokenAmountMintScreen(const token_group_t *tokenGroup,
+                                     const uint8_t *assetNameBytes,
                                      size_t assetNameSize,
                                      int64_t tokenAmount,
                                      ui_callback_fn_t callback) {
@@ -464,7 +463,7 @@ void ui_displayTokenAmountMintScreen(const token_group_t* tokenGroup,
     ui_displayPaginatedText("Token amount", tokenAmountStr, callback);
 }
 
-void ui_displayUint64Screen(const char* firstLine, uint64_t value, ui_callback_fn_t callback) {
+void ui_displayUint64Screen(const char *firstLine, uint64_t value, ui_callback_fn_t callback) {
     char valueStr[30] = {0};
     explicit_bzero(valueStr, SIZEOF(valueStr));
     str_formatUint64(value, valueStr, SIZEOF(valueStr));
@@ -472,7 +471,7 @@ void ui_displayUint64Screen(const char* firstLine, uint64_t value, ui_callback_f
     ui_displayPaginatedText(firstLine, valueStr, callback);
 }
 
-void ui_displayInt64Screen(const char* screenHeader, int64_t value, ui_callback_fn_t callback) {
+void ui_displayInt64Screen(const char *screenHeader, int64_t value, ui_callback_fn_t callback) {
     char valueStr[30] = {0};
     explicit_bzero(valueStr, SIZEOF(valueStr));
     str_formatInt64(value, valueStr, SIZEOF(valueStr));
@@ -480,7 +479,7 @@ void ui_displayInt64Screen(const char* screenHeader, int64_t value, ui_callback_
     ui_displayPaginatedText(screenHeader, valueStr, callback);
 }
 
-void ui_displayValidityBoundaryScreen(const char* firstLine,
+void ui_displayValidityBoundaryScreen(const char *firstLine,
                                       uint64_t boundary,
                                       uint8_t networkId,
                                       uint32_t protocolMagic,
@@ -498,7 +497,7 @@ void ui_displayValidityBoundaryScreen(const char* firstLine,
     }
 }
 
-void ui_displayNetworkParamsScreen(const char* firstLine,
+void ui_displayNetworkParamsScreen(const char *firstLine,
                                    uint8_t networkId,
                                    uint32_t protocolMagic,
                                    ui_callback_fn_t callback) {
@@ -563,7 +562,7 @@ void ui_displayPoolMarginScreen(uint64_t marginNumerator,
 
 #ifdef APP_FEATURE_POOL_REGISTRATION
 
-void ui_displayPoolOwnerScreen(const pool_owner_t* owner,
+void ui_displayPoolOwnerScreen(const pool_owner_t *owner,
                                uint32_t ownerIndex,
                                uint8_t networkId,
                                ui_callback_fn_t callback) {
@@ -618,7 +617,7 @@ void ui_displayPoolOwnerScreen(const pool_owner_t* owner,
 }
 
 // displays pool relay index
-void ui_displayPoolRelayScreen(const pool_relay_t* relay MARK_UNUSED,
+void ui_displayPoolRelayScreen(const pool_relay_t *relay MARK_UNUSED,
                                size_t relayIndex,
                                ui_callback_fn_t callback) {
     char firstLine[20] = {0};
@@ -637,7 +636,7 @@ void ui_displayPoolRelayScreen(const pool_relay_t* relay MARK_UNUSED,
     ui_displayPaginatedText(firstLine, "", callback);
 }
 
-void ui_displayIpv4Screen(const ipv4_t* ipv4, ui_callback_fn_t callback) {
+void ui_displayIpv4Screen(const ipv4_t *ipv4, ui_callback_fn_t callback) {
     char ipStr[IPV4_STR_SIZE_MAX + 1] = {0};
     explicit_bzero(ipStr, SIZEOF(ipStr));
 
@@ -653,7 +652,7 @@ void ui_displayIpv4Screen(const ipv4_t* ipv4, ui_callback_fn_t callback) {
     ui_displayPaginatedText("IPv4 address", ipStr, callback);
 }
 
-void ui_displayIpv6Screen(const ipv6_t* ipv6, ui_callback_fn_t callback) {
+void ui_displayIpv6Screen(const ipv6_t *ipv6, ui_callback_fn_t callback) {
     char ipStr[IPV6_STR_SIZE_MAX + 1] = {0};
     explicit_bzero(ipStr, SIZEOF(ipStr));
 
@@ -669,7 +668,7 @@ void ui_displayIpv6Screen(const ipv6_t* ipv6, ui_callback_fn_t callback) {
     ui_displayPaginatedText("IPv6 address", ipStr, callback);
 }
 
-void ui_displayIpPortScreen(const ipport_t* port, ui_callback_fn_t callback) {
+void ui_displayIpPortScreen(const ipport_t *port, ui_callback_fn_t callback) {
     char portStr[1 + (sizeof "65536")] = {0};
     explicit_bzero(portStr, SIZEOF(portStr));
 
@@ -689,8 +688,8 @@ void ui_displayIpPortScreen(const ipport_t* port, ui_callback_fn_t callback) {
 
 #endif  // APP_FEATURE_POOL_REGISTRATION
 
-void ui_displayInputScreen(const sign_tx_transaction_input_t* input, ui_callback_fn_t callback) {
-    const tx_input_t* inputData = &input->input_data;
+void ui_displayInputScreen(const sign_tx_transaction_input_t *input, ui_callback_fn_t callback) {
+    const tx_input_t *inputData = &input->input_data;
     ASSERT(SIZEOF(inputData->txHashBuffer) == TX_HASH_LENGTH);
     char txHex[2 * TX_HASH_LENGTH + 1] = {0};
     explicit_bzero(txHex, SIZEOF(txHex));

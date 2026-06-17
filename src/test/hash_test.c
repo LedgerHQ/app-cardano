@@ -4,9 +4,9 @@
 #include "hexUtils.h"
 #include "testUtils.h"
 
-void testcase_chunks_blake2b_512(const char* chunksHex[],
+void testcase_chunks_blake2b_512(const char *chunksHex[],
                                  uint32_t chunksCount,
-                                 const char* expectedHex) {
+                                 const char *expectedHex) {
     PRINTF("testcase_chunks_blake2b_512\n");
     blake2b_512_context_t ctx;
     blake2b_512_init(&ctx);
@@ -26,7 +26,7 @@ void testcase_chunks_blake2b_512(const char* chunksHex[],
     EXPECT_EQ_BYTES(expectedBuffer, outputBuffer, SIZEOF(expectedBuffer));
 }
 
-void testcase_blake2b_224(const char* inputHex, const char* expectedHex) {
+void testcase_blake2b_224(const char *inputHex, const char *expectedHex) {
     PRINTF("testcase_blake2b_224 %s\n", inputHex);
     uint8_t inputBuffer[200] = {0};
     size_t inputSize = decode_hex(inputHex, inputBuffer, SIZEOF(inputBuffer));
@@ -40,7 +40,7 @@ void testcase_blake2b_224(const char* inputHex, const char* expectedHex) {
     EXPECT_EQ_BYTES(expectedBuffer, outputBuffer, expectedSize);
 }
 
-void testcase_blake2b_160(const char* inputHex, const char* expectedHex) {
+void testcase_blake2b_160(const char *inputHex, const char *expectedHex) {
     PRINTF("testcase_blake2b_160 %s\n", inputHex);
     uint8_t inputBuffer[200] = {0};
     size_t inputSize = decode_hex(inputHex, inputBuffer, SIZEOF(inputBuffer));
@@ -57,7 +57,7 @@ void testcase_blake2b_160(const char* inputHex, const char* expectedHex) {
 void run_blake2b_test() {
 #define TESTCASE_CHUNKS_BLAKE2B_512(chunks_, expected_)                    \
     {                                                                      \
-        const char* chunks[] = {UNWRAP chunks_};                           \
+        const char *chunks[] = {UNWRAP chunks_};                           \
         testcase_chunks_blake2b_512(chunks, ARRAY_LEN(chunks), expected_); \
     }
 

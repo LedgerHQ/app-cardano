@@ -6,10 +6,10 @@
 #include "securityPolicy.h"
 #include "crypto.h"
 
-void signRawMessageWithPath(bip44_path_t* pathSpec,
-                            const uint8_t* messageBuffer,
+void signRawMessageWithPath(bip44_path_t *pathSpec,
+                            const uint8_t *messageBuffer,
                             size_t messageSize,
-                            uint8_t* outBuffer,
+                            uint8_t *outBuffer,
                             size_t outSize) {
     size_t sigLen = outSize;
 
@@ -45,10 +45,10 @@ void signRawMessageWithPath(bip44_path_t* pathSpec,
 }
 
 // sign the given hash by the private key derived according to the given path
-void getWitness(bip44_path_t* pathSpec,
-                const uint8_t* hashBuffer,
+void getWitness(bip44_path_t *pathSpec,
+                const uint8_t *hashBuffer,
                 size_t hashSize,
-                uint8_t* outBuffer,
+                uint8_t *outBuffer,
                 size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
@@ -57,10 +57,10 @@ void getWitness(bip44_path_t* pathSpec,
 #endif
 }
 
-void getCVoteRegistrationSignature(bip44_path_t* pathSpec,
-                                   const uint8_t* payloadHashBuffer,
+void getCVoteRegistrationSignature(bip44_path_t *pathSpec,
+                                   const uint8_t *payloadHashBuffer,
                                    size_t payloadHashSize,
-                                   uint8_t* outBuffer,
+                                   uint8_t *outBuffer,
                                    size_t outSize) {
     ASSERT(payloadHashSize == CVOTE_REGISTRATION_PAYLOAD_HASH_LENGTH);
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
@@ -71,10 +71,10 @@ void getCVoteRegistrationSignature(bip44_path_t* pathSpec,
 }
 
 #ifdef APP_FEATURE_OPCERT
-void getOpCertSignature(bip44_path_t* pathSpec,
-                        const uint8_t* opCertBodyBuffer,
+void getOpCertSignature(bip44_path_t *pathSpec,
+                        const uint8_t *opCertBodyBuffer,
                         size_t opCertBodySize,
-                        uint8_t* outBuffer,
+                        uint8_t *outBuffer,
                         size_t outSize) {
     ASSERT(bip44_isPoolColdKeyPath(pathSpec));
     ASSERT(opCertBodySize == OP_CERT_BODY_LENGTH);

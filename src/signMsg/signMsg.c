@@ -17,9 +17,9 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-static ins_sign_msg_context_t* ctx = &(instructionState.signMsgContext);
+static ins_sign_msg_context_t *ctx = &(instructionState.signMsgContext);
 
-void signMsg_handleInitAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+void signMsg_handleInitAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
         read_view_t view = make_read_view(wireDataBuffer, wireDataBuffer + wireDataSize);
@@ -80,7 +80,7 @@ void signMsg_handleInitAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) 
     signMsg_handleInit_ui_runStep();
 }
 
-static void signMsg_handleMsgChunkAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void signMsg_handleMsgChunkAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         ASSERT(ctx->stage == SIGN_MSG_STAGE_CHUNKS);
         if (!ctx->hashPayload) {
@@ -179,14 +179,14 @@ static void _prepareAddressField() {
     }
 }
 
-__noinline_due_to_stack__ static size_t _createProtectedHeader(uint8_t* protectedHeaderBuffer,
+__noinline_due_to_stack__ static size_t _createProtectedHeader(uint8_t *protectedHeaderBuffer,
                                                                size_t maxSize) {
     // protectedHeader = {
     //     1 : -8,                         // set algorithm to EdDSA
     //     “address” : address_bytes       // raw address given by the user, or key hash
     // }
-    uint8_t* p = protectedHeaderBuffer;
-    uint8_t* end = protectedHeaderBuffer + maxSize;
+    uint8_t *p = protectedHeaderBuffer;
+    uint8_t *end = protectedHeaderBuffer + maxSize;
 
     {
         size_t len = cbor_writeToken(CBOR_TYPE_MAP, 2, p, end - p);
@@ -209,7 +209,7 @@ __noinline_due_to_stack__ static size_t _createProtectedHeader(uint8_t* protecte
         ASSERT(p < end);
     }
     {
-        const char* text = "address";
+        const char *text = "address";
         const size_t len = strlen(text);
         ASSERT(p + len < end);
         memmove(p, text, len);
@@ -235,7 +235,7 @@ __noinline_due_to_stack__ static size_t _createProtectedHeader(uint8_t* protecte
     return protectedHeaderSize;
 }
 
-static void signMsg_handleConfirmAPDU(const uint8_t* wireDataBuffer MARK_UNUSED,
+static void signMsg_handleConfirmAPDU(const uint8_t *wireDataBuffer MARK_UNUSED,
                                       size_t wireDataSize) {
     VALIDATE(wireDataSize == 0, ERR_INVALID_DATA);
 
@@ -256,7 +256,7 @@ static void signMsg_handleConfirmAPDU(const uint8_t* wireDataBuffer MARK_UNUSED,
     ASSERT(written < maxWritten);
 
     {
-        const char* firstElement = "Signature1";
+        const char *firstElement = "Signature1";
         const size_t len = strlen(firstElement);
         written +=
             cbor_writeToken(CBOR_TYPE_TEXT, len, sigStructure + written, maxWritten - written);
@@ -333,9 +333,9 @@ static void signMsg_handleConfirmAPDU(const uint8_t* wireDataBuffer MARK_UNUSED,
 
 // ============================== MAIN HANDLER ==============================
 
-typedef void subhandler_fn_t(const uint8_t* dataBuffer, size_t dataSize);
+typedef void subhandler_fn_t(const uint8_t *dataBuffer, size_t dataSize);
 
-static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
+static subhandler_fn_t *lookup_subhandler(uint8_t p1) {
     switch (p1) {
 #define CASE(P1, HANDLER) \
     case P1:              \
@@ -354,7 +354,7 @@ static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
 
 uint16_t signMsg_handleAPDU(uint8_t p1,
                             uint8_t p2,
-                            const uint8_t* wireDataBuffer,
+                            const uint8_t *wireDataBuffer,
                             size_t wireDataSize,
                             bool isNewCall) {
     TRACE("P1 = 0x%x, P2 = 0x%x, isNewCall = %d", p1, p2, isNewCall);
@@ -373,7 +373,7 @@ uint16_t signMsg_handleAPDU(uint8_t p1,
         ctx->stage = SIGN_MSG_STAGE_INIT;
     }
 
-    subhandler_fn_t* subhandler = lookup_subhandler(p1);
+    subhandler_fn_t *subhandler = lookup_subhandler(p1);
     VALIDATE(subhandler != NULL, ERR_INVALID_REQUEST_PARAMETERS);
     subhandler(wireDataBuffer, wireDataSize);
     return ERR_NO_RESPONSE;

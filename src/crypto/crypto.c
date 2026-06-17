@@ -21,10 +21,10 @@
 #include "cx.h"
 #include "os.h"
 
-static cx_err_t crypto_init_privkey(const uint32_t* path,
+static cx_err_t crypto_init_privkey(const uint32_t *path,
                                     size_t path_len,
-                                    cx_ecfp_256_extended_private_key_t* privkey,
-                                    uint8_t* chain_code) {
+                                    cx_ecfp_256_extended_private_key_t *privkey,
+                                    uint8_t *chain_code) {
     cx_err_t error = CX_OK;
     uint8_t raw_privkey[64];
 
@@ -50,10 +50,10 @@ end:
     return error;
 }
 
-WARN_UNUSED_RESULT cx_err_t crypto_get_pubkey(const uint32_t* path,
+WARN_UNUSED_RESULT cx_err_t crypto_get_pubkey(const uint32_t *path,
                                               size_t path_len,
                                               uint8_t raw_pubkey[static 65],
-                                              uint8_t* chain_code) {
+                                              uint8_t *chain_code) {
     cx_err_t error = CX_OK;
 
     cx_ecfp_256_extended_private_key_t privkey;
@@ -65,7 +65,7 @@ WARN_UNUSED_RESULT cx_err_t crypto_get_pubkey(const uint32_t* path,
     // Generate associated pubkey
     // Do not use cx_ecfp_generate_pair2_no_throw as it doesn't
     // support 64 bytes for CX_CURVE_Ed25519 curve
-    CX_CHECK(cx_eddsa_get_public_key_no_throw((const struct cx_ecfp_256_private_key_s*) &privkey,
+    CX_CHECK(cx_eddsa_get_public_key_no_throw((const struct cx_ecfp_256_private_key_s *) &privkey,
                                               CX_SHA512,
                                               &pubkey,
                                               NULL,
@@ -92,12 +92,12 @@ end:
     return error;
 }
 
-WARN_UNUSED_RESULT cx_err_t crypto_eddsa_sign(const uint32_t* path,
+WARN_UNUSED_RESULT cx_err_t crypto_eddsa_sign(const uint32_t *path,
                                               size_t path_len,
-                                              const uint8_t* hash,
+                                              const uint8_t *hash,
                                               size_t hash_len,
-                                              uint8_t* sig,
-                                              size_t* sig_len) {
+                                              uint8_t *sig,
+                                              size_t *sig_len) {
     cx_err_t error = CX_OK;
     cx_ecfp_256_extended_private_key_t privkey;
     size_t size;
@@ -110,7 +110,7 @@ WARN_UNUSED_RESULT cx_err_t crypto_eddsa_sign(const uint32_t* path,
     // Derive private key according to BIP32 path
     CX_CHECK(crypto_init_privkey(path, path_len, &privkey, NULL));
 
-    CX_CHECK(cx_eddsa_sign_no_throw((const struct cx_ecfp_256_private_key_s*) &privkey,
+    CX_CHECK(cx_eddsa_sign_no_throw((const struct cx_ecfp_256_private_key_s *) &privkey,
                                     CX_SHA512,
                                     hash,
                                     hash_len,

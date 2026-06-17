@@ -9,7 +9,7 @@
 #define HD                 HARDENED_BIP32
 #define MAX_ADDRESS_LENGTH 128
 
-static void pathSpec_init(bip44_path_t* pathSpec, const uint32_t* pathArray, uint32_t pathLength) {
+static void pathSpec_init(bip44_path_t *pathSpec, const uint32_t *pathArray, uint32_t pathLength) {
     pathSpec->length = pathLength;
     memmove(pathSpec->path, pathArray, pathLength * 4);
 }
@@ -18,14 +18,14 @@ static void pathSpec_init(bip44_path_t* pathSpec, const uint32_t* pathArray, uin
 // Byron addresses
 static void testcase_deriveAddressShelley(uint8_t type,
                                           uint32_t networkIdOrProtocolMagic,
-                                          const uint32_t* paymentPathArray,
+                                          const uint32_t *paymentPathArray,
                                           size_t paymentPathLen,
                                           uint8_t stakingDataSource,
-                                          const uint32_t* stakingPathArray,
+                                          const uint32_t *stakingPathArray,
                                           size_t stakingPathLen,
-                                          const char* stakingKeyHashHex,
-                                          const blockchainPointer_t* stakingKeyBlockchainPointer,
-                                          const char* expectedHex) {
+                                          const char *stakingKeyHashHex,
+                                          const blockchainPointer_t *stakingKeyBlockchainPointer,
+                                          const char *expectedHex) {
     // avoid inconsistent tests
     switch (stakingDataSource) {
         case NO_STAKING:
@@ -51,13 +51,13 @@ static void testcase_deriveAddressShelley(uint8_t type,
     addressParams_t params;
 
     if (type == BYRON) {
-        params = (addressParams_t){.type = type,
-                                   .protocolMagic = networkIdOrProtocolMagic,
-                                   .stakingDataSource = stakingDataSource};
+        params = (addressParams_t) {.type = type,
+                                    .protocolMagic = networkIdOrProtocolMagic,
+                                    .stakingDataSource = stakingDataSource};
     } else {
-        params = (addressParams_t){.type = type,
-                                   .networkId = (uint8_t) networkIdOrProtocolMagic,
-                                   .stakingDataSource = stakingDataSource};
+        params = (addressParams_t) {.type = type,
+                                    .networkId = (uint8_t) networkIdOrProtocolMagic,
+                                    .stakingDataSource = stakingDataSource};
     }  // the rest of params is initialized to zero
 
     pathSpec_init(&params.paymentKeyPath, paymentPathArray, paymentPathLen);

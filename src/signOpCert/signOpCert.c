@@ -17,7 +17,7 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-static ins_sign_op_cert_context_t* ctx = &(instructionState.signOpCertContext);
+static ins_sign_op_cert_context_t *ctx = &(instructionState.signOpCertContext);
 
 static int16_t RESPONSE_READY_MAGIC = 31678;
 
@@ -38,7 +38,7 @@ enum {
 
 uint16_t signOpCert_handleAPDU(uint8_t p1,
                                uint8_t p2,
-                               const uint8_t* wireDataBuffer,
+                               const uint8_t *wireDataBuffer,
                                size_t wireDataSize,
                                bool isNewCall) {
     // Initialize state
@@ -86,7 +86,7 @@ uint16_t signOpCert_handleAPDU(uint8_t p1,
             make_write_view(opCertBodyBuffer, opCertBodyBuffer + OP_CERT_BODY_LENGTH);
 
         view_appendBuffer(&opCertBodyBufferView,
-                          (const uint8_t*) &ctx->kesPublicKey,
+                          (const uint8_t *) &ctx->kesPublicKey,
                           SIZEOF(ctx->kesPublicKey));
         {
             uint8_t chunk[8] = {0};
@@ -138,7 +138,7 @@ uint16_t signOpCert_handleAPDU(uint8_t p1,
 static void signOpCert_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signOpCert_ui_runStep;
+    ui_callback_fn_t *this_fn = signOpCert_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -247,7 +247,7 @@ static void signOpCert_ui_runStep() {
     UI_STEP(UI_STEP_RESPOND) {
         ASSERT(ctx->responseReadyMagic == RESPONSE_READY_MAGIC);
 
-        io_send_buf(SUCCESS, (uint8_t*) &ctx->signature, SIZEOF(ctx->signature));
+        io_send_buf(SUCCESS, (uint8_t *) &ctx->signature, SIZEOF(ctx->signature));
         ui_idle();
     }
     UI_STEP_END(UI_STEP_INVALID);

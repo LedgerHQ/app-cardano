@@ -6,11 +6,11 @@
 
 #define ASSET_FINGERPRINT_SIZE 20
 
-void deriveAssetFingerprintBytes(const uint8_t* policyId,
+void deriveAssetFingerprintBytes(const uint8_t *policyId,
                                  size_t policyIdSize,
-                                 const uint8_t* assetName,
+                                 const uint8_t *assetName,
                                  size_t assetNameSize,
-                                 uint8_t* fingerprintBuffer,
+                                 uint8_t *fingerprintBuffer,
                                  size_t fingerprintBufferSize) {
     ASSERT(policyIdSize == MINTING_POLICY_ID_SIZE);
     ASSERT(assetNameSize <= ASSET_NAME_SIZE_MAX);
@@ -28,11 +28,11 @@ void deriveAssetFingerprintBytes(const uint8_t* policyId,
     blake2b_160_hash(hashInput, hashInputSize, fingerprintBuffer, fingerprintBufferSize);
 }
 
-size_t deriveAssetFingerprintBech32(const uint8_t* policyId,
+size_t deriveAssetFingerprintBech32(const uint8_t *policyId,
                                     size_t policyIdSize,
-                                    const uint8_t* assetName,
+                                    const uint8_t *assetName,
                                     size_t assetNameSize,
-                                    char* fingerprint,
+                                    char *fingerprint,
                                     size_t fingerprintMaxSize) {
     ASSERT(policyIdSize == MINTING_POLICY_ID_SIZE);
     ASSERT(assetNameSize <= ASSET_NAME_SIZE_MAX);
@@ -59,7 +59,7 @@ size_t deriveAssetFingerprintBech32(const uint8_t* policyId,
 typedef struct {
     uint8_t fingerprint[ASSET_FINGERPRINT_SIZE];
     uint8_t decimals;
-    const char* ticker;
+    const char *ticker;
 } token_info_t;
 
 const token_info_t tokenInfos[] = {
@@ -67,8 +67,8 @@ const token_info_t tokenInfos[] = {
 #include "../tokenRegistry/token_data.c"
 };
 
-static const token_info_t* _getTokenInfo(const token_group_t* tokenGroup,
-                                         const uint8_t* assetNameBytes,
+static const token_info_t *_getTokenInfo(const token_group_t *tokenGroup,
+                                         const uint8_t *assetNameBytes,
                                          size_t assetNameSize) {
     ASSERT(assetNameSize <= ASSET_NAME_SIZE_MAX);
 
@@ -89,21 +89,21 @@ static const token_info_t* _getTokenInfo(const token_group_t* tokenGroup,
     return NULL;
 }
 
-size_t str_formatTokenAmountOutput(const token_group_t* tokenGroup,
-                                   const uint8_t* assetNameBytes,
+size_t str_formatTokenAmountOutput(const token_group_t *tokenGroup,
+                                   const uint8_t *assetNameBytes,
                                    size_t assetNameSize,
                                    uint64_t amount,
-                                   char* out,
+                                   char *out,
                                    size_t outSize) {
     ASSERT(assetNameSize <= ASSET_NAME_SIZE_MAX);
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
-    const token_info_t* tokenInfo = _getTokenInfo(tokenGroup, assetNameBytes, assetNameSize);
+    const token_info_t *tokenInfo = _getTokenInfo(tokenGroup, assetNameBytes, assetNameSize);
     int decimals = (tokenInfo != NULL) ? tokenInfo->decimals : 0;
     TRACE("token decimal places = %u", decimals);
     size_t length = str_formatDecimalAmount(amount, decimals, out, outSize);
 
-    const char* ticker = (tokenInfo != NULL) ? PTR_PIC(tokenInfo->ticker) : "(unknown decimals)";
+    const char *ticker = (tokenInfo != NULL) ? PTR_PIC(tokenInfo->ticker) : "(unknown decimals)";
     TRACE("token ticker = %s", ticker);
     snprintf(out + length, outSize - length, " %s", ticker);
     length += 1 + strlen(ticker);
@@ -114,11 +114,11 @@ size_t str_formatTokenAmountOutput(const token_group_t* tokenGroup,
     return length;
 }
 
-size_t str_formatTokenAmountMint(const token_group_t* tokenGroup,
-                                 const uint8_t* assetNameBytes,
+size_t str_formatTokenAmountMint(const token_group_t *tokenGroup,
+                                 const uint8_t *assetNameBytes,
                                  size_t assetNameSize,
                                  int64_t amount,
-                                 char* out,
+                                 char *out,
                                  size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
     ASSERT(outSize >= 2);

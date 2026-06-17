@@ -31,8 +31,8 @@ bool isHardened(uint32_t value);
 uint32_t harden(uint32_t value);
 uint32_t unharden(uint32_t value);
 
-bool bip44_check_path(bip44_path_t* pathSpec, const uint8_t* dataBuffer, size_t dataSize);
-size_t bip44_parseFromWire(bip44_path_t* pathSpec, const uint8_t* dataBuffer, size_t dataSize);
+bool bip44_check_path(bip44_path_t *pathSpec, const uint8_t *dataBuffer, size_t dataSize);
+size_t bip44_parseFromWire(bip44_path_t *pathSpec, const uint8_t *dataBuffer, size_t dataSize);
 
 // Indexes into pathSpec
 enum {
@@ -56,36 +56,36 @@ enum {
     BIP44_I_POOL_COLD_KEY = 3,
 };
 
-bool bip44_hasByronPrefix(const bip44_path_t* pathSpec);
-bool bip44_hasShelleyPrefix(const bip44_path_t* pathSpec);
-bool bip44_hasOrdinaryWalletKeyPrefix(const bip44_path_t* pathSpec);
-bool bip44_hasMultisigWalletKeyPrefix(const bip44_path_t* pathSpec);
-bool bip44_hasMintKeyPrefix(const bip44_path_t* pathSpec);
-bool bip44_hasPoolColdKeyPrefix(const bip44_path_t* pathSpec);
-bool bip44_hasCVoteKeyPrefix(const bip44_path_t* pathSpec);
+bool bip44_hasByronPrefix(const bip44_path_t *pathSpec);
+bool bip44_hasShelleyPrefix(const bip44_path_t *pathSpec);
+bool bip44_hasOrdinaryWalletKeyPrefix(const bip44_path_t *pathSpec);
+bool bip44_hasMultisigWalletKeyPrefix(const bip44_path_t *pathSpec);
+bool bip44_hasMintKeyPrefix(const bip44_path_t *pathSpec);
+bool bip44_hasPoolColdKeyPrefix(const bip44_path_t *pathSpec);
+bool bip44_hasCVoteKeyPrefix(const bip44_path_t *pathSpec);
 
-bool bip44_containsAccount(const bip44_path_t* pathSpec);
-uint32_t bip44_getAccount(const bip44_path_t* pathSpec);
+bool bip44_containsAccount(const bip44_path_t *pathSpec);
+uint32_t bip44_getAccount(const bip44_path_t *pathSpec);
 
-bool bip44_containsChainType(const bip44_path_t* pathSpec);
+bool bip44_containsChainType(const bip44_path_t *pathSpec);
 
-bool bip44_containsAddress(const bip44_path_t* pathSpec);
+bool bip44_containsAddress(const bip44_path_t *pathSpec);
 
-bool bip44_isOrdinaryStakingKeyPath(const bip44_path_t* pathSpec);
-bool bip44_isMultisigStakingKeyPath(const bip44_path_t* pathSpec);
-bool bip44_isMultidelegationStakingKeyPath(const bip44_path_t* pathSpec);
+bool bip44_isOrdinaryStakingKeyPath(const bip44_path_t *pathSpec);
+bool bip44_isMultisigStakingKeyPath(const bip44_path_t *pathSpec);
+bool bip44_isMultidelegationStakingKeyPath(const bip44_path_t *pathSpec);
 
-bool bip44_isDRepKeyPath(const bip44_path_t* pathSpec);
-bool bip44_isCommitteeColdKeyPath(const bip44_path_t* pathSpec);
-bool bip44_isCommitteeHotKeyPath(const bip44_path_t* pathSpec);
+bool bip44_isDRepKeyPath(const bip44_path_t *pathSpec);
+bool bip44_isCommitteeColdKeyPath(const bip44_path_t *pathSpec);
+bool bip44_isCommitteeHotKeyPath(const bip44_path_t *pathSpec);
 
-bool bip44_isMintKeyPath(const bip44_path_t* pathSpec);
+bool bip44_isMintKeyPath(const bip44_path_t *pathSpec);
 
-bool bip44_isPoolColdKeyPath(const bip44_path_t* pathSpec);
+bool bip44_isPoolColdKeyPath(const bip44_path_t *pathSpec);
 
-bool bip44_isCVoteKeyPath(const bip44_path_t* pathSpec);
+bool bip44_isCVoteKeyPath(const bip44_path_t *pathSpec);
 
-size_t bip44_printToStr(const bip44_path_t*, char* out, size_t outSize);
+size_t bip44_printToStr(const bip44_path_t *, char *out, size_t outSize);
 
 typedef enum {
     // hd wallet account
@@ -125,18 +125,18 @@ typedef enum {
     PATH_INVALID,
 } bip44_path_type_t;
 
-bip44_path_type_t bip44_classifyPath(const bip44_path_t* pathSpec);
+bip44_path_type_t bip44_classifyPath(const bip44_path_t *pathSpec);
 
-bool bip44_isPathReasonable(const bip44_path_t* pathSpec);
+bool bip44_isPathReasonable(const bip44_path_t *pathSpec);
 
-__noinline_due_to_stack__ void bip44_pathToKeyHash(const bip44_path_t* pathSpec,
-                                                   uint8_t* hash,
+__noinline_due_to_stack__ void bip44_pathToKeyHash(const bip44_path_t *pathSpec,
+                                                   uint8_t *hash,
                                                    size_t hashSize);
 
-bool bip44_pathsEqual(const bip44_path_t* lhs, const bip44_path_t* rhs);
+bool bip44_pathsEqual(const bip44_path_t *lhs, const bip44_path_t *rhs);
 
 #ifdef DEVEL
-void bip44_PRINTF(const bip44_path_t* pathSpec);
+void bip44_PRINTF(const bip44_path_t *pathSpec);
 #define BIP44_PRINTF(PATH) bip44_PRINTF(PATH)
 #else
 #define BIP44_PRINTF(PATH)

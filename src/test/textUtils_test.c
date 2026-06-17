@@ -4,7 +4,7 @@
 #include "textUtils.h"
 #include "testUtils.h"
 
-void testcase_formatDecimal(uint64_t amount, size_t places, const char* expected) {
+void testcase_formatDecimal(uint64_t amount, size_t places, const char *expected) {
     PRINTF("testcase_formatDecimal %s\n", expected);
     char tmp[30] = {0};
     size_t len = str_formatDecimalAmount(amount, places, tmp, SIZEOF(tmp));
@@ -35,7 +35,7 @@ void test_formatDecimal() {
     }
 }
 
-void testcase_formatAda(uint64_t amount, const char* expected) {
+void testcase_formatAda(uint64_t amount, const char *expected) {
     PRINTF("testcase_formatAda %s\n", expected);
     char tmp[40] = {0};
     size_t len = str_formatAdaAmount(amount, tmp, SIZEOF(tmp));
@@ -65,7 +65,7 @@ void test_formatAda() {
     }
 }
 
-void testcase_formatTtl(uint64_t ttl, const char* expected) {
+void testcase_formatTtl(uint64_t ttl, const char *expected) {
     PRINTF("testcase_formatTtl %s\n", expected);
 
     {
@@ -95,7 +95,7 @@ void test_formatTtl() {
     testcase_formatTtl(-1ll, "epoch more than 1000000");
 }
 
-void testcase_formatUint64(uint64_t number, const char* expected) {
+void testcase_formatUint64(uint64_t number, const char *expected) {
     PRINTF("testcase_formatUint64 %s\n", expected);
 
     {
@@ -112,7 +112,7 @@ void testcase_formatUint64(uint64_t number, const char* expected) {
     }
 }
 
-void testcase_formatInt64(int64_t number, const char* expected) {
+void testcase_formatInt64(int64_t number, const char *expected) {
     PRINTF("testcase_formatInt64 %s\n", expected);
 
     {

@@ -96,4 +96,4 @@ enum {
 bool device_is_unlocked();
 
 // Normal code should use just this helper function
-void io_send_buf(uint16_t code, uint8_t* buffer, size_t tx);
+void io_send_buf(uint16_t code, uint8_t *buffer, size_t tx);

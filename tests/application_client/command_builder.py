@@ -121,7 +121,7 @@ class CommandBuilder:
         header.append(p1)
         header.append(p2)
         header.append(len(cdata))
-        return header + cdata
+        return bytes(header + cdata)
 
 
     def get_version(self) -> bytes:

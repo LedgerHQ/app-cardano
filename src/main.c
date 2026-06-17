@@ -50,7 +50,7 @@ bool device_is_unlocked() {
     return os_global_pin_is_validated() == BOLOS_UX_OK;  // Seems to work for api 9/10
 }
 
-void io_send_buf(uint16_t code, uint8_t* buffer, size_t tx) {
+void io_send_buf(uint16_t code, uint8_t *buffer, size_t tx) {
     // Note(ppershing): we do both checks due to potential overflows
     ASSERT(tx < sizeof(G_io_apdu_buffer));
     ASSERT(tx + 2u < sizeof(G_io_apdu_buffer));

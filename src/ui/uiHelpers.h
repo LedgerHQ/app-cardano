@@ -26,8 +26,8 @@ typedef void ui_callback_fn_t();
 
 #define UI_STEP_BEGIN(STEP_VAR, THIS_FN)                                 \
     {                                                                    \
-        int* __ui_step_ptr = &(STEP_VAR);                                \
-        __attribute__((unused)) ui_callback_fn_t* __this_fn = (THIS_FN); \
+        int *__ui_step_ptr = &(STEP_VAR);                                \
+        __attribute__((unused)) ui_callback_fn_t *__this_fn = (THIS_FN); \
         switch (*__ui_step_ptr) {                                        \
             default: {                                                   \
                 ASSERT(false);
@@ -71,8 +71,8 @@ typedef enum {
 
 typedef struct {
     ui_callback_state_t state;
-    ui_callback_fn_t* confirm;
-    ui_callback_fn_t* reject;
+    ui_callback_fn_t *confirm;
+    ui_callback_fn_t *reject;
 } ui_callback_t;
 
 typedef struct {
@@ -106,29 +106,29 @@ typedef union {
 // when they finish.
 void ui_idle(void);
 
-void ui_displayPaginatedText(const char* headerStr,
-                             const char* bodyStr,
-                             ui_callback_fn_t* callback);
+void ui_displayPaginatedText(const char *headerStr,
+                             const char *bodyStr,
+                             ui_callback_fn_t *callback);
 
-void ui_displayPrompt(const char* headerStr,
-                      const char* bodyStr,
-                      ui_callback_fn_t* confirm,
-                      ui_callback_fn_t* reject);
+void ui_displayPrompt(const char *headerStr,
+                      const char *bodyStr,
+                      ui_callback_fn_t *confirm,
+                      ui_callback_fn_t *reject);
 
-void ui_displayUnusualWarning(ui_callback_fn_t* cb);
+void ui_displayUnusualWarning(ui_callback_fn_t *cb);
 
 void ui_displayBusy();
 void ui_displayPrompt_run();
 void ui_displayPaginatedText_run();
 
-void uiCallback_confirm(ui_callback_t* cb);
-void uiCallback_reject(ui_callback_t* cb);
+void uiCallback_confirm(ui_callback_t *cb);
+void uiCallback_reject(ui_callback_t *cb);
 
 void assert_uiPaginatedText_magic();
 void assert_uiPrompt_magic();
 
-bool uiPaginatedText_canFitStringIntoHeader(const char* str);
-bool uiPaginatedText_canFitStringIntoFullText(const char* str);
+bool uiPaginatedText_canFitStringIntoHeader(const char *str);
+bool uiPaginatedText_canFitStringIntoFullText(const char *str);
 
 // responds to the host and resets
 // processing
@@ -139,8 +139,8 @@ extern displayState_t displayState;
 // WARNING(ppershing): Following two references MUST be declared `static`
 // otherwise the Ledger will crash. I am really not sure why is this
 // but it might be related to position-independent-code compilation.
-static paginatedTextState_t* paginatedTextState = &(displayState.paginatedText);
-static promptState_t* promptState = &(displayState.prompt);
+static paginatedTextState_t *paginatedTextState = &(displayState.paginatedText);
+static promptState_t *promptState = &(displayState.prompt);
 
 enum {
     INIT_MAGIC_PAGINATED_TEXT = 2345,

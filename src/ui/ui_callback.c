@@ -25,13 +25,13 @@ void app_ticker_event_callback(void) {
 #endif
 
 #ifdef HAVE_BAGL
-timeout_callback_fn_t* timeout_cb;
+timeout_callback_fn_t *timeout_cb;
 
 void clear_timer() {
     timeout_cb = NULL;
 }
 
-void set_timer(int ms, timeout_callback_fn_t* cb) {
+void set_timer(int ms, timeout_callback_fn_t *cb) {
     // if TRACE() is enabled, set_timer must be called
     // before ui_ methods, because it causes Ledger Nano S
     // to freeze in debug mode
@@ -50,7 +50,7 @@ void app_ticker_event_callback(void) {
     uint32_t UX_ALLOWED = 0;
 #endif
     if (timeout_cb) {
-        timeout_callback_fn_t* callback = timeout_cb;
+        timeout_callback_fn_t *callback = timeout_cb;
         timeout_cb = NULL; /* clear first if cb() throws */
         callback(UX_ALLOWED);
     }

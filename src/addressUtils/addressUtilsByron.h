@@ -6,9 +6,9 @@
 
 #ifdef APP_FEATURE_BYRON_ADDRESS_DERIVATION
 
-size_t deriveAddress_byron(const bip44_path_t* pathSpec,
+size_t deriveAddress_byron(const bip44_path_t *pathSpec,
                            uint32_t protocolMagic,
-                           uint8_t* outBuffer,
+                           uint8_t *outBuffer,
                            size_t outSize);
 
 #endif  // APP_FEATURE_BYRON_ADDRESS_DERIVATION
@@ -16,7 +16,7 @@ size_t deriveAddress_byron(const bip44_path_t* pathSpec,
 #ifdef APP_FEATURE_BYRON_PROTOCOL_MAGIC_CHECK
 
 // Note: validates the overall address structure at the same time
-uint32_t extractProtocolMagic(const uint8_t* addressBuffer, size_t addressSize);
+uint32_t extractProtocolMagic(const uint8_t *addressBuffer, size_t addressSize);
 
 #endif  // APP_FEATURE_BYRON_PROTOCOL_MAGIC_CHECK
 

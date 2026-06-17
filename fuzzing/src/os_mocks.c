@@ -53,11 +53,10 @@ void *pic(void *linked_addr) {
 }
 // void ui_idle(){};
 void halt() {
-    for (;;)
-        ;
+    for (;;);
 };
 
-void io_send_buf(unsigned short code, unsigned char *buffer, size_t tx){};
+void io_send_buf(unsigned short code, unsigned char *buffer, size_t tx) {};
 unsigned short io_exchange(unsigned char chan, unsigned short tx_len) {
     return 0;
 };
@@ -78,7 +77,7 @@ cx_err_t cx_hash_no_throw(cx_hash_t *hash,
 size_t cx_hash_get_size(const cx_hash_t *ctx) {
     return 32;
 };
-void io_seph_send(const unsigned char *buffer, unsigned short length){};
+void io_seph_send(const unsigned char *buffer, unsigned short length) {};
 cx_err_t cx_sha3_init_no_throw(cx_sha3_t *hash, size_t size) {
     return CX_OK;
 };
@@ -89,7 +88,7 @@ bolos_bool_t os_perso_isonboarded(void) {
     return (bolos_bool_t) BOLOS_UX_OK;
 };
 
-void io_seproxyhal_init_ux(void){};
+void io_seproxyhal_init_ux(void) {};
 bolos_task_status_t os_sched_last_status(unsigned int task_idx) {
     return 1;
 };

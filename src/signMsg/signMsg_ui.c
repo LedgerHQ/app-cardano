@@ -13,11 +13,11 @@
 #include "nbgl_use_case.h"
 #endif
 
-static ins_sign_msg_context_t* ctx = &(instructionState.signMsgContext);
+static ins_sign_msg_context_t *ctx = &(instructionState.signMsgContext);
 
 // ============================== INIT ==============================
 
-__noinline_due_to_stack__ static void _displayAddressField(ui_callback_fn_t* callback) {
+__noinline_due_to_stack__ static void _displayAddressField(ui_callback_fn_t *callback) {
     switch (ctx->addressFieldType) {
         case CIP8_ADDRESS_FIELD_ADDRESS: {
             uint8_t addressBuffer[MAX_ADDRESS_SIZE] = {0};
@@ -65,17 +65,17 @@ __noinline_due_to_stack__ static void _displayAddressField(ui_callback_fn_t* cal
 void signMsg_handleInit_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signMsg_handleInit_ui_runStep;
+    ui_callback_fn_t *this_fn = signMsg_handleInit_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
     UI_STEP(HANDLE_INIT_HASH_PAYLOAD) {
 #ifdef HAVE_BAGL
-        const char* firstLine = (ctx->hashPayload) ? "Sign hashed" : "Sign non-hashed";
+        const char *firstLine = (ctx->hashPayload) ? "Sign hashed" : "Sign non-hashed";
         ui_displayPrompt(firstLine, "message? (CIP-8)", this_fn, respond_with_user_reject);
 #elif defined(HAVE_NBGL)
         set_light_confirmation(true);
-        const char* text = (ctx->hashPayload) ? "Sign hashed\nmessage? (CIP-8)"
+        const char *text = (ctx->hashPayload) ? "Sign hashed\nmessage? (CIP-8)"
                                               : "Sign non-hashed\nmessage? (CIP-8)";
         display_prompt(text, "", this_fn, respond_with_user_reject);
 #endif  // HAVE_BAGL
@@ -101,7 +101,7 @@ void signMsg_handleInit_ui_runStep() {
 
 // ============================== CHUNK ==============================
 
-void _displayMsgIntro(ui_callback_fn_t* callback) {
+void _displayMsgIntro(ui_callback_fn_t *callback) {
     char l1[30] = {0};
     if (ctx->isAscii) {
         snprintf(l1, SIZEOF(l1), "Message (ASCII)");
@@ -122,7 +122,7 @@ void _displayMsgIntro(ui_callback_fn_t* callback) {
 #endif  // HAVE_BAGL
 }
 
-__noinline_due_to_stack__ void _displayMsgFull(ui_callback_fn_t* callback) {
+__noinline_due_to_stack__ void _displayMsgFull(ui_callback_fn_t *callback) {
     char l1[30];
     if (ctx->isAscii) {
         snprintf(l1, SIZEOF(l1), "Message (ASCII)");
@@ -148,8 +148,8 @@ __noinline_due_to_stack__ void _displayMsgFull(ui_callback_fn_t* callback) {
 #endif  // HAVE_BAGL
 }
 
-__noinline_due_to_stack__ void _displayMsgChunk(ui_callback_fn_t* callback) {
-    const char* l1 = "Message starts with";
+__noinline_due_to_stack__ void _displayMsgChunk(ui_callback_fn_t *callback) {
+    const char *l1 = "Message starts with";
 
     char l2[200];
     if (ctx->isAscii) {
@@ -171,7 +171,7 @@ __noinline_due_to_stack__ void _displayMsgChunk(ui_callback_fn_t* callback) {
 void signMsg_handleChunk_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signMsg_handleChunk_ui_runStep;
+    ui_callback_fn_t *this_fn = signMsg_handleChunk_ui_runStep;
 
     ASSERT(ctx->receivedChunks == 1);
 
@@ -205,7 +205,7 @@ void signMsg_handleChunk_ui_runStep() {
 void signMsg_handleConfirm_ui_runStep() {
     TRACE("UI step %d", ctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signMsg_handleConfirm_ui_runStep;
+    ui_callback_fn_t *this_fn = signMsg_handleConfirm_ui_runStep;
 
     UI_STEP_BEGIN(ctx->ui_step, this_fn);
 
@@ -249,14 +249,14 @@ void signMsg_handleConfirm_ui_runStep() {
 #ifndef FUZZING
         STATIC_ASSERT(sizeof(wireResponse.addressFieldSize) == 4, "wrong address field size type");
         STATIC_ASSERT(sizeof(ctx->addressFieldSize) == 4, "wrong address field size type");
-        u4be_write((uint8_t*) &wireResponse.addressFieldSize, ctx->addressFieldSize);
+        u4be_write((uint8_t *) &wireResponse.addressFieldSize, ctx->addressFieldSize);
 #endif
 
         STATIC_ASSERT(SIZEOF(ctx->addressField) == SIZEOF(wireResponse.addressField),
                       "wrong address field size");
         memmove(wireResponse.addressField, ctx->addressField, ctx->addressFieldSize);
 
-        io_send_buf(SUCCESS, (uint8_t*) &wireResponse, SIZEOF(wireResponse));
+        io_send_buf(SUCCESS, (uint8_t *) &wireResponse, SIZEOF(wireResponse));
 #ifdef HAVE_BAGL
         ui_displayBusy();  // displays dots, called only after I/O to avoid freezing
 #endif                     // HAVE_BAGL

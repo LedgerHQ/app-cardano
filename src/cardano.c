@@ -1,9 +1,9 @@
 #include "cardano.h"
 #include "addressUtilsShelley.h"
 
-void rewardAccountToBuffer(const reward_account_t* rewardAccount,
+void rewardAccountToBuffer(const reward_account_t *rewardAccount,
                            uint8_t networkId,
-                           uint8_t* rewardAccountBuffer) {
+                           uint8_t *rewardAccountBuffer) {
     switch (rewardAccount->keyReferenceType) {
         case KEY_REFERENCE_HASH: {
             STATIC_ASSERT(SIZEOF(rewardAccount->hashBuffer) == REWARD_ACCOUNT_SIZE,

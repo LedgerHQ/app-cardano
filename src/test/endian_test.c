@@ -4,7 +4,7 @@
 #include "testUtils.h"
 
 void run_read_test() {
-    const uint8_t* buffer = (uint8_t*) "\x47\x11\x22\x33\x44\x55\x66\x77\x88\x47";
+    const uint8_t *buffer = (uint8_t *) "\x47\x11\x22\x33\x44\x55\x66\x77\x88\x47";
 
     EXPECT_EQ(u1be_read(buffer), 0x47);
     EXPECT_EQ(u1be_read(buffer + 1), 0x11);

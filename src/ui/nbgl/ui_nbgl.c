@@ -42,8 +42,8 @@ typedef enum {
 typedef struct {
     bool standardStatus;
     statusType_t statusType;
-    const char* confirmedStatus;  // text displayed in confirmation page (after long press)
-    const char* rejectedStatus;   // text displayed in rejection page (after reject confirmed)
+    const char *confirmedStatus;  // text displayed in confirmation page (after long press)
+    const char *rejectedStatus;   // text displayed in rejection page (after reject confirmed)
     callback_t approvedCallback;
     callback_t rejectedCallback;
     callback_t pendingDisplayPageFn;
@@ -58,7 +58,7 @@ typedef struct {
     bool no_approved_status;
 } UiContext_t;
 
-static nbgl_page_t* pageContext;
+static nbgl_page_t *pageContext;
 static nbgl_layoutTagValue_t tagValues[5];
 static UiContext_t uiContext = {
     .rejectedStatus = NULL,
@@ -83,7 +83,7 @@ static void release_context(void) {
     }
 }
 
-static inline uint16_t get_element_line_count(const char* line) {
+static inline uint16_t get_element_line_count(const char *line) {
     uint16_t nbLines = nbgl_getTextNbLinesInWidth(LARGE_MEDIUM_FONT,
                                                   line,
                                                   SCREEN_WIDTH - 2 * BORDER_MARGIN,
@@ -102,7 +102,7 @@ static void set_callbacks(callback_t approvedCallback, callback_t rejectedCallba
     uiContext.rejectedCallback = rejectedCallback;
 }
 
-static void fill_current_element(const char* text, const char* content) {
+static void fill_current_element(const char *text, const char *content) {
     strncpy(uiContext.tagTitle[uiContext.currentElementCount], text, MAX_TAG_TITLE_LINE_LENGTH);
     strncpy(uiContext.tagContent[uiContext.currentElementCount], content, MAX_TAG_CONTENT_LENGTH);
 
@@ -110,7 +110,7 @@ static void fill_current_element(const char* text, const char* content) {
     uiContext.currentLineCount += get_element_line_count(content);
 }
 
-static void fill_pending_element(const char* text, const char* content) {
+static void fill_pending_element(const char *text, const char *content) {
     strncpy(uiContext.tagTitle[PENDING_ELEMENT_INDEX], text, MAX_TAG_TITLE_LINE_LENGTH);
     strncpy(uiContext.tagContent[PENDING_ELEMENT_INDEX], content, MAX_TAG_CONTENT_LENGTH);
 
@@ -290,7 +290,7 @@ static void _display_page(void) {
 
     nbgl_pageContent_t content = {.type = TAG_VALUE_LIST,
                                   .tagValueList.nbPairs = uiContext.currentElementCount,
-                                  .tagValueList.pairs = (nbgl_layoutTagValue_t*) tagValues};
+                                  .tagValueList.pairs = (nbgl_layoutTagValue_t *) tagValues};
 
     pageContext = nbgl_pageDrawGenericContent(&display_callback, &info, &content);
     reset_transaction_current_context();
@@ -442,8 +442,8 @@ void force_display(callback_t userAcceptCallback, callback_t userRejectCallback)
 
 // Fill page content. If the content's number of lines exceeds the maximum number of lines per page,
 // the page is displayed and the pending element is added.
-void fill_and_display_if_required(const char* line1,
-                                  const char* line2,
+void fill_and_display_if_required(const char *line1,
+                                  const char *line2,
                                   callback_t userAcceptCallback,
                                   callback_t userRejectCallback) {
     ASSERT(strlen(line1) <= MAX_TAG_TITLE_LINE_LENGTH);
@@ -465,15 +465,15 @@ void fill_and_display_if_required(const char* line1,
     }
 }
 
-void fill_address_data(char* text, char* content, callback_t callback) {
+void fill_address_data(char *text, char *content, callback_t callback) {
     fill_current_element(text, content);
     trigger_callback(callback);
 }
 
-void display_confirmation(const char* text1,
-                          const char* text2,
-                          const char* confirmText,
-                          const char* rejectText,
+void display_confirmation(const char *text1,
+                          const char *text2,
+                          const char *confirmText,
+                          const char *rejectText,
                           callback_t userAcceptCallback,
                           callback_t userRejectCallback) {
     TRACE("Displaying confirmation");
@@ -493,17 +493,17 @@ void display_confirmation(const char* text1,
     }
 }
 
-void display_confirmation_no_approved_status(const char* text1,
-                                             const char* text2,
-                                             const char* rejectText,
+void display_confirmation_no_approved_status(const char *text1,
+                                             const char *text2,
+                                             const char *rejectText,
                                              callback_t userAcceptCallback,
                                              callback_t userRejectCallback) {
     uiContext.no_approved_status = true;
     display_confirmation(text1, text2, NULL, rejectText, userAcceptCallback, userRejectCallback);
 }
 
-void display_prompt(const char* text1,
-                    const char* text2,
+void display_prompt(const char *text1,
+                    const char *text2,
                     callback_t userAcceptCallback,
                     callback_t userRejectCallback) {
     TRACE("Displaying Prompt");
@@ -516,7 +516,7 @@ void display_prompt(const char* text1,
     _display_page_or_call_function(&_display_prompt);
 }
 
-void display_warning(const char* text,
+void display_warning(const char *text,
                      callback_t userAcceptCallback,
                      callback_t userRejectCallback) {
     TRACE("Displaying Warning");
@@ -526,8 +526,8 @@ void display_warning(const char* text,
     _display_page_or_call_function(&_display_warning);
 }
 
-void display_choice(const char* text1,
-                    const char* text2,
+void display_choice(const char *text1,
+                    const char *text2,
                     callback_t userAcceptCallback,
                     callback_t userRejectCallback) {
     TRACE("Displaying choice");
@@ -581,7 +581,7 @@ void display_error(void) {
     nbgl_useCaseStatus("An error has occurred", false, ui_idle_flow);
 }
 
-void display_status(const char* text) {
+void display_status(const char *text) {
     nbgl_useCaseStatus(text, true, ui_idle_flow);
 }
 

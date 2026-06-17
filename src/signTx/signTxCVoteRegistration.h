@@ -60,13 +60,13 @@ void signTxCVoteRegistration_init();
 
 bool signTxCVoteRegistration_isValidInstruction(uint8_t p2);
 void signTxCVoteRegistration_handleAPDU(uint8_t p2,
-                                        const uint8_t* wireDataBuffer,
+                                        const uint8_t *wireDataBuffer,
                                         size_t wireDataSize);
 
 bool signTxCVoteRegistration_isFinished();
 
 void voting_registration_advanceState();
-size_t _destinationToAddress(tx_output_destination_storage_t* destination,
-                             uint8_t* addressBuffer,
+size_t _destinationToAddress(tx_output_destination_storage_t *destination,
+                             uint8_t *addressBuffer,
                              size_t addressBufferSize);
 #endif  // H_CARDANO_APP_SIGN_TX_CVOTE_REGISTRATION

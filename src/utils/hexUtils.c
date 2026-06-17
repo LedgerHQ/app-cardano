@@ -8,13 +8,13 @@ uint8_t hex_parseNibble(const char c) {
     THROW(ERR_UNEXPECTED_TOKEN);
 }
 
-uint8_t hex_parseNibblePair(const char* buffer) {
+uint8_t hex_parseNibblePair(const char *buffer) {
     uint8_t first = hex_parseNibble(buffer[0]);
     uint8_t second = hex_parseNibble(buffer[1]);
     return (uint8_t) ((first << 4) + second);
 }
 
-size_t decode_hex(const char* inStr, uint8_t* outBuffer, size_t outMaxSize) {
+size_t decode_hex(const char *inStr, uint8_t *outBuffer, size_t outMaxSize) {
     ASSERT(outMaxSize < BUFFER_SIZE_PARANOIA);
 
     size_t len = strlen(inStr);
@@ -35,7 +35,7 @@ size_t decode_hex(const char* inStr, uint8_t* outBuffer, size_t outMaxSize) {
 static const char HEX_ALPHABET[] = "0123456789abcdef";
 
 // returns the length of the string written to out
-size_t encode_hex(const uint8_t* bytes, size_t bytesLength, char* out, size_t outMaxSize) {
+size_t encode_hex(const uint8_t *bytes, size_t bytesLength, char *out, size_t outMaxSize) {
     ASSERT(bytesLength < BUFFER_SIZE_PARANOIA);
     ASSERT(outMaxSize < BUFFER_SIZE_PARANOIA);
     ASSERT(outMaxSize >= 2 * bytesLength + 1);

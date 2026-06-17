@@ -6,7 +6,7 @@
 // this tracing is rarely needed
 // so we want to keep it turned off to avoid polluting the trace log
 
-//#define TRACE_VOTECAST_HASH_BUILDER
+// #define TRACE_VOTECAST_HASH_BUILDER
 
 #ifdef TRACE_VOTECAST_HASH_BUILDER
 #define _TRACE(...) TRACE(__VA_ARGS__)
@@ -24,8 +24,8 @@ usbtool).
 #define BUILDER_APPEND_DATA(buffer, bufferSize) \
     blake2b_256_append_buffer_tx_body(&builder->hash, buffer, bufferSize)
 
-static void blake2b_256_append_buffer_tx_body(blake2b_256_context_t* hashCtx,
-                                              const uint8_t* buffer,
+static void blake2b_256_append_buffer_tx_body(blake2b_256_context_t *hashCtx,
+                                              const uint8_t *buffer,
                                               size_t bufferSize) {
     TRACE_BUFFER(buffer, bufferSize);
     blake2b_256_append(hashCtx, buffer, bufferSize);
@@ -36,7 +36,7 @@ static void blake2b_256_append_buffer_tx_body(blake2b_256_context_t* hashCtx,
 // ============================== TX HASH BUILDER STATE INITIALIZATION
 // ==============================
 
-void votecastHashBuilder_init(votecast_hash_builder_t* builder, size_t remainingBytes) {
+void votecastHashBuilder_init(votecast_hash_builder_t *builder, size_t remainingBytes) {
     TRACE("remainingBytes = %u", remainingBytes);
 
     ASSERT(remainingBytes > 0);
@@ -49,8 +49,8 @@ void votecastHashBuilder_init(votecast_hash_builder_t* builder, size_t remaining
 
 // ============================== CHUNK ==============================
 
-void votecastHashBuilder_chunk(votecast_hash_builder_t* builder,
-                               const uint8_t* chunk,
+void votecastHashBuilder_chunk(votecast_hash_builder_t *builder,
+                               const uint8_t *chunk,
                                size_t chunkSize) {
     _TRACE("state = %d", builder->state);
 
@@ -69,8 +69,8 @@ void votecastHashBuilder_chunk(votecast_hash_builder_t* builder,
 
 // ========================= FINALIZE ==========================
 
-void votecastHashBuilder_finalize(votecast_hash_builder_t* builder,
-                                  uint8_t* outBuffer,
+void votecastHashBuilder_finalize(votecast_hash_builder_t *builder,
+                                  uint8_t *outBuffer,
                                   size_t outSize) {
     _TRACE("state = %d", builder->state);
 
@@ -78,7 +78,9 @@ void votecastHashBuilder_finalize(votecast_hash_builder_t* builder,
     ASSERT(builder->remainingBytes == 0);
 
     ASSERT(outSize == VOTECAST_HASH_LENGTH);
-    { blake2b_256_finalize(&builder->hash, outBuffer, outSize); }
+    {
+        blake2b_256_finalize(&builder->hash, outBuffer, outSize);
+    }
 
     builder->state = VOTECAST_HASH_BUILDER_FINISHED;
 }

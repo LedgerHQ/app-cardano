@@ -5,7 +5,7 @@
 #include "state.h"
 #include "signCVote_ui.h"
 
-static ins_sign_cvote_context_t* ctx = &(instructionState.signCVoteContext);
+static ins_sign_cvote_context_t *ctx = &(instructionState.signCVoteContext);
 
 void vote_advanceStage() {
     TRACE("Advancing cip36 voting stage from: %d", ctx->stage);
@@ -52,7 +52,7 @@ static inline void CHECK_STAGE(sign_cvote_stage_t expected) {
 }
 
 // ============================== INIT ==============================
-__noinline_due_to_stack__ void signCVote_handleInitAPDU(const uint8_t* wireDataBuffer,
+__noinline_due_to_stack__ void signCVote_handleInitAPDU(const uint8_t *wireDataBuffer,
                                                         size_t wireDataSize) {
     {
         // sanity checks
@@ -120,7 +120,7 @@ __noinline_due_to_stack__ void signCVote_handleInitAPDU(const uint8_t* wireDataB
 
 // ============================== VOTECAST CHUNK ==============================
 
-__noinline_due_to_stack__ void signCVote_handleVotecastChunkAPDU(const uint8_t* wireDataBuffer,
+__noinline_due_to_stack__ void signCVote_handleVotecastChunkAPDU(const uint8_t *wireDataBuffer,
                                                                  size_t wireDataSize) {
     {
         // sanity checks
@@ -148,7 +148,7 @@ __noinline_due_to_stack__ void signCVote_handleVotecastChunkAPDU(const uint8_t* 
 }
 
 // ============================== CONFIRM ==============================
-__noinline_due_to_stack__ void signCVote_handleConfirmAPDU(const uint8_t* wireDataBuffer
+__noinline_due_to_stack__ void signCVote_handleConfirmAPDU(const uint8_t *wireDataBuffer
                                                                MARK_UNUSED,
                                                            size_t wireDataSize) {
     TRACE_STACK_USAGE();
@@ -194,7 +194,7 @@ __noinline_due_to_stack__ void signCVote_handleConfirmAPDU(const uint8_t* wireDa
 
 // ============================== WITNESS ==============================
 
-__noinline_due_to_stack__ void signCVote_handleWitnessAPDU(const uint8_t* wireDataBuffer,
+__noinline_due_to_stack__ void signCVote_handleWitnessAPDU(const uint8_t *wireDataBuffer,
                                                            size_t wireDataSize) {
     TRACE_STACK_USAGE();
     {
@@ -253,9 +253,9 @@ __noinline_due_to_stack__ void signCVote_handleWitnessAPDU(const uint8_t* wireDa
 
 // ============================== MAIN HANDLER ==============================
 
-typedef void subhandler_fn_t(const uint8_t* dataBuffer, size_t dataSize);
+typedef void subhandler_fn_t(const uint8_t *dataBuffer, size_t dataSize);
 
-static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
+static subhandler_fn_t *lookup_subhandler(uint8_t p1) {
     switch (p1) {
 #define CASE(P1, HANDLER) \
     case P1:              \
@@ -275,7 +275,7 @@ static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
 
 uint16_t signCVote_handleAPDU(uint8_t p1,
                               uint8_t p2,
-                              const uint8_t* wireDataBuffer,
+                              const uint8_t *wireDataBuffer,
                               size_t wireDataSize,
                               bool isNewCall) {
     if (p1 == 0x03) {
@@ -292,7 +292,7 @@ uint16_t signCVote_handleAPDU(uint8_t p1,
     }
     VALIDATE(p2 == P2_UNUSED, ERR_INVALID_REQUEST_PARAMETERS);
 
-    subhandler_fn_t* subhandler = lookup_subhandler(p1);
+    subhandler_fn_t *subhandler = lookup_subhandler(p1);
     VALIDATE(subhandler != NULL, ERR_INVALID_REQUEST_PARAMETERS);
     subhandler(wireDataBuffer, wireDataSize);
     return ERR_NO_RESPONSE;

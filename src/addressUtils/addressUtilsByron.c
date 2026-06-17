@@ -24,8 +24,8 @@ enum {
     */
 };
 
-void addressRootFromExtPubKey(const extendedPublicKey_t* extPubKey,
-                              uint8_t* outBuffer,
+void addressRootFromExtPubKey(const extendedPublicKey_t *extPubKey,
+                              uint8_t *outBuffer,
                               size_t outSize) {
     STATIC_ASSERT(SIZEOF(*extPubKey) == EXTENDED_PUBKEY_SIZE, "wrong ext pub key size");
     ASSERT(outSize == ADDRESS_ROOT_SIZE);
@@ -37,16 +37,22 @@ void addressRootFromExtPubKey(const extendedPublicKey_t* extPubKey,
         // [0, [0, publicKey:chainCode], Map(0)]
         // Note(ppershing): what are the first two 0 constants?
         view_appendToken(&cbor, CBOR_TYPE_ARRAY, 3);
-        { view_appendToken(&cbor, CBOR_TYPE_UNSIGNED, CARDANO_ADDRESS_TYPE_PUBKEY); }
+        {
+            view_appendToken(&cbor, CBOR_TYPE_UNSIGNED, CARDANO_ADDRESS_TYPE_PUBKEY);
+        }
         {
             view_appendToken(&cbor, CBOR_TYPE_ARRAY, 2);
-            { view_appendToken(&cbor, CBOR_TYPE_UNSIGNED, 0 /* this seems to be hardcoded to 0*/); }
+            {
+                view_appendToken(&cbor, CBOR_TYPE_UNSIGNED, 0 /* this seems to be hardcoded to 0*/);
+            }
             {
                 view_appendToken(&cbor, CBOR_TYPE_BYTES, EXTENDED_PUBKEY_SIZE);
-                view_appendBuffer(&cbor, (const uint8_t*) extPubKey, EXTENDED_PUBKEY_SIZE);
+                view_appendBuffer(&cbor, (const uint8_t *) extPubKey, EXTENDED_PUBKEY_SIZE);
             }
         }
-        { view_appendToken(&cbor, CBOR_TYPE_MAP, 0 /* addrAttributes is empty */); }
+        {
+            view_appendToken(&cbor, CBOR_TYPE_MAP, 0 /* addrAttributes is empty */);
+        }
     }
 
     // cborBuffer is hashed twice. First by sha3_256 and then by blake2b_224
@@ -55,10 +61,10 @@ void addressRootFromExtPubKey(const extendedPublicKey_t* extPubKey,
     blake2b_224_hash(cborShaHash, SIZEOF(cborShaHash), outBuffer, outSize);
 }
 
-size_t cborEncodePubkeyAddressInner(const uint8_t* addressRoot,
+size_t cborEncodePubkeyAddressInner(const uint8_t *addressRoot,
                                     size_t addressRootSize,
                                     uint32_t protocolMagic,
-                                    uint8_t* outBuffer,
+                                    uint8_t *outBuffer,
                                     size_t outSize
                                     /* potential attributes */
 ) {
@@ -105,9 +111,9 @@ size_t cborEncodePubkeyAddressInner(const uint8_t* addressRoot,
     return view_processedSize(&out);
 }
 
-size_t cborPackRawAddressWithChecksum(const uint8_t* rawAddressBuffer,
+size_t cborPackRawAddressWithChecksum(const uint8_t *rawAddressBuffer,
                                       size_t rawAddressSize,
-                                      uint8_t* outputBuffer,
+                                      uint8_t *outputBuffer,
                                       size_t outputSize) {
     ASSERT(rawAddressSize < BUFFER_SIZE_PARANOIA);
     ASSERT(outputSize < BUFFER_SIZE_PARANOIA);
@@ -134,9 +140,9 @@ size_t cborPackRawAddressWithChecksum(const uint8_t* rawAddressBuffer,
     return view_processedSize(&output);
 }
 
-size_t deriveRawAddress(const bip44_path_t* pathSpec,
+size_t deriveRawAddress(const bip44_path_t *pathSpec,
                         uint32_t protocolMagic,
-                        uint8_t* outBuffer,
+                        uint8_t *outBuffer,
                         size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
@@ -156,9 +162,9 @@ size_t deriveRawAddress(const bip44_path_t* pathSpec,
                                         outSize);
 }
 
-size_t deriveAddress_byron(const bip44_path_t* pathSpec,
+size_t deriveAddress_byron(const bip44_path_t *pathSpec,
                            uint32_t protocolMagic,
-                           uint8_t* outBuffer,
+                           uint8_t *outBuffer,
                            size_t outSize) {
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
@@ -173,19 +179,19 @@ size_t deriveAddress_byron(const bip44_path_t* pathSpec,
 
 #ifdef APP_FEATURE_BYRON_PROTOCOL_MAGIC_CHECK
 
-static uint64_t parseToken(read_view_t* view, uint8_t type) {
+static uint64_t parseToken(read_view_t *view, uint8_t type) {
     const cbor_token_t token = view_parseToken(view);
     VALIDATE(token.type == type, ERR_INVALID_DATA);
     return token.value;
 }
 
-static void parseTokenWithValue(read_view_t* view, uint8_t type, uint64_t value) {
+static void parseTokenWithValue(read_view_t *view, uint8_t type, uint64_t value) {
     const cbor_token_t token = view_parseToken(view);
     VALIDATE(token.type == type, ERR_INVALID_DATA);
     VALIDATE(token.value == value, ERR_INVALID_DATA);
 }
 
-static size_t parseBytesSizeToken(read_view_t* view) {
+static size_t parseBytesSizeToken(read_view_t *view) {
     uint64_t parsedSize = parseToken(view, CBOR_TYPE_BYTES);
     // Validate that we can down-cast
     STATIC_ASSERT(sizeof(parsedSize) >= sizeof(SIZE_MAX), "bad int size");
@@ -200,7 +206,7 @@ static size_t parseBytesSizeToken(read_view_t* view) {
     return parsedSizeDowncasted;
 }
 
-uint32_t extractProtocolMagic(const uint8_t* addressBuffer, size_t addressSize) {
+uint32_t extractProtocolMagic(const uint8_t *addressBuffer, size_t addressSize) {
     ASSERT(addressSize < BUFFER_SIZE_PARANOIA);
 
     read_view_t view = make_read_view(addressBuffer, addressBuffer + addressSize);
@@ -209,7 +215,7 @@ uint32_t extractProtocolMagic(const uint8_t* addressBuffer, size_t addressSize) 
         MAINNET_PROTOCOL_MAGIC;  // mainnet addresses do not contain protocol magic
     bool protocolMagicFound = false;
     {
-        const uint8_t* unboxedAddressPayload;
+        const uint8_t *unboxedAddressPayload;
         size_t unboxedAddressPayloadSize;
         parseTokenWithValue(&view, CBOR_TYPE_ARRAY, 2);
         {
@@ -268,7 +274,9 @@ uint32_t extractProtocolMagic(const uint8_t* addressBuffer, size_t addressSize) 
                 }
 
                 // address type (unsigned)
-                { parseToken(&view, CBOR_TYPE_UNSIGNED); }
+                {
+                    parseToken(&view, CBOR_TYPE_UNSIGNED);
+                }
             }
         }
         {

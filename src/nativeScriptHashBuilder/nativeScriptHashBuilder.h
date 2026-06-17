@@ -18,30 +18,30 @@ typedef struct {
     blake2b_224_context_t nativeScriptHash;
 } native_script_hash_builder_t;
 
-void nativeScriptHashBuilder_init(native_script_hash_builder_t* builder);
+void nativeScriptHashBuilder_init(native_script_hash_builder_t *builder);
 
-void nativeScriptHashBuilder_startComplexScript_all(native_script_hash_builder_t* builder,
+void nativeScriptHashBuilder_startComplexScript_all(native_script_hash_builder_t *builder,
                                                     uint32_t remainingScripts);
 
-void nativeScriptHashBuilder_startComplexScript_any(native_script_hash_builder_t* builder,
+void nativeScriptHashBuilder_startComplexScript_any(native_script_hash_builder_t *builder,
                                                     uint32_t remainingScripts);
 
-void nativeScriptHashBuilder_startComplexScript_n_of_k(native_script_hash_builder_t* builder,
+void nativeScriptHashBuilder_startComplexScript_n_of_k(native_script_hash_builder_t *builder,
                                                        uint32_t remainingScripts,
                                                        uint32_t requiredScripts);
 
-void nativeScriptHashBuilder_addScript_pubkey(native_script_hash_builder_t* builder,
-                                              const uint8_t* pubKeyHashBuffer,
+void nativeScriptHashBuilder_addScript_pubkey(native_script_hash_builder_t *builder,
+                                              const uint8_t *pubKeyHashBuffer,
                                               size_t pubKeyHashSize);
 
-void nativeScriptHashBuilder_addScript_invalidBefore(native_script_hash_builder_t* builder,
+void nativeScriptHashBuilder_addScript_invalidBefore(native_script_hash_builder_t *builder,
                                                      uint64_t timelock);
 
-void nativeScriptHashBuilder_addScript_invalidHereafter(native_script_hash_builder_t* builder,
+void nativeScriptHashBuilder_addScript_invalidHereafter(native_script_hash_builder_t *builder,
                                                         uint64_t timelock);
 
-void nativeScriptHashBuilder_finalize(native_script_hash_builder_t* builder,
-                                      uint8_t* outBuffer,
+void nativeScriptHashBuilder_finalize(native_script_hash_builder_t *builder,
+                                      uint8_t *outBuffer,
                                       size_t outSize);
 
 #endif  // APP_FEATURE_NATIVE_SCRIPT_HASH

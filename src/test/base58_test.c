@@ -5,7 +5,7 @@
 #include "hexUtils.h"
 #include "testUtils.h"
 
-void testcase_base58(const char* inputHex, const char* expectedStr) {
+void testcase_base58(const char *inputHex, const char *expectedStr) {
     PRINTF("testcase_base58: %s\n", inputHex);
     uint8_t inputBuffer[100] = {0};
     size_t inputSize;
@@ -18,8 +18,8 @@ void testcase_base58(const char* inputHex, const char* expectedStr) {
 
 void run_base58_test() {
     struct {
-        const char* inputHex;
-        const char* expectedHex;
+        const char *inputHex;
+        const char *expectedHex;
     } testVectors[] = {
         {"", ""},
 

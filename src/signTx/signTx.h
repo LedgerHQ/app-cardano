@@ -313,9 +313,9 @@ typedef struct {
     void (*ui_advanceState)();
 } ins_sign_tx_context_t;
 
-ins_sign_tx_aux_data_context_t* accessAuxDataContext();
-ins_sign_tx_body_context_t* accessBodyContext();
-ins_sign_tx_witness_context_t* accessWitnessContext();
+ins_sign_tx_aux_data_context_t *accessAuxDataContext();
+ins_sign_tx_body_context_t *accessBodyContext();
+ins_sign_tx_witness_context_t *accessWitnessContext();
 
 #define AUX_DATA_CTX (accessAuxDataContext())
 #define BODY_CTX     (accessBodyContext())
@@ -323,7 +323,7 @@ ins_sign_tx_witness_context_t* accessWitnessContext();
 
 uint16_t signTx_handleAPDU(uint8_t p1,
                            uint8_t p2,
-                           const uint8_t* wireDataBuffer,
+                           const uint8_t *wireDataBuffer,
                            size_t wireDataSize,
                            bool isNewCall);
 

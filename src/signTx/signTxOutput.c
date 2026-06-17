@@ -13,15 +13,15 @@
 #include "handle_sign_transaction.h"
 #include "io_swap.h"
 
-static common_tx_data_t* commonTxData = &(instructionState.signTxContext.commonTxData);
-static ins_sign_tx_context_t* ctx = &(instructionState.signTxContext);
+static common_tx_data_t *commonTxData = &(instructionState.signTxContext.commonTxData);
+static ins_sign_tx_context_t *ctx = &(instructionState.signTxContext);
 
-static output_context_t* accessSubcontext() {
+static output_context_t *accessSubcontext() {
     return &BODY_CTX->stageContext.output_subctx;
 }
 
 bool isCurrentOutputFinished() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("Output submachine state: %d", subctx->state);
     // we are also asserting that the state is valid
     switch (subctx->state) {
@@ -51,13 +51,13 @@ void initializeOutputSubmachine() {
 }
 
 static inline void CHECK_STATE(sign_tx_output_state_t expected) {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("Output submachine state: current %d, expected %d", subctx->state, expected);
     VALIDATE(subctx->state == expected, ERR_INVALID_STATE);
 }
 
 void tx_output_advanceState() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("Advancing output state from: %d", subctx->state);
 
     switch (subctx->state) {
@@ -168,7 +168,7 @@ void tx_output_advanceState() {
 // ============================== TOP LEVEL DATA ==============================
 
 static void handleOutput_addressBytes() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     ASSERT(subctx->stateData.destination.type == DESTINATION_THIRD_PARTY);
 
     tx_output_description_t output = {
@@ -232,7 +232,7 @@ static void handleOutput_addressBytes() {
 }
 
 static void handleOutput_addressParams() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     ASSERT(subctx->stateData.destination.type == DESTINATION_DEVICE_OWNED);
 
     tx_output_description_t output = {
@@ -309,13 +309,13 @@ static bool _isValidOutputSerializationFormat(tx_output_serialization_format_t f
     }
 }
 
-static void parseTopLevelData(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void parseTopLevelData(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // safety checks
         CHECK_STATE(STATE_OUTPUT_TOP_LEVEL_DATA);
     }
 
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     {
         // parse all APDU data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -358,12 +358,12 @@ static void parseTopLevelData(const uint8_t* wireDataBuffer, size_t wireDataSize
     }
 }
 
-static void handleTopLevelDataAPDU_output(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void handleTopLevelDataAPDU_output(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     CHECK_STATE(STATE_OUTPUT_TOP_LEVEL_DATA);
 
     parseTopLevelData(wireDataBuffer, wireDataSize);
 
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
 
     // call the appropriate handler depending on output type
     // the handlers serialize data into the tx hash
@@ -383,7 +383,7 @@ static void handleTopLevelDataAPDU_output(const uint8_t* wireDataBuffer, size_t 
 }
 
 static void handleCollateralOutput_addressBytes() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     ASSERT(subctx->stateData.destination.type == DESTINATION_THIRD_PARTY);
 
     tx_output_description_t output = {
@@ -442,7 +442,7 @@ static void handleCollateralOutput_addressBytes() {
 }
 
 static void handleCollateralOutput_addressParams() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     ASSERT(subctx->stateData.destination.type == DESTINATION_DEVICE_OWNED);
 
     tx_output_description_t output = {
@@ -517,13 +517,13 @@ static void handleCollateralOutput_addressParams() {
     }
 }
 
-static void handleTopLevelDataAPDU_collateralOutput(const uint8_t* wireDataBuffer,
+static void handleTopLevelDataAPDU_collateralOutput(const uint8_t *wireDataBuffer,
                                                     size_t wireDataSize) {
     CHECK_STATE(STATE_OUTPUT_TOP_LEVEL_DATA);
 
     parseTopLevelData(wireDataBuffer, wireDataSize);
 
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
 
     // call the appropriate handler depending on output type
     // the handlers serialize data into the tx hash
@@ -543,14 +543,14 @@ static void handleTopLevelDataAPDU_collateralOutput(const uint8_t* wireDataBuffe
 }
 // ============================== ASSET GROUP ==============================
 
-static void handleAssetGroupAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void handleAssetGroupAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_OUTPUT_ASSET_GROUP);
     }
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     {
-        token_group_t* tokenGroup = &subctx->stateData.tokenGroup;
+        token_group_t *tokenGroup = &subctx->stateData.tokenGroup;
 
         // parse data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -616,14 +616,14 @@ static void handleAssetGroupAPDU(const uint8_t* wireDataBuffer, size_t wireDataS
 
 // ============================== TOKEN ==============================
 
-static void handleTokenAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void handleTokenAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_OUTPUT_TOKEN);
     }
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     {
-        output_token_amount_t* token = &subctx->stateData.token;
+        output_token_amount_t *token = &subctx->stateData.token;
 
         // parse data
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
@@ -699,8 +699,8 @@ static void handleTokenAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) 
 
 // ========================== DATUM =============================
 
-static void handleDatumHash(read_view_t* view) {
-    output_context_t* subctx = accessSubcontext();
+static void handleDatumHash(read_view_t *view) {
+    output_context_t *subctx = accessSubcontext();
     {
         // parse data
         STATIC_ASSERT(SIZEOF(subctx->stateData.datumHash) == OUTPUT_DATUM_HASH_LENGTH,
@@ -740,8 +740,8 @@ static void handleDatumHash(read_view_t* view) {
     }
 }
 
-static void handleDatumInline(read_view_t* view) {
-    output_context_t* subctx = accessSubcontext();
+static void handleDatumInline(read_view_t *view) {
+    output_context_t *subctx = accessSubcontext();
     {
         // parse data
         subctx->stateData.datumRemainingBytes = parse_u4be(view);
@@ -801,12 +801,12 @@ static void handleDatumInline(read_view_t* view) {
     }
 }
 
-static void handleDatumAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void handleDatumAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_OUTPUT_DATUM);
     }
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
@@ -830,12 +830,12 @@ static void handleDatumAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) 
     }
 }
 
-static void handleDatumChunkAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void handleDatumChunkAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_OUTPUT_DATUM_INLINE_CHUNKS);
     }
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
@@ -869,12 +869,12 @@ static void handleDatumChunkAPDU(const uint8_t* wireDataBuffer, size_t wireDataS
 
 // ========================== REFERENCE SCRIPT =============================
 
-static void handleRefScriptAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void handleRefScriptAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_OUTPUT_REFERENCE_SCRIPT);
     }
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
@@ -932,12 +932,12 @@ static void handleRefScriptAPDU(const uint8_t* wireDataBuffer, size_t wireDataSi
     }
 }
 
-static void handleRefScriptChunkAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+static void handleRefScriptChunkAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     {
         // sanity checks
         CHECK_STATE(STATE_OUTPUT_REFERENCE_SCRIPT_CHUNKS);
     }
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     {
         TRACE_BUFFER(wireDataBuffer, wireDataSize);
 
@@ -974,7 +974,7 @@ static void handleRefScriptChunkAPDU(const uint8_t* wireDataBuffer, size_t wireD
 
 // ============================== CONFIRM ==============================
 
-static void handleConfirmAPDU_output(const uint8_t* wireDataBuffer MARK_UNUSED,
+static void handleConfirmAPDU_output(const uint8_t *wireDataBuffer MARK_UNUSED,
                                      size_t wireDataSize) {
     {
         CHECK_STATE(STATE_OUTPUT_CONFIRM);
@@ -982,7 +982,7 @@ static void handleConfirmAPDU_output(const uint8_t* wireDataBuffer MARK_UNUSED,
         VALIDATE(wireDataSize == 0, ERR_INVALID_DATA);
     }
 
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     security_policy_t policy = POLICY_DENY;
 #ifdef HAVE_SWAP
     if (G_called_from_swap) {
@@ -1020,7 +1020,7 @@ static void handleConfirmAPDU_output(const uint8_t* wireDataBuffer MARK_UNUSED,
     signTxOutput_handleConfirm_ui_runStep();
 }
 
-static void handleConfirmAPDU_collateralOutput(const uint8_t* wireDataBuffer MARK_UNUSED,
+static void handleConfirmAPDU_collateralOutput(const uint8_t *wireDataBuffer MARK_UNUSED,
                                                size_t wireDataSize) {
     {
         CHECK_STATE(STATE_OUTPUT_CONFIRM);
@@ -1028,7 +1028,7 @@ static void handleConfirmAPDU_collateralOutput(const uint8_t* wireDataBuffer MAR
         VALIDATE(wireDataSize == 0, ERR_INVALID_DATA);
     }
 
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     security_policy_t policy = policyForSignTxCollateralOutputConfirm(subctx->outputSecurityPolicy,
                                                                       subctx->numAssetGroups);
     TRACE("Policy: %d", (int) policy);
@@ -1086,7 +1086,7 @@ bool signTxOutput_isValidInstruction(uint8_t p2) {
     }
 }
 
-void signTxOutput_handleAPDU(uint8_t p2, const uint8_t* wireDataBuffer, size_t wireDataSize) {
+void signTxOutput_handleAPDU(uint8_t p2, const uint8_t *wireDataBuffer, size_t wireDataSize) {
     if (p2 == APDU_INSTRUCTION_CONFIRM) {
         ASSERT(wireDataBuffer == NULL);
         ASSERT(wireDataSize == 0);
@@ -1152,7 +1152,7 @@ bool signTxCollateralOutput_isValidInstruction(uint8_t p2) {
 }
 
 void signTxCollateralOutput_handleAPDU(uint8_t p2,
-                                       const uint8_t* wireDataBuffer,
+                                       const uint8_t *wireDataBuffer,
                                        size_t wireDataSize) {
     if (p2 == APDU_INSTRUCTION_CONFIRM) {
         ASSERT(wireDataBuffer == NULL);

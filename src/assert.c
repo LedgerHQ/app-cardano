@@ -8,7 +8,7 @@
 // because rendering on display takes multiple SEPROXYHAL
 // exchanges until it renders the display
 void assert(int cond,
-            const char* msgStr
+            const char *msgStr
 #ifdef RESET_ON_CRASH
                 MARK_UNUSED
 #endif

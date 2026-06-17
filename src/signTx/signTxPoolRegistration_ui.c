@@ -22,14 +22,14 @@
 #include "uiScreens_nbgl.h"
 #endif
 
-static common_tx_data_t* commonTxData = &(instructionState.signTxContext.commonTxData);
+static common_tx_data_t *commonTxData = &(instructionState.signTxContext.commonTxData);
 
-static pool_registration_context_t* accessSubcontext() {
+static pool_registration_context_t *accessSubcontext() {
     return &BODY_CTX->stageContext.pool_registration_subctx;
 }
 
 static inline void advanceState() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("Advancing pool registration certificate state from: %d", subctx->state);
 
     switch (subctx->state) {
@@ -93,10 +93,10 @@ static inline void advanceState() {
 // ============================== INIT ==============================
 
 void handlePoolInit_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handlePoolInit_ui_runStep;
+    ui_callback_fn_t *this_fn = handlePoolInit_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -116,7 +116,7 @@ void handlePoolInit_ui_runStep() {
 
 // ============================== POOL KEY HASH / ID ==============================
 
-static void _toPoolKeyHash(const pool_id_t* poolId, uint8_t* poolKeyHash) {
+static void _toPoolKeyHash(const pool_id_t *poolId, uint8_t *poolKeyHash) {
     switch (poolId->keyReferenceType) {
         case KEY_REFERENCE_HASH: {
             STATIC_ASSERT(SIZEOF(poolId->hash) == POOL_KEY_HASH_LENGTH,
@@ -134,10 +134,10 @@ static void _toPoolKeyHash(const pool_id_t* poolId, uint8_t* poolKeyHash) {
 }
 
 void handlePoolKey_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handlePoolKey_ui_runStep;
+    ui_callback_fn_t *this_fn = handlePoolKey_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -177,10 +177,10 @@ void handlePoolKey_ui_runStep() {
 // ============================== VRF KEY HASH ==============================
 
 void handlePoolVrfKey_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handlePoolVrfKey_ui_runStep;
+    ui_callback_fn_t *this_fn = handlePoolVrfKey_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -212,10 +212,10 @@ void handlePoolVrfKey_ui_runStep() {
 // ============================== POOL FINANCIALS ==============================
 
 void handlePoolFinancials_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handlePoolFinancials_ui_runStep;
+    ui_callback_fn_t *this_fn = handlePoolFinancials_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -269,10 +269,10 @@ static void handlePoolRewardAccount_ui_runStep_cb(void) {
 #endif
 
 void handlePoolRewardAccount_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handlePoolRewardAccount_ui_runStep;
+    ui_callback_fn_t *this_fn = handlePoolRewardAccount_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -306,10 +306,10 @@ void handlePoolRewardAccount_ui_runStep() {
 // ============================== OWNER ==============================
 
 void handleOwner_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handleOwner_ui_runStep;
+    ui_callback_fn_t *this_fn = handleOwner_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -346,12 +346,12 @@ void handleOwner_ui_runStep() {
 // ============================== RELAY ==============================
 
 void handleRelay_ip_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handleRelay_ip_ui_runStep;
+    ui_callback_fn_t *this_fn = handleRelay_ip_ui_runStep;
 
-    pool_relay_t* relay = &subctx->stateData.relay;
+    pool_relay_t *relay = &subctx->stateData.relay;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -405,12 +405,12 @@ void handleRelay_ip_ui_runStep() {
 }
 
 void handleRelay_dns_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handleRelay_dns_ui_runStep;
+    ui_callback_fn_t *this_fn = handleRelay_dns_ui_runStep;
 
-    pool_relay_t* relay = &subctx->stateData.relay;
+    pool_relay_t *relay = &subctx->stateData.relay;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -427,8 +427,10 @@ void handleRelay_dns_ui_runStep() {
         char dnsNameStr[1 + DNS_NAME_SIZE_MAX] = {0};
         explicit_bzero(dnsNameStr, SIZEOF(dnsNameStr));
         ASSERT(relay->dnsNameSize <= DNS_NAME_SIZE_MAX);
-        memmove(dnsNameStr, relay->dnsName, relay->dnsNameSize);
-        dnsNameStr[relay->dnsNameSize] = '\0';
+        if (relay->dnsNameSize <= DNS_NAME_SIZE_MAX) {
+            memmove(dnsNameStr, relay->dnsName, relay->dnsNameSize);
+            dnsNameStr[relay->dnsNameSize] = '\0';
+        }
         ASSERT(strlen(dnsNameStr) == relay->dnsNameSize);
 
 #ifdef HAVE_BAGL
@@ -467,10 +469,10 @@ void handleRelay_dns_ui_runStep() {
 // ============================== METADATA ==============================
 
 void handleNullMetadata_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handleNullMetadata_ui_runStep;
+    ui_callback_fn_t *this_fn = handleNullMetadata_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -492,12 +494,12 @@ void handleNullMetadata_ui_runStep() {
 }
 
 void handleMetadata_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = handleMetadata_ui_runStep;
+    ui_callback_fn_t *this_fn = handleMetadata_ui_runStep;
 
-    pool_metadata_t* md = &subctx->stateData.metadata;
+    pool_metadata_t *md = &subctx->stateData.metadata;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -505,8 +507,10 @@ void handleMetadata_ui_runStep() {
         char metadataUrlStr[1 + POOL_METADATA_URL_LENGTH_MAX] = {0};
         explicit_bzero(metadataUrlStr, SIZEOF(metadataUrlStr));
         ASSERT(md->urlSize <= POOL_METADATA_URL_LENGTH_MAX);
-        memmove(metadataUrlStr, md->url, md->urlSize);
-        metadataUrlStr[md->urlSize] = '\0';
+        if (md->urlSize <= POOL_METADATA_URL_LENGTH_MAX) {
+            memmove(metadataUrlStr, md->url, md->urlSize);
+            metadataUrlStr[md->urlSize] = '\0';
+        }
         ASSERT(strlen(metadataUrlStr) == md->urlSize);
 
 #ifdef HAVE_BAGL
@@ -544,10 +548,10 @@ void handleMetadata_ui_runStep() {
 // ============================== CONFIRM ==============================
 
 void signTxPoolRegistration_handleConfirm_ui_runStep() {
-    pool_registration_context_t* subctx = accessSubcontext();
+    pool_registration_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
     TRACE_STACK_USAGE();
-    ui_callback_fn_t* this_fn = signTxPoolRegistration_handleConfirm_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxPoolRegistration_handleConfirm_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 

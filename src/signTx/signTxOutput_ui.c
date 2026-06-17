@@ -10,14 +10,14 @@
 #include "hexUtils.h"
 #include "signTxOutput_ui.h"
 
-static output_context_t* accessSubcontext() {
+static output_context_t *accessSubcontext() {
     return &BODY_CTX->stageContext.output_subctx;
 }
 
 // ============================== TOP LEVEL DATA ==============================
 
 static bool _needsMissingDatumWarning() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     tx_output_destination_t destination;
     destination.type = subctx->stateData.destination.type;
     switch (destination.type) {
@@ -34,9 +34,9 @@ static bool _needsMissingDatumWarning() {
 }
 
 void signTx_handleOutput_address_bytes_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleOutput_address_bytes_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleOutput_address_bytes_ui_runStep;
 
     ASSERT(subctx->stateData.destination.type == DESTINATION_THIRD_PARTY);
 
@@ -93,9 +93,9 @@ void signTx_handleOutput_address_bytes_ui_runStep() {
 }
 
 void signTx_handleOutput_addressParams_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleOutput_addressParams_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleOutput_addressParams_ui_runStep;
 
     ASSERT(subctx->stateData.destination.type == DESTINATION_DEVICE_OWNED);
 
@@ -185,9 +185,9 @@ void signTx_handleOutput_addressParams_ui_runStep() {
 }
 
 void signTx_handleCollateralOutput_addressBytes_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTx_handleCollateralOutput_addressBytes_ui_runStep;
+    ui_callback_fn_t *this_fn = signTx_handleCollateralOutput_addressBytes_ui_runStep;
 
     ASSERT(subctx->stateData.destination.type == DESTINATION_THIRD_PARTY);
 
@@ -241,9 +241,9 @@ void signTx_handleCollateralOutput_addressBytes_ui_runStep() {
 // ============================== TOKEN ==============================
 
 void handleToken_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = handleToken_ui_runStep;
+    ui_callback_fn_t *this_fn = handleToken_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -303,9 +303,9 @@ void handleToken_ui_runStep() {
 // ========================== DATUM =============================
 
 void signTxOutput_handleDatumHash_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTxOutput_handleDatumHash_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxOutput_handleDatumHash_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -335,9 +335,9 @@ void signTxOutput_handleDatumHash_ui_runStep() {
 }
 
 void signTxOutput_handleDatumInline_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTxOutput_handleDatumInline_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxOutput_handleDatumInline_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 
@@ -373,9 +373,9 @@ void signTxOutput_handleDatumInline_ui_runStep() {
 // ========================== REFERENCE SCRIPT =============================
 
 void handleRefScript_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = handleRefScript_ui_runStep;
+    ui_callback_fn_t *this_fn = handleRefScript_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
     UI_STEP(HANDLE_SCRIPT_REF_STEP_DISPLAY) {
@@ -411,9 +411,9 @@ void handleRefScript_ui_runStep() {
 // ============================== CONFIRM ==============================
 
 void signTxOutput_handleConfirm_ui_runStep() {
-    output_context_t* subctx = accessSubcontext();
+    output_context_t *subctx = accessSubcontext();
     TRACE("UI step %d", subctx->ui_step);
-    ui_callback_fn_t* this_fn = signTxOutput_handleConfirm_ui_runStep;
+    ui_callback_fn_t *this_fn = signTxOutput_handleConfirm_ui_runStep;
 
     UI_STEP_BEGIN(subctx->ui_step, this_fn);
 

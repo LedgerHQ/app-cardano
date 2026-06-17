@@ -8,7 +8,7 @@
 // https://tools.ietf.org/html/rfc7049#appendix-A
 static void test_cbor_peek_token() {
     const struct {
-        const char* hex;
+        const char *hex;
         uint8_t type;
         uint8_t width;
         uint64_t value;
@@ -76,7 +76,7 @@ static void test_cbor_peek_token() {
 // test whether we reject non-canonical serialization
 static void test_cbor_parse_noncanonical() {
     const struct {
-        const char* hex;
+        const char *hex;
     } testVectors[] = {
         {"1800"},
         {"1817"},
@@ -104,7 +104,7 @@ static void test_cbor_parse_noncanonical() {
 
 static void test_cbor_serialization() {
     const struct {
-        const char* hex;
+        const char *hex;
         uint8_t type;
         uint64_t value;
     } testVectors[] = {

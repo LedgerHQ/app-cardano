@@ -12,7 +12,7 @@
 
 static int16_t RESPONSE_READY_MAGIC = 23456;
 
-static ins_get_keys_context_t* ctx = &(instructionState.getKeysContext);
+static ins_get_keys_context_t *ctx = &(instructionState.getKeysContext);
 
 // this is supposed to be called at the beginning of each APDU handler
 static inline void CHECK_STAGE(get_keys_stage_t expected) {
@@ -51,7 +51,7 @@ void keys_advanceStage() {
 }
 
 // read a path from view into ctx->pathSpec
-static void parsePath(read_view_t* view) {
+static void parsePath(read_view_t *view) {
     view_skipBytes(view,
                    bip44_parseFromWire(&ctx->pathSpec, VIEW_REMAINING_TO_TUPLE_BUF_SIZE(view)));
     BIP44_PRINTF(&ctx->pathSpec);
@@ -102,8 +102,10 @@ void runGetOnePublicKeyUIFlow() {
 
 // ============================== INIT ==============================
 
-static void getPublicKeys_handleInitAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
-    { CHECK_STAGE(GET_KEYS_STAGE_INIT); }
+static void getPublicKeys_handleInitAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
+    {
+        CHECK_STAGE(GET_KEYS_STAGE_INIT);
+    }
     {
         // parse data
 
@@ -173,7 +175,7 @@ static void getPublicKeys_handleInitAPDU(const uint8_t* wireDataBuffer, size_t w
 
 // ============================== GET KEY HANDLER ==============================
 
-void getPublicKeys_handleGetNextKeyAPDU(const uint8_t* wireDataBuffer, size_t wireDataSize) {
+void getPublicKeys_handleGetNextKeyAPDU(const uint8_t *wireDataBuffer, size_t wireDataSize) {
     CHECK_STAGE(GET_KEYS_STAGE_GET_KEYS);
 
     VALIDATE(ctx->currentPath < ctx->numPaths, ERR_INVALID_STATE);
@@ -187,9 +189,9 @@ void getPublicKeys_handleGetNextKeyAPDU(const uint8_t* wireDataBuffer, size_t wi
 
 // ============================== MAIN HANDLER ==============================
 
-typedef void subhandler_fn_t(const uint8_t* dataBuffer, size_t dataSize);
+typedef void subhandler_fn_t(const uint8_t *dataBuffer, size_t dataSize);
 
-static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
+static subhandler_fn_t *lookup_subhandler(uint8_t p1) {
     switch (p1) {
 #define CASE(P1, HANDLER) \
     case P1:              \
@@ -207,7 +209,7 @@ static subhandler_fn_t* lookup_subhandler(uint8_t p1) {
 
 uint16_t getPublicKeys_handleAPDU(uint8_t p1,
                                   uint8_t p2,
-                                  const uint8_t* wireDataBuffer,
+                                  const uint8_t *wireDataBuffer,
                                   size_t wireDataSize,
                                   bool isNewCall) {
     ASSERT(wireDataBuffer != NULL);
@@ -220,7 +222,7 @@ uint16_t getPublicKeys_handleAPDU(uint8_t p1,
     }
     VALIDATE(p2 == P2_UNUSED, ERR_INVALID_REQUEST_PARAMETERS);
 
-    subhandler_fn_t* subhandler = lookup_subhandler(p1);
+    subhandler_fn_t *subhandler = lookup_subhandler(p1);
     VALIDATE(subhandler != NULL, ERR_INVALID_REQUEST_PARAMETERS);
     subhandler(wireDataBuffer, wireDataSize);
     return ERR_NO_RESPONSE;
