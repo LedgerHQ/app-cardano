@@ -10,12 +10,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_application:
-    name: Build application using the reusable workflow
-    uses: LedgerHQ/ledger-app-workflows/.github/workflows/reusable_build.yml@v1
-    with:
-      upload_app_binaries_artifact: "compiled_app_binaries"
-
   build_and_test:
     name: Build and test app for all supported devices
     strategy:
@@ -28,9 +22,8 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build application in developer + headless mode
-        id: "build"
         shell: bash
         run: |
           eval "BOLOS_SDK=\$$(echo ${{ matrix.device }} | tr [:lower:] [:upper:])_SDK" && \
@@ -38,15 +31,23 @@ jobs:
           BOLOS_SDK=${BOLOS_SDK} DEVEL=1 DEFINES+=HEADLESS make
           echo "Build complete"
       - name: Install Node.js
-        run: apt-get install --no-install-recommends -y nodejs npm g++
+        # lsof is required by the third-party test-speculos.sh to probe Speculos port readiness
+        run: apt-get update && apt-get install --no-install-recommends -y nodejs npm g++ lsof
       - name: Install yarn
         run: npm install --global yarn
       - name: Install Cardano JS Library
         run: git clone https://github.com/vacuumlabs/ledgerjs-cardano-shelley.git
       - name: Run tests
+        # The Cardano JS library is a third-party repo; its lockfile/resolutions are
+        # not under our control, so disable Yarn's hardened mode (auto-enabled on
+        # public PRs) which rejects one of its resolutions.
+        env:
+          YARN_ENABLE_HARDENED_MODE: "false"
         run: |
           BUILD_DEVICE_NAME="$(echo ${{ matrix.device }} | sed 's/nanosp/nanos2/')"
-          speculos --model ${{ matrix.device }} build/$BUILD_DEVICE_NAME/bin/app.elf --seed "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about" --display headless &
+          # test-speculos.sh launches and manages Speculos itself; it locates the
+          # app via APP_ELF (otherwise it falls back to a hard-coded sibling path).
+          export APP_ELF="$GITHUB_WORKSPACE/build/$BUILD_DEVICE_NAME/bin/app.elf"
           cd ledgerjs-cardano-shelley &&
           yarn install &&
           yarn test-speculos
