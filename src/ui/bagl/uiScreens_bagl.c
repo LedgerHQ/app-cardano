@@ -219,9 +219,8 @@ static void _displayRewardAccountWithDescriptionScreen(const key_reference_type_
         ASSERT(descLen < BIP44_PATH_STRING_SIZE_MAX);
         ASSERT(descLen + 1 < SIZEOF(description));
 
-        if (descLen > 0) {
+        if ((descLen > 0) && (descLen < SIZEOF(description) - 2)) {
             // add a space after path if the path is present
-            ASSERT(descLen + 2 < SIZEOF(description));
             description[descLen++] = ' ';
             description[descLen] = '\0';
         }

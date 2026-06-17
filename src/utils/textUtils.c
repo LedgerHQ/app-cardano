@@ -190,9 +190,9 @@ size_t str_formatValidityBoundary(uint64_t slotNumber, char *out, size_t outSize
     ASSERT(outSize < BUFFER_SIZE_PARANOIA);
 
     unsigned i = 0;
-    while (slotNumber < EPOCH_SLOTS_CONFIG[i].startSlotNumber) {
+    while (i + 1 < ARRAY_LEN(EPOCH_SLOTS_CONFIG) &&
+           slotNumber < EPOCH_SLOTS_CONFIG[i].startSlotNumber) {
         i++;
-        ASSERT(i < ARRAY_LEN(EPOCH_SLOTS_CONFIG));
     }
 
     ASSERT(slotNumber >= EPOCH_SLOTS_CONFIG[i].startSlotNumber);

@@ -427,8 +427,10 @@ void handleRelay_dns_ui_runStep() {
         char dnsNameStr[1 + DNS_NAME_SIZE_MAX] = {0};
         explicit_bzero(dnsNameStr, SIZEOF(dnsNameStr));
         ASSERT(relay->dnsNameSize <= DNS_NAME_SIZE_MAX);
-        memmove(dnsNameStr, relay->dnsName, relay->dnsNameSize);
-        dnsNameStr[relay->dnsNameSize] = '\0';
+        if (relay->dnsNameSize <= DNS_NAME_SIZE_MAX) {
+            memmove(dnsNameStr, relay->dnsName, relay->dnsNameSize);
+            dnsNameStr[relay->dnsNameSize] = '\0';
+        }
         ASSERT(strlen(dnsNameStr) == relay->dnsNameSize);
 
 #ifdef HAVE_BAGL
@@ -505,8 +507,10 @@ void handleMetadata_ui_runStep() {
         char metadataUrlStr[1 + POOL_METADATA_URL_LENGTH_MAX] = {0};
         explicit_bzero(metadataUrlStr, SIZEOF(metadataUrlStr));
         ASSERT(md->urlSize <= POOL_METADATA_URL_LENGTH_MAX);
-        memmove(metadataUrlStr, md->url, md->urlSize);
-        metadataUrlStr[md->urlSize] = '\0';
+        if (md->urlSize <= POOL_METADATA_URL_LENGTH_MAX) {
+            memmove(metadataUrlStr, md->url, md->urlSize);
+            metadataUrlStr[md->urlSize] = '\0';
+        }
         ASSERT(strlen(metadataUrlStr) == md->urlSize);
 
 #ifdef HAVE_BAGL

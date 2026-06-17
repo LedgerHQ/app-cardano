@@ -73,8 +73,10 @@ static void deriveScriptHash_display_ui_position(uint8_t level, ui_callback_fn_t
     }
 
     // remove any trailing '.'
+    if (ptr > BEGIN(positionDescription)) {
+        *(ptr - 1) = '\0';
+    }
     ASSERT(ptr > BEGIN(positionDescription));
-    *(ptr - 1) = '\0';
 
     ASSERT(strlen(positionDescription) + 1 < SIZEOF(positionDescription));
 

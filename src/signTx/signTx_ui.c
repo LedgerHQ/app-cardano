@@ -479,8 +479,10 @@ static void _displayAnchorUrl(ui_callback_fn_t *callback, anchor_t *anchor) {
     char urlStr[1 + ANCHOR_URL_LENGTH_MAX] = {0};
     explicit_bzero(urlStr, SIZEOF(urlStr));
     ASSERT(anchor->urlLength <= ANCHOR_URL_LENGTH_MAX);
-    memmove(urlStr, anchor->url, anchor->urlLength);
-    urlStr[anchor->urlLength] = '\0';
+    if (anchor->urlLength <= ANCHOR_URL_LENGTH_MAX) {
+        memmove(urlStr, anchor->url, anchor->urlLength);
+        urlStr[anchor->urlLength] = '\0';
+    }
     ASSERT(strlen(urlStr) == anchor->urlLength);
 
 #ifdef HAVE_BAGL
