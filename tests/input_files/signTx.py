@@ -10,11 +10,22 @@ from typing import List, Optional, Union
 from dataclasses import dataclass, field
 import base58
 
-from application_client.app_def import Errors, NetworkDesc, Mainnet, Testnet, Testnet_legacy
-from input_files.derive_address import DeriveAddressTestCase, AddressType, pointer_to_str
+from application_client.app_def import (
+    Errors,
+    NetworkDesc,
+    Mainnet,
+    Testnet,
+    Testnet_legacy,
+)
+from input_files.derive_address import (
+    DeriveAddressTestCase,
+    AddressType,
+    pointer_to_str,
+)
 
 
 MAX_SIGN_TX_CHUNK_SIZE = 240
+
 
 class TransactionSigningMode(IntEnum):
     ORDINARY_TRANSACTION = 0x03
@@ -23,31 +34,38 @@ class TransactionSigningMode(IntEnum):
     MULTISIG_TRANSACTION = 0x06
     PLUTUS_TRANSACTION = 0x07
 
+
 class TxAuxiliaryDataType(IntEnum):
     ARBITRARY_HASH = 0x00
     CIP36_REGISTRATION = 0x01
+
 
 class CredentialParamsType(IntEnum):
     KEY_PATH = 0x00
     SCRIPT_HASH = 0x01
     KEY_HASH = 0x02
 
+
 class TxOutputFormat(IntEnum):
     ARRAY_LEGACY = 0x00
     MAP_BABBAGE = 0x01
+
 
 class TxOutputDestinationType(IntEnum):
     THIRD_PARTY = 0x01
     DEVICE_OWNED = 0x02
 
+
 class PoolKeyType(IntEnum):
     DEVICE_OWNED = 0x01
     THIRD_PARTY = 0x02
+
 
 class VoteOption(IntEnum):
     NO = 0x00
     YES = 0x01
     ABSTAIN = 0x02
+
 
 class VoterType(IntEnum):
     COMMITTEE_KEY_HASH = 0
@@ -58,6 +76,7 @@ class VoterType(IntEnum):
     DREP_SCRIPT_HASH = 3
     STAKE_POOL_KEY_HASH = 4
     STAKE_POOL_KEY_PATH = 104
+
 
 class CertificateType(IntEnum):
     STAKE_REGISTRATION = 0
@@ -74,13 +93,16 @@ class CertificateType(IntEnum):
     DREP_DEREGISTRATION = 17
     DREP_UPDATE = 18
 
+
 class CIP36VoteRegistrationFormat(IntEnum):
     CIP_15 = 1
     CIP_36 = 2
 
+
 class CIP36VoteDelegationType(IntEnum):
     KEY = 1
     PATH = 2
+
 
 class DRepParamsType(IntEnum):
     KEY_HASH = 0
@@ -89,13 +111,16 @@ class DRepParamsType(IntEnum):
     NO_CONFIDENCE = 3
     KEY_PATH = 100
 
+
 class TxRequiredSignerType(IntEnum):
     PATH = 0
     HASH = 1
 
+
 class DatumType(IntEnum):
     HASH = 0
     INLINE = 1
+
 
 class RelayType(IntEnum):
     SINGLE_HOST_IP_ADDR = 0
@@ -156,6 +181,7 @@ class TxOutputBabbage:
     tokenBundle: List[AssetGroup] = field(default_factory=list)
     datum: Optional[Datum] = None
     referenceScriptHex: Optional[str] = None
+
 
 TxOutput = Union[TxOutputAlonzo, TxOutputBabbage]
 
@@ -253,30 +279,36 @@ class VoterVotes:
 class StakeRegistrationParams:
     stakeCredential: CredentialParams
 
+
 @dataclass
 class StakeRegistrationConwayParams:
     stakeCredential: CredentialParams
     deposit: int
+
 
 @dataclass
 class StakeDelegationParams:
     stakeCredential: CredentialParams
     poolKeyHash: str
 
+
 @dataclass
 class VoteDelegationParams:
     stakeCredential: CredentialParams
     dRep: DRepParams
+
 
 @dataclass
 class AuthorizeCommitteeParams:
     coldCredential: CredentialParams
     hotCredential: CredentialParams
 
+
 @dataclass
 class ResignCommitteeParams:
     coldCredential: CredentialParams
     anchor: Optional[AnchorParams] = None
+
 
 @dataclass
 class DRepRegistrationParams:
@@ -284,30 +316,36 @@ class DRepRegistrationParams:
     deposit: int
     anchor: Optional[AnchorParams] = None
 
+
 @dataclass
 class DRepUpdateParams:
     dRepCredential: CredentialParams
     anchor: Optional[AnchorParams] = None
+
 
 @dataclass
 class PoolRetirementParams:
     poolKeyPath: str
     retirementEpoch: int
 
+
 @dataclass
 class Margin:
     numerator: int
     denominator: int
+
 
 @dataclass
 class PoolMetadataParams:
     metadataUrl: str
     metadataHashHex: str
 
+
 @dataclass
 class PoolKey:  # same for PoolRewardAccount and PoolOwner
     type: PoolKeyType
     key: str  # hex string or path
+
 
 @dataclass
 class SingleHostIpAddrRelayParams:
@@ -315,19 +353,25 @@ class SingleHostIpAddrRelayParams:
     ipv4: Optional[str] = None
     ipv6: Optional[str] = None
 
+
 @dataclass
 class SingleHostHostnameRelayParams:
     portNumber: int
     dnsName: str
 
+
 @dataclass
 class MultiHostRelayParams:
     dnsName: str
 
+
 @dataclass
 class Relay:
     type: RelayType
-    params: Union[SingleHostIpAddrRelayParams, SingleHostHostnameRelayParams, MultiHostRelayParams]
+    params: Union[
+        SingleHostIpAddrRelayParams, SingleHostHostnameRelayParams, MultiHostRelayParams
+    ]
+
 
 @dataclass
 class PoolRegistrationParams:
@@ -341,19 +385,23 @@ class PoolRegistrationParams:
     relays: List[Relay]
     metadata: Optional[PoolMetadataParams] = None
 
+
 @dataclass
 class Certificate:
     type: CertificateType
-    params: Union[StakeRegistrationParams,
-                  StakeRegistrationConwayParams,
-                  StakeDelegationParams,
-                  VoteDelegationParams,
-                  AuthorizeCommitteeParams,
-                  ResignCommitteeParams,
-                  DRepRegistrationParams,
-                  DRepUpdateParams,
-                  PoolRegistrationParams,
-                  PoolRetirementParams]
+    params: Union[
+        StakeRegistrationParams,
+        StakeRegistrationConwayParams,
+        StakeDelegationParams,
+        VoteDelegationParams,
+        AuthorizeCommitteeParams,
+        ResignCommitteeParams,
+        DRepRegistrationParams,
+        DRepUpdateParams,
+        PoolRegistrationParams,
+        PoolRetirementParams,
+    ]
+
 
 @dataclass
 class Transaction:
@@ -400,2359 +448,3772 @@ class SignTxTestCase:
 
 # pylint: disable=line-too-long
 inputs: dict[str, TxInput] = {
-    "utxoByron": TxInput("1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc", "m/44'/1815'/0'/0/0"),
-    "utxoByron2": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", "m/44'/1815'/1'/0/0"),
-    "utxoShelley": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", "m/1852'/1815'/0'/0/0"),
-    "utxoShelley2": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", "m/1852'/1815'/0'/2/1"),
-    "utxoShelley3": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", "m/1852'/1815'/1'/0/0"),
-    "utxoNonReasonable": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", "m/1852'/1815'/456'/0/0"),
-    "utxoMultisig": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"),
-    "utxoNoPath": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"),
-    "utxoWithPath0": TxInput("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", "m/1852'/1815'/0'/0/0"),
+    "utxoByron": TxInput(
+        "1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc",
+        "m/44'/1815'/0'/0/0",
+    ),
+    "utxoByron2": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        "m/44'/1815'/1'/0/0",
+    ),
+    "utxoShelley": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        "m/1852'/1815'/0'/0/0",
+    ),
+    "utxoShelley2": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        "m/1852'/1815'/0'/2/1",
+    ),
+    "utxoShelley3": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        "m/1852'/1815'/1'/0/0",
+    ),
+    "utxoNonReasonable": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        "m/1852'/1815'/456'/0/0",
+    ),
+    "utxoMultisig": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"
+    ),
+    "utxoNoPath": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"
+    ),
+    "utxoWithPath0": TxInput(
+        "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        "m/1852'/1815'/0'/0/0",
+    ),
 }
 
 destinations: dict[str, TxOutputDestination] = {
-    "externalByronMainnet":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            ThirdPartyAddressParams(base58.b58decode("Ae2tdPwUPEZCanmBz5g2GEwFqKTKpNJcGYPKfDxoNeKZ8bRHr8366kseiK2").hex())),
-    "externalByronDaedalusMainnet":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            ThirdPartyAddressParams(base58.b58decode("DdzFFzCqrht7HGoJ87gznLktJGywK1LbAJT2sbd4txmgS7FcYLMQFhawb18ojS9Hx55mrbsHPr7PTraKh14TSQbGBPJHbDZ9QVh6Z6Di").hex())),
-    "externalByronTestnet":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            ThirdPartyAddressParams(base58.b58decode("2657WMsDfac6Cmfg4Varph2qyLKGi2K9E8jrtvjHVzfSjmbTMGy5sY3HpxCKsmtDA").hex())),
-    "internalBaseWithStakingPath":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                                                  "m/1852'/1815'/0'/0/0",
-                                                  "m/1852'/1815'/0'/2/0")),
-    "internalBaseWithStakingKeyHash":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                                                  "m/1852'/1815'/0'/0/0",
-                                                  "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277")),
-    "internalEnterprise":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.ENTERPRISE_KEY,
-                                                  "m/1852'/1815'/0'/0/0")),
-    "internalPointer":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.POINTER_KEY,
-                                                  "m/1852'/1815'/0'/0/0",
-                                                  pointer_to_str(1, 2, 3))),
-    "internalBaseWithStakingPathNonReasonable":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                                                  "m/1852'/1815'/456'/0/5000000",
-                                                  "m/1852'/1815'/456'/2/0")),
-    "internalBaseWithStakingPathMap":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                                                  "m/1852'/1815'/0'/0/0",
-                                                  "m/1852'/1815'/0'/2/0")),
-    "externalShelleyBaseKeyhashKeyhash":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            # bech32 addr1q97tqh7wzy8mnx0sr2a57c4ug40zzl222877jz06nt49g4zr43fuq3k0dfpqjh3uvqcsl2qzwuwsvuhclck3scgn3vys6wkj5d
-                            ThirdPartyAddressParams("017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09")),
-    "externalShelleyBaseScripthashKeyhash":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            # bech32 addr_test1zp0z7zqwhya6mpk5q929ur897g3pp9kkgalpreny8y304rfw6j2jxnwq6enuzvt0lp89wgcsufj7mvcnxpzgkd4hz70qe8ugl4
-                            ThirdPartyAddressParams("105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e")),
-    "multiassetThirdParty":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            # bech32 addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r
-                            ThirdPartyAddressParams("01eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff")),
-    "trezorParityDatumHash":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            # bech32 addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0
-                            ThirdPartyAddressParams("71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c")),
-    "externalShelleyBaseKeyhashScripthash":
-        TxOutputDestination(TxOutputDestinationType.THIRD_PARTY,
-                            # bech32 addr1yyfatq352yhh7ctw7c3s33qpwrq3pvhcmqg0yvzq9308g9msqj6hs5cg8q8zmtpf2hfrfds25jmcvpta6k5nnpzrn5eqy6fknd
-                            ThirdPartyAddressParams("2113d58234512f7f616ef62308c40170c110b2f8d810f230402c5e74177004b5785308380e2dac2955d234b60aa4b786057dd5a93984439d32")),
-    "paymentScriptPath":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.REWARD_KEY,
-                                                  "",
-                                                  "m/1852'/1815'/0'/2/0")),
-    "paymentScriptHash":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.REWARD_SCRIPT,
-                                                  "",
-                                                  "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277")),
-    "paymentKeyPath":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.REWARD_KEY,
-                                                  "",
-                                                  "m/1852'/1815'/0'/2/0")),
-    "reject1":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
-                                                  "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
-                                                  "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277")),
-    "reject2":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_SCRIPT_STAKE_SCRIPT,
-                                                  "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
-                                                  "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277")),
-    "reject3":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
-                                                  "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
-                                                  "m/1852'/1815'/456'/2/0")),
-    "reject4":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                                                  "m/1852'/1815'/1'/0/0",
-                                                  "m/1852'/1815'/0'/2/0")),
-    "reject5":
-        TxOutputDestination(TxOutputDestinationType.DEVICE_OWNED,
-                            DeriveAddressTestCase("",
-                                                  Mainnet,
-                                                  AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                                                  "m/1852'/1815'/1'/0/0",
-                                                  "m/1852'/1815'/1'/2/0")),
+    "externalByronMainnet": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        ThirdPartyAddressParams(
+            base58.b58decode(
+                "Ae2tdPwUPEZCanmBz5g2GEwFqKTKpNJcGYPKfDxoNeKZ8bRHr8366kseiK2"
+            ).hex()
+        ),
+    ),
+    "externalByronDaedalusMainnet": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        ThirdPartyAddressParams(
+            base58.b58decode(
+                "DdzFFzCqrht7HGoJ87gznLktJGywK1LbAJT2sbd4txmgS7FcYLMQFhawb18ojS9Hx55mrbsHPr7PTraKh14TSQbGBPJHbDZ9QVh6Z6Di"
+            ).hex()
+        ),
+    ),
+    "externalByronTestnet": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        ThirdPartyAddressParams(
+            base58.b58decode(
+                "2657WMsDfac6Cmfg4Varph2qyLKGi2K9E8jrtvjHVzfSjmbTMGy5sY3HpxCKsmtDA"
+            ).hex()
+        ),
+    ),
+    "internalBaseWithStakingPath": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            "m/1852'/1815'/0'/0/0",
+            "m/1852'/1815'/0'/2/0",
+        ),
+    ),
+    "internalBaseWithStakingKeyHash": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            "m/1852'/1815'/0'/0/0",
+            "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        ),
+    ),
+    "internalEnterprise": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "", Mainnet, AddressType.ENTERPRISE_KEY, "m/1852'/1815'/0'/0/0"
+        ),
+    ),
+    "internalPointer": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.POINTER_KEY,
+            "m/1852'/1815'/0'/0/0",
+            pointer_to_str(1, 2, 3),
+        ),
+    ),
+    "internalBaseWithStakingPathNonReasonable": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            "m/1852'/1815'/456'/0/5000000",
+            "m/1852'/1815'/456'/2/0",
+        ),
+    ),
+    "internalBaseWithStakingPathMap": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            "m/1852'/1815'/0'/0/0",
+            "m/1852'/1815'/0'/2/0",
+        ),
+    ),
+    "externalShelleyBaseKeyhashKeyhash": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        # bech32 addr1q97tqh7wzy8mnx0sr2a57c4ug40zzl222877jz06nt49g4zr43fuq3k0dfpqjh3uvqcsl2qzwuwsvuhclck3scgn3vys6wkj5d
+        ThirdPartyAddressParams(
+            "017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09"
+        ),
+    ),
+    "externalShelleyBaseScripthashKeyhash": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        # bech32 addr_test1zp0z7zqwhya6mpk5q929ur897g3pp9kkgalpreny8y304rfw6j2jxnwq6enuzvt0lp89wgcsufj7mvcnxpzgkd4hz70qe8ugl4
+        ThirdPartyAddressParams(
+            "105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e"
+        ),
+    ),
+    "multiassetThirdParty": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        # bech32 addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r
+        ThirdPartyAddressParams(
+            "01eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff"
+        ),
+    ),
+    "trezorParityDatumHash": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        # bech32 addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0
+        ThirdPartyAddressParams(
+            "71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c"
+        ),
+    ),
+    "externalShelleyBaseKeyhashScripthash": TxOutputDestination(
+        TxOutputDestinationType.THIRD_PARTY,
+        # bech32 addr1yyfatq352yhh7ctw7c3s33qpwrq3pvhcmqg0yvzq9308g9msqj6hs5cg8q8zmtpf2hfrfds25jmcvpta6k5nnpzrn5eqy6fknd
+        ThirdPartyAddressParams(
+            "2113d58234512f7f616ef62308c40170c110b2f8d810f230402c5e74177004b5785308380e2dac2955d234b60aa4b786057dd5a93984439d32"
+        ),
+    ),
+    "paymentScriptPath": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "", Mainnet, AddressType.REWARD_KEY, "", "m/1852'/1815'/0'/2/0"
+        ),
+    ),
+    "paymentScriptHash": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.REWARD_SCRIPT,
+            "",
+            "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        ),
+    ),
+    "paymentKeyPath": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "", Mainnet, AddressType.REWARD_KEY, "", "m/1852'/1815'/0'/2/0"
+        ),
+    ),
+    "reject1": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
+            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+            "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        ),
+    ),
+    "reject2": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_SCRIPT_STAKE_SCRIPT,
+            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+            "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        ),
+    ),
+    "reject3": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
+            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+            "m/1852'/1815'/456'/2/0",
+        ),
+    ),
+    "reject4": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            "m/1852'/1815'/1'/0/0",
+            "m/1852'/1815'/0'/2/0",
+        ),
+    ),
+    "reject5": TxOutputDestination(
+        TxOutputDestinationType.DEVICE_OWNED,
+        DeriveAddressTestCase(
+            "",
+            Mainnet,
+            AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+            "m/1852'/1815'/1'/0/0",
+            "m/1852'/1815'/1'/2/0",
+        ),
+    ),
 }
 
 outputs: dict[str, TxOutput] = {
-    "externalByronMainnet": TxOutputAlonzo(destinations["externalByronMainnet"], 3003112),
-    "externalByronDaedalusMainnet": TxOutputAlonzo(destinations["externalByronDaedalusMainnet"], 3003112),
-    "externalByronTestnet": TxOutputAlonzo(destinations["externalByronTestnet"] , 3003112),
-    "internalBaseWithStakingPath": TxOutputAlonzo(destinations["internalBaseWithStakingPath"], 7120787),
-    "internalBaseWithStakingPathBabbage": TxOutputBabbage(destinations["internalBaseWithStakingPath"], 7120787),
-    "internalBaseWithStakingKeyHash": TxOutputAlonzo(destinations["internalBaseWithStakingKeyHash"], 7120787),
+    "externalByronMainnet": TxOutputAlonzo(
+        destinations["externalByronMainnet"], 3003112
+    ),
+    "externalByronDaedalusMainnet": TxOutputAlonzo(
+        destinations["externalByronDaedalusMainnet"], 3003112
+    ),
+    "externalByronTestnet": TxOutputAlonzo(
+        destinations["externalByronTestnet"], 3003112
+    ),
+    "internalBaseWithStakingPath": TxOutputAlonzo(
+        destinations["internalBaseWithStakingPath"], 7120787
+    ),
+    "internalBaseWithStakingPathBabbage": TxOutputBabbage(
+        destinations["internalBaseWithStakingPath"], 7120787
+    ),
+    "internalBaseWithStakingKeyHash": TxOutputAlonzo(
+        destinations["internalBaseWithStakingKeyHash"], 7120787
+    ),
     "internalEnterprise": TxOutputAlonzo(destinations["internalEnterprise"], 7120787),
     "internalPointer": TxOutputAlonzo(destinations["internalPointer"], 7120787),
-    "internalBaseWithStakingPathNonReasonable": TxOutputAlonzo(destinations["internalBaseWithStakingPathNonReasonable"], 7120787),
-    "internalBaseWithStakingPathMap": TxOutputBabbage(destinations["internalBaseWithStakingPathMap"], 7120787),
-    "externalShelleyBaseKeyhashKeyhash": TxOutputAlonzo(destinations["externalShelleyBaseKeyhashKeyhash"], 1),
-    "externalShelleyBaseScripthashKeyhash": TxOutputAlonzo(destinations["externalShelleyBaseScripthashKeyhash"], 1),
-    "multiassetOneToken": TxOutputAlonzo(destinations["multiassetThirdParty"],
-                                         1234,
-                                         tokenBundle=[AssetGroup("95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("74652474436f696e", 7878754)])]),
-    "multiassetManyTokens": TxOutputAlonzo(destinations["multiassetThirdParty"],
-                                         1234,
-                                         # fingerprints taken from CIP 14 draft
-                                         tokenBundle=[AssetGroup("7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
-                                                                 # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
-                                                                 [Token("", 3),
-                                                                  # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
-                                                                  Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", 1),
-                                                                  # fingerprint: asset1pkpwyknlvul7az0xx8czhl60pyel45rpje4z8w
-                                                                  Token("0000000000000000000000000000000000000000000000000000000000000000", 2)]),
-                                                      AssetGroup("95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("456c204e69c3b16f", 1234),
-                                                                  Token("74652474436f696e", 7878754)])]),
-    "multiassetManyTokensBabbage": TxOutputBabbage(destinations["multiassetThirdParty"],
-                                         1234,
-                                         # fingerprints taken from CIP 14 draft
-                                         tokenBundle=[AssetGroup("7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
-                                                                 # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
-                                                                 [Token("", 3),
-                                                                  # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
-                                                                  Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", 1),
-                                                                  # fingerprint: asset1pkpwyknlvul7az0xx8czhl60pyel45rpje4z8w
-                                                                  Token("0000000000000000000000000000000000000000000000000000000000000000", 2)]),
-                                                      AssetGroup("95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("456c204e69c3b16f", 1234),
-                                                                  Token("74652474436f696e", 7878754)])]),
-    "multiassetBigNumber": TxOutputAlonzo(destinations["multiassetThirdParty"],
-                                         24103998870869519,
-                                         tokenBundle=[AssetGroup("95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("74652474436f696e", 24103998870869519)])]),
-    "multiassetChange": TxOutputAlonzo(destinations["internalBaseWithStakingPath"],
-                                         1234,
-                                         tokenBundle=[AssetGroup("95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("74652474436f696e", 7878754)])]),
-    "multiassetDecimalPlaces": TxOutputAlonzo(destinations["multiassetThirdParty"],
-                                         1234,
-                                         # fingerprint: asset155nxgqj5acff7fdhc8ranfwyl7nq4ljrks7l6w
-                                         tokenBundle=[AssetGroup("6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15f",
-                                                                 [Token("5354524950", 3456789)]),
-                                                      AssetGroup("af2e27f580f7f08e93190a81f72462f153026d06450924726645891b",
-                                                                 # fingerprint: asset14yqf3pclzx88jjahydyfad8pxw5xhuca6j7k2p
-                                                                 [Token("44524950", 1234),
-                                                                  # fingerprint: asset12wejgxu04lpg6h3pm056qd207k2sfh7yjklclf
-                                                                  Token("ffffffffffffffffffffffff", 1234)])]),
-    "trezorParity1": TxOutputAlonzo(destinations["multiassetThirdParty"],
-                                         2000000,
-                                         tokenBundle=[AssetGroup("0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
-                                                                 [Token("74657374436f696e", 7878754)])]),
-    "trezorParity2": TxOutputAlonzo(destinations["externalShelleyBaseKeyhashKeyhash"],
-                                         2000000,
-                                         tokenBundle=[AssetGroup("0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
-                                                                 [Token("74657374436f696e", 7878754)])]),
-    "trezorParityDatumHash1": TxOutputAlonzo(destinations["trezorParityDatumHash"],
-                                         1,
-                                         datum=Datum(DatumType.HASH, "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7")),
-    "trezorParityDatumHash2": TxOutputAlonzo(destinations["trezorParityDatumHash"],
-                                         1,
-                                         datum=Datum(DatumType.HASH, "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7")),
-    "trezorParityBabbageOutputs": TxOutputBabbage(destinations["trezorParityDatumHash"],
-                                         1,
-                                         datum=Datum(DatumType.INLINE, "5579657420616e6f746865722063686f636f6c617465"),
-                                         referenceScriptHex="0080f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277"),
-    "datumHashExternal": TxOutputAlonzo(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.HASH, "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188")),
-    "datumHashWithTokens": TxOutputAlonzo(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.HASH, "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188"),
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("7564247542686912", 7878754)])]),
-    "datumHashWithTokensMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.HASH, "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188"),
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("7564247542686912", 7878754)])]),
-    "missingDatumHashWithTokens": TxOutputAlonzo(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("7564247542686912", 7878754)])]),
-    "inlineDatumWithTokensMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.INLINE, "5579657420616e6f746865722063686f636f6c617465"),
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("7564247542686912", 7878754)])]),
-    "inlineDatum480Map": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.INLINE, "12b8240c5470b47c159597b6f71d78c7fc99d1d8d911cb19b8f50211938ef361a22d30cd8f6354ec50e99a7d3cf3e06797ed4af3d358e01b2a957caa4010da328720b9fbe7a3a6d10209a13d2eb11933eb1bf2ab02713117e421b6dcc66297c41b95ad32d3457a0e6b44d8482385f311465964c3daff226acfb7bbda47011f1a6531db30e5b5977143c48f8b8eb739487f87dc13896f58529cfb48e415fc6123e708cdc3cb15cc1900ecf88c5fc9ff66d8ad6dae18c79e4a3c392a0df4d16ffa3e370f4dad8d8e9d171c5656bb317c78a2711057e7ae0beb1dc66ba01aa69d0c0db244e6742d7758ce8da00dfed6225d4aed4b01c42a0352688ed5803f3fd64873f11355305d9db309f4a2a6673cc408a06b8827a5edef7b0fd8742627fb8aa102a084b7db72fcb5c3d1bf437e2a936b738902a9c0258b462b9f2e9befd2c6bcfc036143bb34342b9124888a5b29fa5d60909c81319f034c11542b05ca3ff6c64c7642ff1e2b25fb60dc9bb6f5c914dd4149f31896955d4d204d822deddc46f852115a479edf7521cdf4ce596805875011855158fd303c33a2a7916a9cb7acaaf5aeca7e6efb75960e9597cd845bd9a93610bf1ab47ab0de943e8a96e26a24c4996f7b07fad437829fee5bc3496192608d4c04ac642cdec7bdbb8a948ad1d434")),
-    "inlineDatum304WithTokensMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.INLINE, "5579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f74686572206374686572"),
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("7564247542686912", 7878754)])]),
-    "datumHashExternalMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.HASH, "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188")),
-    "refScriptExternalMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         referenceScriptHex="deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"),
-    "datumHashRefScriptExternalMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.HASH, "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188"),
-                                         referenceScriptHex="deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"),
-    "datumHashRefScript240ExternalMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.HASH, "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188"),
-                                         referenceScriptHex="4784392787cc567ac21d7b5346a4a89ae112b7ff7610e402284042aa4e6efca7956a53c3f5cb3ec6745f5e21150f2a77bd71a2adc3f8b9539e9bab41934b477f60a8b302584d1a619ed9b178b5ce6fcad31adc0d6fc17023ede474c09f29fdbfb290a5b30b5240fae5de71168036201772c0d272ae90220181f9bf8c3198e79fc2ae32b076abf4d0e10d3166923ce56994b25c00909e3faab8ef1358c136cd3b197488efc883a7c6cfa3ac63ca9cebc62121c6e22f594420c2abd54e78282adec20ee7dba0e6de65554adb8ee8314f23f86cf7cf0906d4b6c643966baf6c54240c19f4131374e298f38a626a4ad63e61"),
-    "datumHashRefScript304ExternalMap": TxOutputBabbage(destinations["externalShelleyBaseScripthashKeyhash"],
-                                         7120787,
-                                         datum=Datum(DatumType.HASH, "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188"),
-                                         referenceScriptHex="deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeef"),
-    "internalBaseWithTokensMap": TxOutputBabbage(destinations["internalBaseWithStakingPath"],
-                                         7120787,
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47)])]),
-    "multiassetInvalidAssetGroupOrdering": TxOutputBabbage(destinations["multiassetThirdParty"],
-                                         1234,
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47)]),
-                                                      AssetGroup("71a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47)])]),
-    "multiassetAssetGroupsNotUnique": TxOutputBabbage(destinations["multiassetThirdParty"],
-                                         1234,
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47)]),
-                                                      AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47)])]),
-    "multiassetInvalidTokenOrderingSameLength": TxOutputBabbage(destinations["multiassetThirdParty"],
-                                         1234,
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("74652474436f696e", 7878754)])]),
-    "multiassetInvalidTokenOrderingDifferentLengths": TxOutputBabbage(destinations["multiassetThirdParty"],
-                                         1234,
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("756424754268", 7878754)])]),
-    "multiassetTokensNotUnique": TxOutputBabbage(destinations["multiassetThirdParty"],
-                                         1234,
-                                         tokenBundle=[AssetGroup("75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
-                                                                 [Token("7564247542686911", 47),
-                                                                  Token("7564247542686911", 7878754)])]),
+    "internalBaseWithStakingPathNonReasonable": TxOutputAlonzo(
+        destinations["internalBaseWithStakingPathNonReasonable"], 7120787
+    ),
+    "internalBaseWithStakingPathMap": TxOutputBabbage(
+        destinations["internalBaseWithStakingPathMap"], 7120787
+    ),
+    "externalShelleyBaseKeyhashKeyhash": TxOutputAlonzo(
+        destinations["externalShelleyBaseKeyhashKeyhash"], 1
+    ),
+    "externalShelleyBaseScripthashKeyhash": TxOutputAlonzo(
+        destinations["externalShelleyBaseScripthashKeyhash"], 1
+    ),
+    "multiassetOneToken": TxOutputAlonzo(
+        destinations["multiassetThirdParty"],
+        1234,
+        tokenBundle=[
+            AssetGroup(
+                "95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("74652474436f696e", 7878754)],
+            )
+        ],
+    ),
+    "multiassetManyTokens": TxOutputAlonzo(
+        destinations["multiassetThirdParty"],
+        1234,
+        # fingerprints taken from CIP 14 draft
+        tokenBundle=[
+            AssetGroup(
+                "7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
+                # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
+                [
+                    Token("", 3),
+                    # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
+                    Token(
+                        "1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", 1
+                    ),
+                    # fingerprint: asset1pkpwyknlvul7az0xx8czhl60pyel45rpje4z8w
+                    Token(
+                        "0000000000000000000000000000000000000000000000000000000000000000",
+                        2,
+                    ),
+                ],
+            ),
+            AssetGroup(
+                "95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("456c204e69c3b16f", 1234), Token("74652474436f696e", 7878754)],
+            ),
+        ],
+    ),
+    "multiassetManyTokensBabbage": TxOutputBabbage(
+        destinations["multiassetThirdParty"],
+        1234,
+        # fingerprints taken from CIP 14 draft
+        tokenBundle=[
+            AssetGroup(
+                "7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
+                # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
+                [
+                    Token("", 3),
+                    # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
+                    Token(
+                        "1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", 1
+                    ),
+                    # fingerprint: asset1pkpwyknlvul7az0xx8czhl60pyel45rpje4z8w
+                    Token(
+                        "0000000000000000000000000000000000000000000000000000000000000000",
+                        2,
+                    ),
+                ],
+            ),
+            AssetGroup(
+                "95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("456c204e69c3b16f", 1234), Token("74652474436f696e", 7878754)],
+            ),
+        ],
+    ),
+    "multiassetBigNumber": TxOutputAlonzo(
+        destinations["multiassetThirdParty"],
+        24103998870869519,
+        tokenBundle=[
+            AssetGroup(
+                "95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("74652474436f696e", 24103998870869519)],
+            )
+        ],
+    ),
+    "multiassetChange": TxOutputAlonzo(
+        destinations["internalBaseWithStakingPath"],
+        1234,
+        tokenBundle=[
+            AssetGroup(
+                "95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("74652474436f696e", 7878754)],
+            )
+        ],
+    ),
+    "multiassetDecimalPlaces": TxOutputAlonzo(
+        destinations["multiassetThirdParty"],
+        1234,
+        # fingerprint: asset155nxgqj5acff7fdhc8ranfwyl7nq4ljrks7l6w
+        tokenBundle=[
+            AssetGroup(
+                "6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15f",
+                [Token("5354524950", 3456789)],
+            ),
+            AssetGroup(
+                "af2e27f580f7f08e93190a81f72462f153026d06450924726645891b",
+                # fingerprint: asset14yqf3pclzx88jjahydyfad8pxw5xhuca6j7k2p
+                [
+                    Token("44524950", 1234),
+                    # fingerprint: asset12wejgxu04lpg6h3pm056qd207k2sfh7yjklclf
+                    Token("ffffffffffffffffffffffff", 1234),
+                ],
+            ),
+        ],
+    ),
+    "trezorParity1": TxOutputAlonzo(
+        destinations["multiassetThirdParty"],
+        2000000,
+        tokenBundle=[
+            AssetGroup(
+                "0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
+                [Token("74657374436f696e", 7878754)],
+            )
+        ],
+    ),
+    "trezorParity2": TxOutputAlonzo(
+        destinations["externalShelleyBaseKeyhashKeyhash"],
+        2000000,
+        tokenBundle=[
+            AssetGroup(
+                "0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
+                [Token("74657374436f696e", 7878754)],
+            )
+        ],
+    ),
+    "trezorParityDatumHash1": TxOutputAlonzo(
+        destinations["trezorParityDatumHash"],
+        1,
+        datum=Datum(
+            DatumType.HASH,
+            "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        ),
+    ),
+    "trezorParityDatumHash2": TxOutputAlonzo(
+        destinations["trezorParityDatumHash"],
+        1,
+        datum=Datum(
+            DatumType.HASH,
+            "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        ),
+    ),
+    "trezorParityBabbageOutputs": TxOutputBabbage(
+        destinations["trezorParityDatumHash"],
+        1,
+        datum=Datum(DatumType.INLINE, "5579657420616e6f746865722063686f636f6c617465"),
+        referenceScriptHex="0080f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+    ),
+    "datumHashExternal": TxOutputAlonzo(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.HASH,
+            "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+        ),
+    ),
+    "datumHashWithTokens": TxOutputAlonzo(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.HASH,
+            "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+        ),
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("7564247542686912", 7878754)],
+            )
+        ],
+    ),
+    "datumHashWithTokensMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.HASH,
+            "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+        ),
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("7564247542686912", 7878754)],
+            )
+        ],
+    ),
+    "missingDatumHashWithTokens": TxOutputAlonzo(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("7564247542686912", 7878754)],
+            )
+        ],
+    ),
+    "inlineDatumWithTokensMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(DatumType.INLINE, "5579657420616e6f746865722063686f636f6c617465"),
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("7564247542686912", 7878754)],
+            )
+        ],
+    ),
+    "inlineDatum480Map": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.INLINE,
+            "12b8240c5470b47c159597b6f71d78c7fc99d1d8d911cb19b8f50211938ef361a22d30cd8f6354ec50e99a7d3cf3e06797ed4af3d358e01b2a957caa4010da328720b9fbe7a3a6d10209a13d2eb11933eb1bf2ab02713117e421b6dcc66297c41b95ad32d3457a0e6b44d8482385f311465964c3daff226acfb7bbda47011f1a6531db30e5b5977143c48f8b8eb739487f87dc13896f58529cfb48e415fc6123e708cdc3cb15cc1900ecf88c5fc9ff66d8ad6dae18c79e4a3c392a0df4d16ffa3e370f4dad8d8e9d171c5656bb317c78a2711057e7ae0beb1dc66ba01aa69d0c0db244e6742d7758ce8da00dfed6225d4aed4b01c42a0352688ed5803f3fd64873f11355305d9db309f4a2a6673cc408a06b8827a5edef7b0fd8742627fb8aa102a084b7db72fcb5c3d1bf437e2a936b738902a9c0258b462b9f2e9befd2c6bcfc036143bb34342b9124888a5b29fa5d60909c81319f034c11542b05ca3ff6c64c7642ff1e2b25fb60dc9bb6f5c914dd4149f31896955d4d204d822deddc46f852115a479edf7521cdf4ce596805875011855158fd303c33a2a7916a9cb7acaaf5aeca7e6efb75960e9597cd845bd9a93610bf1ab47ab0de943e8a96e26a24c4996f7b07fad437829fee5bc3496192608d4c04ac642cdec7bdbb8a948ad1d434",
+        ),
+    ),
+    "inlineDatum304WithTokensMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.INLINE,
+            "5579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f74686572206374686572",
+        ),
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("7564247542686912", 7878754)],
+            )
+        ],
+    ),
+    "datumHashExternalMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.HASH,
+            "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+        ),
+    ),
+    "refScriptExternalMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        referenceScriptHex="deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    ),
+    "datumHashRefScriptExternalMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.HASH,
+            "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+        ),
+        referenceScriptHex="deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    ),
+    "datumHashRefScript240ExternalMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.HASH,
+            "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+        ),
+        referenceScriptHex="4784392787cc567ac21d7b5346a4a89ae112b7ff7610e402284042aa4e6efca7956a53c3f5cb3ec6745f5e21150f2a77bd71a2adc3f8b9539e9bab41934b477f60a8b302584d1a619ed9b178b5ce6fcad31adc0d6fc17023ede474c09f29fdbfb290a5b30b5240fae5de71168036201772c0d272ae90220181f9bf8c3198e79fc2ae32b076abf4d0e10d3166923ce56994b25c00909e3faab8ef1358c136cd3b197488efc883a7c6cfa3ac63ca9cebc62121c6e22f594420c2abd54e78282adec20ee7dba0e6de65554adb8ee8314f23f86cf7cf0906d4b6c643966baf6c54240c19f4131374e298f38a626a4ad63e61",
+    ),
+    "datumHashRefScript304ExternalMap": TxOutputBabbage(
+        destinations["externalShelleyBaseScripthashKeyhash"],
+        7120787,
+        datum=Datum(
+            DatumType.HASH,
+            "ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+        ),
+        referenceScriptHex="deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeef",
+    ),
+    "internalBaseWithTokensMap": TxOutputBabbage(
+        destinations["internalBaseWithStakingPath"],
+        7120787,
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47)],
+            )
+        ],
+    ),
+    "multiassetInvalidAssetGroupOrdering": TxOutputBabbage(
+        destinations["multiassetThirdParty"],
+        1234,
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47)],
+            ),
+            AssetGroup(
+                "71a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47)],
+            ),
+        ],
+    ),
+    "multiassetAssetGroupsNotUnique": TxOutputBabbage(
+        destinations["multiassetThirdParty"],
+        1234,
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47)],
+            ),
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47)],
+            ),
+        ],
+    ),
+    "multiassetInvalidTokenOrderingSameLength": TxOutputBabbage(
+        destinations["multiassetThirdParty"],
+        1234,
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("74652474436f696e", 7878754)],
+            )
+        ],
+    ),
+    "multiassetInvalidTokenOrderingDifferentLengths": TxOutputBabbage(
+        destinations["multiassetThirdParty"],
+        1234,
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("756424754268", 7878754)],
+            )
+        ],
+    ),
+    "multiassetTokensNotUnique": TxOutputBabbage(
+        destinations["multiassetThirdParty"],
+        1234,
+        tokenBundle=[
+            AssetGroup(
+                "75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39",
+                [Token("7564247542686911", 47), Token("7564247542686911", 7878754)],
+            )
+        ],
+    ),
 }
 
 mints: dict[str, List[AssetGroup]] = {
-    "mintWithDecimalPlaces": [AssetGroup("6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15f",
-                                    # fingerprint: asset155nxgqj5acff7fdhc8ranfwyl7nq4ljrks7l6w
-                                    [Token("5354524950", -3456789)]),
-                              AssetGroup("af2e27f580f7f08e93190a81f72462f153026d06450924726645891b",
-                                    # fingerprint: asset14yqf3pclzx88jjahydyfad8pxw5xhuca6j7k2p
-                                    [Token("44524950", 1234),
-                                    # fingerprint: asset12wejgxu04lpg6h3pm056qd207k2sfh7yjklclf
-                                     Token("ffffffffffffffffffffffff", 1234)])],
+    "mintWithDecimalPlaces": [
+        AssetGroup(
+            "6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15f",
+            # fingerprint: asset155nxgqj5acff7fdhc8ranfwyl7nq4ljrks7l6w
+            [Token("5354524950", -3456789)],
+        ),
+        AssetGroup(
+            "af2e27f580f7f08e93190a81f72462f153026d06450924726645891b",
+            # fingerprint: asset14yqf3pclzx88jjahydyfad8pxw5xhuca6j7k2p
+            [
+                Token("44524950", 1234),
+                # fingerprint: asset12wejgxu04lpg6h3pm056qd207k2sfh7yjklclf
+                Token("ffffffffffffffffffffffff", 1234),
+            ],
+        ),
+    ],
     # fingerprints taken from CIP 14 draft
-    "mintAmountVariety": [AssetGroup("7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
-                                    # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
-                                    [Token("", 0),
-                                     # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
-                                     Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", -1),
-                                     # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt (and incremented)
-                                     Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20a", 9223372036854775807),
-                                     # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt (and incremented)
-                                     Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20b", -9223372036854775808)])],
-    "trezorComparison": [AssetGroup("0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
-                                    [Token("74657374436f696e", 7878754),
-                                     Token("75657374436f696e", -7878754)])],
-    "reject": [AssetGroup("0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
-                                    [Token("75657374436f696e", -7878754)])],
+    "mintAmountVariety": [
+        AssetGroup(
+            "7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
+            # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
+            [
+                Token("", 0),
+                # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
+                Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", -1),
+                # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt (and incremented)
+                Token(
+                    "1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20a",
+                    9223372036854775807,
+                ),
+                # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt (and incremented)
+                Token(
+                    "1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20b",
+                    -9223372036854775808,
+                ),
+            ],
+        )
+    ],
+    "trezorComparison": [
+        AssetGroup(
+            "0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
+            [Token("74657374436f696e", 7878754), Token("75657374436f696e", -7878754)],
+        )
+    ],
+    "reject": [
+        AssetGroup(
+            "0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425",
+            [Token("75657374436f696e", -7878754)],
+        )
+    ],
     # fingerprints taken from CIP 14 draft (and incremented)
-    "mintInvalidCanonicalOrderingPolicy": [AssetGroup("7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc374",
-                                                      # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
-                                                      [Token("", 0),
-                                                       # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
-                                                       Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", -1)]),
-                                           # fingerprints taken from CIP 14 draft
-                                           AssetGroup("7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
-                                                      # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
-                                                      [Token("", 0)])],
+    "mintInvalidCanonicalOrderingPolicy": [
+        AssetGroup(
+            "7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc374",
+            # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
+            [
+                Token("", 0),
+                # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
+                Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", -1),
+            ],
+        ),
+        # fingerprints taken from CIP 14 draft
+        AssetGroup(
+            "7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373",
+            # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
+            [Token("", 0)],
+        ),
+    ],
     # fingerprints taken from CIP 14 draft (and incremented)
-    "mintInvalidCanonicalOrderingAssetName": [AssetGroup("7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc374",
-                                                      # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
-                                                      [Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", -1),
-                                                       # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
-                                                       Token("", 0)])],
+    "mintInvalidCanonicalOrderingAssetName": [
+        AssetGroup(
+            "7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc374",
+            # fingerprint: asset1rjklcrnsdzqp65wjgrg55sy9723kw09mlgvlc3
+            [
+                Token("1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209", -1),
+                # fingerprint: asset17jd78wukhtrnmjh3fngzasxm8rck0l2r4hhyyt
+                Token("", 0),
+            ],
+        )
+    ],
 }
 
 poolKeys: dict[str, PoolKey] = {
     "default": PoolKey(PoolKeyType.DEVICE_OWNED, "m/1852'/1815'/0'/0/0"),
-    "default1": PoolKey(PoolKeyType.THIRD_PARTY, "01234567890123456789012345678901234567890123456789012345"),
-    "default3": PoolKey(PoolKeyType.THIRD_PARTY, "f123456789012345678901234567890123456789012345678901234567"),
+    "default1": PoolKey(
+        PoolKeyType.THIRD_PARTY,
+        "01234567890123456789012345678901234567890123456789012345",
+    ),
+    "default3": PoolKey(
+        PoolKeyType.THIRD_PARTY,
+        "f123456789012345678901234567890123456789012345678901234567",
+    ),
     "poolKeyPath": PoolKey(PoolKeyType.DEVICE_OWNED, "m/1853'/1815'/0'/0'"),
-    "poolKeyHash": PoolKey(PoolKeyType.THIRD_PARTY, "13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad"),
+    "poolKeyHash": PoolKey(
+        PoolKeyType.THIRD_PARTY,
+        "13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad",
+    ),
     "poolRewardAccountPath": PoolKey(PoolKeyType.DEVICE_OWNED, "m/1852'/1815'/3'/2/0"),
-    "poolRewardAccountHash": PoolKey(PoolKeyType.THIRD_PARTY, "e1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad"),
+    "poolRewardAccountHash": PoolKey(
+        PoolKeyType.THIRD_PARTY,
+        "e1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad",
+    ),
     "stakingPathOwner0": PoolKey(PoolKeyType.DEVICE_OWNED, "m/1852'/1815'/0'/2/0"),
     "stakingPathOwner1": PoolKey(PoolKeyType.DEVICE_OWNED, "m/1852'/1815'/0'/2/1"),
-    "stakingHashOwner0": PoolKey(PoolKeyType.THIRD_PARTY, "794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad"),
-    "stakingHashOwner1": PoolKey(PoolKeyType.THIRD_PARTY, "0bd5d796f5e54866a14300ec2a18d706f7461b8f0502cc2a182bc88d"),
+    "stakingHashOwner0": PoolKey(
+        PoolKeyType.THIRD_PARTY,
+        "794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad",
+    ),
+    "stakingHashOwner1": PoolKey(
+        PoolKeyType.THIRD_PARTY,
+        "0bd5d796f5e54866a14300ec2a18d706f7461b8f0502cc2a182bc88d",
+    ),
     "twoCombinedOwners": PoolKey(PoolKeyType.DEVICE_OWNED, "m/1852'/1815'/0'/2/0"),
 }
 
 relays: dict[str, Relay] = {
-    "singleHostIPV4Relay0": Relay(RelayType.SINGLE_HOST_IP_ADDR,
-                                  SingleHostIpAddrRelayParams(3000,
-                                                              "54.228.75.154")),
-    "singleHostIPV4Relay1": Relay(RelayType.SINGLE_HOST_IP_ADDR,
-                                  SingleHostIpAddrRelayParams(4000,
-                                                              "54.228.75.154")),
-    "singleHostIPV6Relay": Relay(RelayType.SINGLE_HOST_IP_ADDR,
-                                  SingleHostIpAddrRelayParams(3000,
-                                                              "54.228.75.155",
-                                                              "24ff:7801:33a2:e383:a5c4:340a:07c2:76e5")),
-    "singleHostNameRelay": Relay(RelayType.SINGLE_HOST_HOSTNAME,
-                                  SingleHostHostnameRelayParams(3000, "aaaa.bbbb.com")),
-    "multiHostNameRelay": Relay(RelayType.MULTI_HOST,
-                                  MultiHostRelayParams("aaaa.bbbc.com")),
+    "singleHostIPV4Relay0": Relay(
+        RelayType.SINGLE_HOST_IP_ADDR,
+        SingleHostIpAddrRelayParams(3000, "54.228.75.154"),
+    ),
+    "singleHostIPV4Relay1": Relay(
+        RelayType.SINGLE_HOST_IP_ADDR,
+        SingleHostIpAddrRelayParams(4000, "54.228.75.154"),
+    ),
+    "singleHostIPV6Relay": Relay(
+        RelayType.SINGLE_HOST_IP_ADDR,
+        SingleHostIpAddrRelayParams(
+            3000, "54.228.75.155", "24ff:7801:33a2:e383:a5c4:340a:07c2:76e5"
+        ),
+    ),
+    "singleHostNameRelay": Relay(
+        RelayType.SINGLE_HOST_HOSTNAME,
+        SingleHostHostnameRelayParams(3000, "aaaa.bbbb.com"),
+    ),
+    "multiHostNameRelay": Relay(
+        RelayType.MULTI_HOST, MultiHostRelayParams("aaaa.bbbc.com")
+    ),
 }
 
 certificates: dict[str, Certificate] = {
-    "poolRegistrationDefault": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationMixedOwners": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"],
-                                                                                poolKeys["stakingHashOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationMixedOwnersAllRelays": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"],
-                                                                                poolKeys["stakingHashOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"],
-                                                                                relays["singleHostIPV6Relay"],
-                                                                                relays["singleHostNameRelay"],
-                                                                                relays["multiHostNameRelay"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationMixedOwnersIpv4SingleHostRelays": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"],
-                                                                                poolKeys["stakingHashOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"],
-                                                                                relays["singleHostNameRelay"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationMixedOwnersIpv4Ipv6Relays": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"],
-                                                                                poolKeys["stakingHashOwner0"]],
-                                                                               [relays["singleHostIPV4Relay1"],
-                                                                                relays["singleHostIPV6Relay"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationNoRelays": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationNoMetadata": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]])),
-    "poolRegistrationOperatorNoOwnersNoRelays": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyPath"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [],
-                                                                               [],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationOperatorOneOwnerOperatorNoRelays": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyPath"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingHashOwner0"]],
-                                                                               [],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegistrationOperatorMultipleOwnersAllRelays": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyPath"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountPath"],
-                                                                               [poolKeys["stakingHashOwner0"],
-                                                                                poolKeys["stakingHashOwner1"]],
-                                                                               [relays["singleHostIPV4Relay0"],
-                                                                                relays["singleHostIPV6Relay"],
-                                                                                relays["singleHostNameRelay"],
-                                                                                relays["multiHostNameRelay"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "poolRegParamOperator": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["default"],
-                                                                               "0123456789012345678901234567890123456789012345678901234567890123",
-                                                                               0,
-                                                                               0,
-                                                                               Margin(0, 1),
-                                                                               poolKeys["default3"],
-                                                                               [],
-                                                                               [])),
-    "poolRegParamOwner": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["default1"],
-                                                                               "0123456789012345678901234567890123456789012345678901234567890123",
-                                                                               0,
-                                                                               0,
-                                                                               Margin(0, 1),
-                                                                               poolKeys["default3"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [])),
-    "poolRetirementParam": Certificate(CertificateType.STAKE_POOL_RETIREMENT,
-                                                        PoolRetirementParams("m/1853'/1815'/0'/1'", 42)),
-    "stakeRegistrationPathParam": Certificate(CertificateType.STAKE_REGISTRATION,
-                                                        StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                 "m/1852'/1815'/0'/2/0"))),
-    "stakeRegistrationScriptHashParam": Certificate(CertificateType.STAKE_REGISTRATION,
-                                                        StakeRegistrationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                 "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"))),
-    "stakeDeregistrationParam": Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                        StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                 "m/1852'/1815'/0'/2/0"))),
-    "stakeDelegationParam": Certificate(CertificateType.STAKE_DELEGATION,
-                                                        StakeDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                 "m/1852'/1815'/0'/2/0"), "")),
-    "poolRegistrationWrongMargin": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 1),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectNoGivenPath": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingHashOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"],
-                                                                                relays["singleHostIPV6Relay"],
-                                                                                relays["singleHostNameRelay"],
-                                                                                relays["multiHostNameRelay"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectInvalid1": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"],
-                                                                                poolKeys["stakingPathOwner1"]],
-                                                                               [relays["singleHostIPV4Relay0"],
-                                                                                relays["singleHostIPV6Relay"],
-                                                                                relays["singleHostNameRelay"],
-                                                                                relays["multiHostNameRelay"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectInvalid2": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [],
-                                                                               [relays["singleHostIPV4Relay0"],
-                                                                                relays["singleHostIPV6Relay"],
-                                                                                relays["singleHostNameRelay"],
-                                                                                relays["multiHostNameRelay"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectInvalid3": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("a" * 129,
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectInvalid4": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("\n",
-                                                                                                  "6bf124f217d0e5a0a8adb1dbd8540e1334280d49ab861127868339f43b3948"))),
-    "rejectInvalid5": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectInvalid6": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "6bf124f217d0e5a0a8adb1dbd8540e1334280d49ab861127868339f43b3948"))),
-    "rejectInvalid7": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  ""))),
-    "rejectRelay1": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [Relay(RelayType.SINGLE_HOST_HOSTNAME,
-                                                                                      SingleHostHostnameRelayParams(3000, ""))],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectRelay2": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["poolKeyHash"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [Relay(RelayType.MULTI_HOST, MultiHostRelayParams(""))],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectStakePool1": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["default"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
-    "rejectStakePool2": Certificate(CertificateType.STAKE_POOL_REGISTRATION,
-                                                        PoolRegistrationParams(poolKeys["default1"],
-                                                                               "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
-                                                                               50000000000,
-                                                                               340000000,
-                                                                               Margin(3, 100),
-                                                                               poolKeys["poolRewardAccountHash"],
-                                                                               [poolKeys["stakingPathOwner0"]],
-                                                                               [relays["singleHostIPV4Relay0"]],
-                                                                               PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json",
-                                                                                                  "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"))),
+    "poolRegistrationDefault": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationMixedOwners": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"], poolKeys["stakingHashOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationMixedOwnersAllRelays": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"], poolKeys["stakingHashOwner0"]],
+            [
+                relays["singleHostIPV4Relay0"],
+                relays["singleHostIPV6Relay"],
+                relays["singleHostNameRelay"],
+                relays["multiHostNameRelay"],
+            ],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationMixedOwnersIpv4SingleHostRelays": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"], poolKeys["stakingHashOwner0"]],
+            [relays["singleHostIPV4Relay0"], relays["singleHostNameRelay"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationMixedOwnersIpv4Ipv6Relays": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"], poolKeys["stakingHashOwner0"]],
+            [relays["singleHostIPV4Relay1"], relays["singleHostIPV6Relay"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationNoRelays": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationNoMetadata": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+        ),
+    ),
+    "poolRegistrationOperatorNoOwnersNoRelays": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyPath"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [],
+            [],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationOperatorOneOwnerOperatorNoRelays": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyPath"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingHashOwner0"]],
+            [],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegistrationOperatorMultipleOwnersAllRelays": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyPath"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountPath"],
+            [poolKeys["stakingHashOwner0"], poolKeys["stakingHashOwner1"]],
+            [
+                relays["singleHostIPV4Relay0"],
+                relays["singleHostIPV6Relay"],
+                relays["singleHostNameRelay"],
+                relays["multiHostNameRelay"],
+            ],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "poolRegParamOperator": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["default"],
+            "0123456789012345678901234567890123456789012345678901234567890123",
+            0,
+            0,
+            Margin(0, 1),
+            poolKeys["default3"],
+            [],
+            [],
+        ),
+    ),
+    "poolRegParamOwner": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["default1"],
+            "0123456789012345678901234567890123456789012345678901234567890123",
+            0,
+            0,
+            Margin(0, 1),
+            poolKeys["default3"],
+            [poolKeys["stakingPathOwner0"]],
+            [],
+        ),
+    ),
+    "poolRetirementParam": Certificate(
+        CertificateType.STAKE_POOL_RETIREMENT,
+        PoolRetirementParams("m/1853'/1815'/0'/1'", 42),
+    ),
+    "stakeRegistrationPathParam": Certificate(
+        CertificateType.STAKE_REGISTRATION,
+        StakeRegistrationParams(
+            CredentialParams(CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0")
+        ),
+    ),
+    "stakeRegistrationScriptHashParam": Certificate(
+        CertificateType.STAKE_REGISTRATION,
+        StakeRegistrationParams(
+            CredentialParams(
+                CredentialParamsType.SCRIPT_HASH,
+                "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+            )
+        ),
+    ),
+    "stakeDeregistrationParam": Certificate(
+        CertificateType.STAKE_DEREGISTRATION,
+        StakeRegistrationParams(
+            CredentialParams(CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0")
+        ),
+    ),
+    "stakeDelegationParam": Certificate(
+        CertificateType.STAKE_DELEGATION,
+        StakeDelegationParams(
+            CredentialParams(CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"), ""
+        ),
+    ),
+    "poolRegistrationWrongMargin": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 1),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectNoGivenPath": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingHashOwner0"]],
+            [
+                relays["singleHostIPV4Relay0"],
+                relays["singleHostIPV6Relay"],
+                relays["singleHostNameRelay"],
+                relays["multiHostNameRelay"],
+            ],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectInvalid1": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"], poolKeys["stakingPathOwner1"]],
+            [
+                relays["singleHostIPV4Relay0"],
+                relays["singleHostIPV6Relay"],
+                relays["singleHostNameRelay"],
+                relays["multiHostNameRelay"],
+            ],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectInvalid2": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [],
+            [
+                relays["singleHostIPV4Relay0"],
+                relays["singleHostIPV6Relay"],
+                relays["singleHostNameRelay"],
+                relays["multiHostNameRelay"],
+            ],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectInvalid3": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "a" * 129,
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectInvalid4": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "\n", "6bf124f217d0e5a0a8adb1dbd8540e1334280d49ab861127868339f43b3948"
+            ),
+        ),
+    ),
+    "rejectInvalid5": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "", "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb"
+            ),
+        ),
+    ),
+    "rejectInvalid6": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "6bf124f217d0e5a0a8adb1dbd8540e1334280d49ab861127868339f43b3948",
+            ),
+        ),
+    ),
+    "rejectInvalid7": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams("https://www.vacuumlabs.com/sampleUrl.json", ""),
+        ),
+    ),
+    "rejectRelay1": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [
+                Relay(
+                    RelayType.SINGLE_HOST_HOSTNAME,
+                    SingleHostHostnameRelayParams(3000, ""),
+                )
+            ],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectRelay2": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["poolKeyHash"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [Relay(RelayType.MULTI_HOST, MultiHostRelayParams(""))],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectStakePool1": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["default"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
+    "rejectStakePool2": Certificate(
+        CertificateType.STAKE_POOL_REGISTRATION,
+        PoolRegistrationParams(
+            poolKeys["default1"],
+            "07821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d084450",
+            50000000000,
+            340000000,
+            Margin(3, 100),
+            poolKeys["poolRewardAccountHash"],
+            [poolKeys["stakingPathOwner0"]],
+            [relays["singleHostIPV4Relay0"]],
+            PoolMetadataParams(
+                "https://www.vacuumlabs.com/sampleUrl.json",
+                "cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+            ),
+        ),
+    ),
 }
 
 # =================
 # signTx
 # =================
 testsByron: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with third-party Byron mainnet output",
-                   Transaction(Mainnet,
-                               [inputs["utxoByron"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a"),
-    SignTxTestCase("Sign tx with third-party Byron Daedalus mainnet output",
-                   Transaction(Mainnet,
-                               [inputs["utxoByron"]],
-                               [outputs["externalByronDaedalusMainnet"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018182584c82d818584283581cd2348b8ef7b8a6d1c922efa499c669b151eeef99e4ce3521e88223f8a101581e581cf281e648a89015a9861bd9e992414d1145ddaf80690be53235b0e2e5001a199834651a002dd2e802182a030a"),
-    SignTxTestCase("Sign tx with third-party Byron testnet output",
-                   Transaction(Testnet,
-                               [inputs["utxoByron"]],
-                               [outputs["externalByronTestnet"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018182582f82d818582583581c709bfb5d9733cbdd72f520cd2c8b9f8f942da5e6cd0b6994e1803b0aa10242182a001aef14e76d1a002dd2e802182a030a"),
+    SignTxTestCase(
+        "Sign tx with third-party Byron mainnet output",
+        Transaction(
+            Mainnet, [inputs["utxoByron"]], [outputs["externalByronMainnet"]], 42, 10
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with third-party Byron Daedalus mainnet output",
+        Transaction(
+            Mainnet,
+            [inputs["utxoByron"]],
+            [outputs["externalByronDaedalusMainnet"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018182584c82d818584283581cd2348b8ef7b8a6d1c922efa499c669b151eeef99e4ce3521e88223f8a101581e581cf281e648a89015a9861bd9e992414d1145ddaf80690be53235b0e2e5001a199834651a002dd2e802182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with third-party Byron testnet output",
+        Transaction(
+            Testnet, [inputs["utxoByron"]], [outputs["externalByronTestnet"]], 42, 10
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018182582f82d818582583581c709bfb5d9733cbdd72f520cd2c8b9f8f942da5e6cd0b6994e1803b0aa10242182a001aef14e76d1a002dd2e802182a030a",
+    ),
 ]
 
 testsShelleyNoCertificates: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx without outputs",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a"),
-    SignTxTestCase("Sign tx with 258 tag on inputs",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400d90102818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a",
-                   True),
-     SignTxTestCase("Sign tx without change address",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a"),
-    SignTxTestCase("Sign tx with change base address with staking path",
-                   Transaction(Mainnet,
-                               [inputs["utxoByron"]],
-                               [outputs["externalByronMainnet"],
-                                outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e88258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a"),
-    SignTxTestCase("Sign tx with change base address with staking key hash",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"],
-                                outputs["internalBaseWithStakingKeyHash"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e88258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f1124122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b42771a006ca79302182a030a"),
-    SignTxTestCase("Sign tx with enterprise change address",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"],
-                                outputs["internalEnterprise"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e882581d6114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241a006ca79302182a030a",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with pointer change address",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"],
-                                outputs["internalPointer"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e88258204114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11240102031a006ca79302182a030a"),
-    SignTxTestCase("Sign tx with non-reasonable account and address",
-                   Transaction(Mainnet,
-                               [inputs["utxoNonReasonable"]],
-                               [outputs["internalBaseWithStakingPathNonReasonable"]],
-                               42,
-                               10,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.ARBITRARY_HASH,
-                                                             TxAuxiliaryDataHash(f"{'deadbeef'*8}"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182583901f90b0dfcace47bf03e88f7469a2f4fb3a7918461aa4765bfaf55f0dae260546c20562e598fb761f419dad27edcd49f4ee4f0540b8e40d4d51a006ca79302182a030a075820deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"),
-    SignTxTestCase("Sign tx with path based withdrawal",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                        "m/1852'/1815'/0'/2/0"),
-                                                       111)]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a05a1581de11d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c186f"),
-    SignTxTestCase("Sign tx with auxiliary data hash",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.ARBITRARY_HASH,
-                                                             TxAuxiliaryDataHash(f"{'deadbeef'*8}"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a075820deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"),
+    SignTxTestCase(
+        "Sign tx without outputs",
+        Transaction(Mainnet, [inputs["utxoShelley"]], [], 42, 10),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with 258 tag on inputs",
+        Transaction(Mainnet, [inputs["utxoShelley"]], [], 42, 10),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400d90102818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a",
+        True,
+    ),
+    SignTxTestCase(
+        "Sign tx without change address",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with change base address with staking path",
+        Transaction(
+            Mainnet,
+            [inputs["utxoByron"]],
+            [outputs["externalByronMainnet"], outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc00018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e88258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with change base address with staking key hash",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [
+                outputs["externalByronMainnet"],
+                outputs["internalBaseWithStakingKeyHash"],
+            ],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e88258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f1124122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b42771a006ca79302182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with enterprise change address",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"], outputs["internalEnterprise"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e882581d6114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241a006ca79302182a030a",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with pointer change address",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"], outputs["internalPointer"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e88258204114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11240102031a006ca79302182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with non-reasonable account and address",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNonReasonable"]],
+            [outputs["internalBaseWithStakingPathNonReasonable"]],
+            42,
+            10,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.ARBITRARY_HASH,
+                TxAuxiliaryDataHash(f"{'deadbeef' * 8}"),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182583901f90b0dfcace47bf03e88f7469a2f4fb3a7918461aa4765bfaf55f0dae260546c20562e598fb761f419dad27edcd49f4ee4f0540b8e40d4d51a006ca79302182a030a075820deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    ),
+    SignTxTestCase(
+        "Sign tx with path based withdrawal",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                    ),
+                    111,
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a05a1581de11d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c186f",
+    ),
+    SignTxTestCase(
+        "Sign tx with auxiliary data hash",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.ARBITRARY_HASH,
+                TxAuxiliaryDataHash(f"{'deadbeef' * 8}"),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a075820deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+    ),
 ]
 
 testsShelleyWithCertificates: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with a stake registration path certificate --- pre-Conway",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_REGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                  "m/1852'/1815'/0'/2/0")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182008200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c"),
-    SignTxTestCase("Sign tx with a stake deregistration path certificate --- pre-Conway",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                  "m/1852'/1815'/0'/2/0")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c"),
-    SignTxTestCase("Sign tx with a stake delegation path certificate",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_DELEGATION,
-                                                         StakeDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                "m/1852'/1815'/0'/2/0"),
-                                                                               "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973"))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183028200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973"),
-    SignTxTestCase("Sign tx and filter out witnesses with duplicate paths",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                  "m/1852'/1815'/0'/2/0"))),
-                                             Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                  "m/1852'/1815'/0'/2/0")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048282018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c82018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c"),
-    SignTxTestCase("Sign tx with pool retirement combined with stake registration",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_POOL_RETIREMENT,
-                                                         PoolRetirementParams("m/1853'/1815'/0'/0'", 10)),
-                                             Certificate(CertificateType.STAKE_REGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                  "m/1852'/1815'/0'/2/0")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a04828304581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b70a82008200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c"),
-    SignTxTestCase("Sign tx with pool retirement combined with stake deregistration",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_POOL_RETIREMENT,
-                                                         PoolRetirementParams("m/1853'/1815'/0'/0'", 10)),
-                                             Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                          "m/1852'/1815'/0'/2/0")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a04828304581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b70a82018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c"),
+    SignTxTestCase(
+        "Sign tx with a stake registration path certificate --- pre-Conway",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_REGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        )
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182008200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+    ),
+    SignTxTestCase(
+        "Sign tx with a stake deregistration path certificate --- pre-Conway",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        )
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+    ),
+    SignTxTestCase(
+        "Sign tx with a stake delegation path certificate",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DELEGATION,
+                    StakeDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183028200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
+    ),
+    SignTxTestCase(
+        "Sign tx and filter out witnesses with duplicate paths",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        )
+                    ),
+                ),
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        )
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048282018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c82018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+    ),
+    SignTxTestCase(
+        "Sign tx with pool retirement combined with stake registration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_POOL_RETIREMENT,
+                    PoolRetirementParams("m/1853'/1815'/0'/0'", 10),
+                ),
+                Certificate(
+                    CertificateType.STAKE_REGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        )
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a04828304581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b70a82008200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+    ),
+    SignTxTestCase(
+        "Sign tx with pool retirement combined with stake deregistration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_POOL_RETIREMENT,
+                    PoolRetirementParams("m/1853'/1815'/0'/0'", 10),
+                ),
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        )
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a04828304581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b70a82018200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+    ),
 ]
 
 testsConwayWithCertificates: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with a stake registration path certificate --- Conway",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_REGISTRATION_CONWAY,
-                                                         StakeRegistrationConwayParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                        "m/1852'/1815'/0'/2/0"),
-                                                                                       17))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183078200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c11"),
-    SignTxTestCase("Sign tx with a stake deregistration path certificate --- Conway",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_DEREGISTRATION_CONWAY,
-                                                         StakeRegistrationConwayParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                        "m/1852'/1815'/0'/2/0"),
-                                                         17))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183088200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c11"),
-    SignTxTestCase("Sign tx with vote delegation certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.VOTE_DELEGATION,
-                                                         VoteDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                               "m/1852'/1815'/0'/2/0"),
-                                                                              DRepParams(DRepParamsType.KEY_PATH,
-                                                                                         "m/1852'/1815'/0'/3/0"))),
-                                             Certificate(CertificateType.VOTE_DELEGATION,
-                                                         VoteDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                               "m/1852'/1815'/0'/2/0"),
-                                                                              DRepParams(DRepParamsType.KEY_HASH,
-                                                                                         "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"))),
-                                             Certificate(CertificateType.VOTE_DELEGATION,
-                                                         VoteDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                               "m/1852'/1815'/0'/2/0"),
-                                                                              DRepParams(DRepParamsType.SCRIPT_HASH,
-                                                                                         "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"))),
-                                             Certificate(CertificateType.VOTE_DELEGATION,
-                                                         VoteDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                               "m/1852'/1815'/0'/2/0"),
-                                                                              DRepParams(DRepParamsType.ABSTAIN))),
-                                             Certificate(CertificateType.VOTE_DELEGATION,
-                                                         VoteDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                               "m/1852'/1815'/0'/2/0"),
-                                                                              DRepParams(DRepParamsType.NO_CONFIDENCE)))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183088200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c11"),
-    SignTxTestCase("Sign tx with AUTHORIZE_COMMITTEE_HOT certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.AUTHORIZE_COMMITTEE_HOT,
-                                                         AuthorizeCommitteeParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                   "m/1852'/1815'/0'/4/0"),
-                                                                                  CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                   "m/1852'/1815'/0'/5/0"))),
-                                             Certificate(CertificateType.AUTHORIZE_COMMITTEE_HOT,
-                                                         AuthorizeCommitteeParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                   "m/1852'/1815'/0'/4/0"),
-                                                                                  CredentialParams(CredentialParamsType.KEY_HASH,
-                                                                                                   "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"))),
-                                             Certificate(CertificateType.AUTHORIZE_COMMITTEE_HOT,
-                                                         AuthorizeCommitteeParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                   "m/1852'/1815'/0'/4/0"),
-                                                                                   CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                    "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a0483830e8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba68200581cd098c6a0a621f3343abe55877ee88fd5a83363e3c7887b3c48839092830e8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba68200581c1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8830e8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba68201581c1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"),
-    SignTxTestCase("Sign tx with RESIGN_COMMITTEE_COLD certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.RESIGN_COMMITTEE_COLD,
-                                                         ResignCommitteeParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                "m/1852'/1815'/0'/4/0"),
-                                                                               AnchorParams(f"{'x'*128}",
-                                                                                            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef"))),
-                                             Certificate(CertificateType.RESIGN_COMMITTEE_COLD,
-                                                         ResignCommitteeParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                "m/1852'/1815'/0'/4/0")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a0482830f8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba6827880787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787858201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef830f8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba6f6"),
-    SignTxTestCase("Sign tx with DREP_REGISTRATION certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.DREP_REGISTRATION,
-                                                         DRepRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                 "m/1852'/1815'/0'/3/0"),
-                                                                                19,
-                                                                                AnchorParams("www.vacuumlabs.com",
-                                                                                             "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef"))),
-                                             Certificate(CertificateType.DREP_REGISTRATION,
-                                                         DRepRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                 "m/1852'/1815'/0'/3/0"),
-                                                                                19))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048284108200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a11382727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef84108200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a113f6",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with DREP_DEREGISTRATION certificate",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.DREP_DEREGISTRATION,
-                                                         DRepRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                 "m/1852'/1815'/0'/3/0"),
-                                                                                19))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183118200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a113",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with DREP_UPDATE certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.DREP_UPDATE,
-                                                         DRepUpdateParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                           "m/1852'/1815'/0'/3/0"),
-                                                                         AnchorParams("www.vacuumlabs.com",
-                                                                                      "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef"))),
-                                             Certificate(CertificateType.DREP_UPDATE,
-                                                         DRepUpdateParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                           "m/1852'/1815'/0'/3/0")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048283128200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a182727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef83128200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a1f6"),
+    SignTxTestCase(
+        "Sign tx with a stake registration path certificate --- Conway",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_REGISTRATION_CONWAY,
+                    StakeRegistrationConwayParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        17,
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183078200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c11",
+    ),
+    SignTxTestCase(
+        "Sign tx with a stake deregistration path certificate --- Conway",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION_CONWAY,
+                    StakeRegistrationConwayParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        17,
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183088200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c11",
+    ),
+    SignTxTestCase(
+        "Sign tx with vote delegation certificates",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.VOTE_DELEGATION,
+                    VoteDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        DRepParams(DRepParamsType.KEY_PATH, "m/1852'/1815'/0'/3/0"),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.VOTE_DELEGATION,
+                    VoteDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        DRepParams(
+                            DRepParamsType.KEY_HASH,
+                            "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                        ),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.VOTE_DELEGATION,
+                    VoteDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        DRepParams(
+                            DRepParamsType.SCRIPT_HASH,
+                            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                        ),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.VOTE_DELEGATION,
+                    VoteDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        DRepParams(DRepParamsType.ABSTAIN),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.VOTE_DELEGATION,
+                    VoteDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        ),
+                        DRepParams(DRepParamsType.NO_CONFIDENCE),
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183088200581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c11",
+    ),
+    SignTxTestCase(
+        "Sign tx with AUTHORIZE_COMMITTEE_HOT certificates",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.AUTHORIZE_COMMITTEE_HOT,
+                    AuthorizeCommitteeParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/4/0"
+                        ),
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/5/0"
+                        ),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.AUTHORIZE_COMMITTEE_HOT,
+                    AuthorizeCommitteeParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/4/0"
+                        ),
+                        CredentialParams(
+                            CredentialParamsType.KEY_HASH,
+                            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                        ),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.AUTHORIZE_COMMITTEE_HOT,
+                    AuthorizeCommitteeParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/4/0"
+                        ),
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                        ),
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a0483830e8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba68200581cd098c6a0a621f3343abe55877ee88fd5a83363e3c7887b3c48839092830e8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba68200581c1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8830e8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba68201581c1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+    ),
+    SignTxTestCase(
+        "Sign tx with RESIGN_COMMITTEE_COLD certificates",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.RESIGN_COMMITTEE_COLD,
+                    ResignCommitteeParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/4/0"
+                        ),
+                        AnchorParams(
+                            f"{'x' * 128}",
+                            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+                        ),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.RESIGN_COMMITTEE_COLD,
+                    ResignCommitteeParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/4/0"
+                        )
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a0482830f8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba6827880787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787858201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef830f8200581ccf737588be6e9edeb737eb2e6d06e5cbd292bd8ee32e410c0bba1ba6f6",
+    ),
+    SignTxTestCase(
+        "Sign tx with DREP_REGISTRATION certificates",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.DREP_REGISTRATION,
+                    DRepRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/3/0"
+                        ),
+                        19,
+                        AnchorParams(
+                            "www.vacuumlabs.com",
+                            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+                        ),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.DREP_REGISTRATION,
+                    DRepRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/3/0"
+                        ),
+                        19,
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048284108200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a11382727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef84108200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a113f6",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with DREP_DEREGISTRATION certificate",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.DREP_DEREGISTRATION,
+                    DRepRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/3/0"
+                        ),
+                        19,
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183118200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a113",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with DREP_UPDATE certificates",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.DREP_UPDATE,
+                    DRepUpdateParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/3/0"
+                        ),
+                        AnchorParams(
+                            "www.vacuumlabs.com",
+                            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+                        ),
+                    ),
+                ),
+                Certificate(
+                    CertificateType.DREP_UPDATE,
+                    DRepUpdateParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/3/0"
+                        )
+                    ),
+                ),
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048283128200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a182727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef83128200581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a1f6",
+    ),
 ]
 
 testsMultisig: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx without change address with Shelley scripthash output",
-                   Transaction(Testnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalShelleyBaseScripthashKeyhash"]],
-                               42,
-                               10),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e0102182a030a",
-                   additionalWitnessPaths=["m/1854'/1815'/0'/0/0"]),
-    SignTxTestCase("Sign tx with script based withdrawal",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277"),
-                                                       111)]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a05a1581df1122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277186f",
-                   additionalWitnessPaths=["m/1854'/1815'/0'/2/0"]),
-    SignTxTestCase("Sign tx with a stake registration script certificate",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_REGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                  "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277")))]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182008201581c122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                   additionalWitnessPaths=["m/1854'/1815'/0'/2/0"]),
-    SignTxTestCase("Sign tx with a stake delegation script certificate",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_DELEGATION,
-                                                         StakeDelegationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277"),
-                                                                               "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973"))]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183028201581c122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
-                   additionalWitnessPaths=["m/1854'/1815'/0'/2/0"]),
-    SignTxTestCase("Sign tx with a stake deregistration script certificate",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                  "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277")))]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182018201581c122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                   additionalWitnessPaths=["m/1854'/1815'/0'/2/0"]),
+    SignTxTestCase(
+        "Sign tx without change address with Shelley scripthash output",
+        Transaction(
+            Testnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalShelleyBaseScripthashKeyhash"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e0102182a030a",
+        additionalWitnessPaths=["m/1854'/1815'/0'/0/0"],
+    ),
+    SignTxTestCase(
+        "Sign tx with script based withdrawal",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.SCRIPT_HASH,
+                        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+                    ),
+                    111,
+                )
+            ],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a05a1581df1122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277186f",
+        additionalWitnessPaths=["m/1854'/1815'/0'/2/0"],
+    ),
+    SignTxTestCase(
+        "Sign tx with a stake registration script certificate",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_REGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+                        )
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182008201581c122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        additionalWitnessPaths=["m/1854'/1815'/0'/2/0"],
+    ),
+    SignTxTestCase(
+        "Sign tx with a stake delegation script certificate",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DELEGATION,
+                    StakeDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+                        ),
+                        "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048183028201581c122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
+        additionalWitnessPaths=["m/1854'/1815'/0'/2/0"],
+    ),
+    SignTxTestCase(
+        "Sign tx with a stake deregistration script certificate",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+                        )
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a048182018201581c122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        additionalWitnessPaths=["m/1854'/1815'/0'/2/0"],
+    ),
 ]
 
 testsAllegra: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with no ttl and no validity interval start",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a300818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a"),
-    SignTxTestCase("Sign tx with no ttl , but with validity interval start",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               validityIntervalStart=47),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a08182f"),
+    SignTxTestCase(
+        "Sign tx with no ttl and no validity interval start",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a300818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a",
+    ),
+    SignTxTestCase(
+        "Sign tx with no ttl , but with validity interval start",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            validityIntervalStart=47,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a08182f",
+    ),
 ]
 
 testsMary: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with a multiasset output",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetOneToken"],
-                                outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1a007838628258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a0807"),
-    SignTxTestCase("Sign tx with a complex multiasset output",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetManyTokens"],
-                                outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a007838628258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a0807"),
-    SignTxTestCase("Sign tx with big numbers",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetBigNumber"]],
-                               24103998870869519,
-                               24103998870869519,
-                               validityIntervalStart=24103998870869519),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821b0055a275925d560fa1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1b0055a275925d560f021b0055a275925d560f031b0055a275925d560f081b0055a275925d560f"),
-    SignTxTestCase("Sign tx with a multiasset change output",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"],
-                                outputs["multiassetChange"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000182825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09018258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c821904d2a1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1a0078386202182a030a"),
-    SignTxTestCase("Sign tx with zero fee, TTL and validity interval start",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               0,
-                               0,
-                               validityIntervalStart=0),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca793020003000800"),
-    SignTxTestCase("Sign tx with output with decimal places",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetDecimalPlaces"]],
-                               33),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a300818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a2581c6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15fa14553545249501a0034bf15581caf2e27f580f7f08e93190a81f72462f153026d06450924726645891ba244445249501904d24cffffffffffffffffffffffff1904d2021821"),
-    SignTxTestCase("Sign tx with mint fields with various amounts",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [],
-                               42,
-                               10,
-                               mint=mints["mintAmountVariety"]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a09a1581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a44000581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20920581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20a1b7fffffffffffffff581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20b3b7fffffffffffffff"),
-    SignTxTestCase("Sign tx with mint with decimal places",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               33,
-                               mint=mints["mintWithDecimalPlaces"]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182109a2581c6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15fa14553545249503a0034bf14581caf2e27f580f7f08e93190a81f72462f153026d06450924726645891ba244445249501904d24cffffffffffffffffffffffff1904d2"),
-    SignTxTestCase("Sign tx with mint fields among other fields",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetOneToken"],
-                                outputs["internalBaseWithStakingPath"]],
-                               10,
-                               1000,
-                               validityIntervalStart=100,
-                               mint=mints["mintAmountVariety"]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1a007838628258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca793020a031903e808186409a1581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a44000581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20920581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20a1b7fffffffffffffff581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20b3b7fffffffffffffff"),
+    SignTxTestCase(
+        "Sign tx with a multiasset output",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["multiassetOneToken"], outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1a007838628258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a0807",
+    ),
+    SignTxTestCase(
+        "Sign tx with a complex multiasset output",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["multiassetManyTokens"], outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a007838628258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a0807",
+    ),
+    SignTxTestCase(
+        "Sign tx with big numbers",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["multiassetBigNumber"]],
+            24103998870869519,
+            24103998870869519,
+            validityIntervalStart=24103998870869519,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821b0055a275925d560fa1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1b0055a275925d560f021b0055a275925d560f031b0055a275925d560f081b0055a275925d560f",
+    ),
+    SignTxTestCase(
+        "Sign tx with a multiasset change output",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"], outputs["multiassetChange"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000182825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09018258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c821904d2a1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1a0078386202182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with zero fee, TTL and validity interval start",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            0,
+            0,
+            validityIntervalStart=0,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca793020003000800",
+    ),
+    SignTxTestCase(
+        "Sign tx with output with decimal places",
+        Transaction(
+            Mainnet, [inputs["utxoShelley"]], [outputs["multiassetDecimalPlaces"]], 33
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a300818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a2581c6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15fa14553545249501a0034bf15581caf2e27f580f7f08e93190a81f72462f153026d06450924726645891ba244445249501904d24cffffffffffffffffffffffff1904d2021821",
+    ),
+    SignTxTestCase(
+        "Sign tx with mint fields with various amounts",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [],
+            42,
+            10,
+            mint=mints["mintAmountVariety"],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a09a1581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a44000581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20920581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20a1b7fffffffffffffff581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20b3b7fffffffffffffff",
+    ),
+    SignTxTestCase(
+        "Sign tx with mint with decimal places",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            33,
+            mint=mints["mintWithDecimalPlaces"],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182109a2581c6954264b15bc92d6d592febeac84f14645e1ed46ca5ebb9acdb5c15fa14553545249503a0034bf14581caf2e27f580f7f08e93190a81f72462f153026d06450924726645891ba244445249501904d24cffffffffffffffffffffffff1904d2",
+    ),
+    SignTxTestCase(
+        "Sign tx with mint fields among other fields",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["multiassetOneToken"], outputs["internalBaseWithStakingPath"]],
+            10,
+            1000,
+            validityIntervalStart=100,
+            mint=mints["mintAmountVariety"],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821904d2a1581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a14874652474436f696e1a007838628258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca793020a031903e808186409a1581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a44000581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20920581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20a1b7fffffffffffffff581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df20b3b7fffffffffffffff",
+    ),
 ]
 
 testsAlonzoTrezorComparison: List[SignTxTestCase] = [
-    SignTxTestCase("Full test for trezor feature parity",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["trezorParity1"],
-                                outputs["trezorParityDatumHash1"]],
-                               42,
-                               10,
-                               validityIntervalStart=47,
-                               certificates=[Certificate(CertificateType.STAKE_REGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                  "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"))),
-                                             Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                  "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"))),
-                                             Certificate(CertificateType.STAKE_DELEGATION,
-                                                         StakeDelegationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"),
-                                                                               "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973"))],
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"),
-                                                       1000)],
-                               mint=mints["trezorComparison"],
-                               includeNetworkId=True,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.ARBITRARY_HASH,
-                                                             TxAuxiliaryDataHash("58ec01578fcdfdc376f09631a7b2adc608eaf57e3720484c7ff37c13cff90fdf")),
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "ab00818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821a001e8480a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a14874657374436f696e1a0078386283581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0158203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b702182a030a048382008201581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd82018201581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd83028201581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb497305a1581df129fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd1903e807582058ec01578fcdfdc376f09631a7b2adc608eaf57e3720484c7ff37c13cff90fdf08182f09a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a24874657374436f696e1a007838624875657374436f696e3a007838610b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70f01",
-                   additionalWitnessPaths=["m/1854'/1815'/0'/0/0", "m/1854'/1815'/0'/2/0"]),
+    SignTxTestCase(
+        "Full test for trezor feature parity",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["trezorParity1"], outputs["trezorParityDatumHash1"]],
+            42,
+            10,
+            validityIntervalStart=47,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_REGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                        )
+                    ),
+                ),
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                        )
+                    ),
+                ),
+                Certificate(
+                    CertificateType.STAKE_DELEGATION,
+                    StakeDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                        ),
+                        "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
+                    ),
+                ),
+            ],
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.SCRIPT_HASH,
+                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                    ),
+                    1000,
+                )
+            ],
+            mint=mints["trezorComparison"],
+            includeNetworkId=True,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.ARBITRARY_HASH,
+                TxAuxiliaryDataHash(
+                    "58ec01578fcdfdc376f09631a7b2adc608eaf57e3720484c7ff37c13cff90fdf"
+                ),
+            ),
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "ab00818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821a001e8480a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a14874657374436f696e1a0078386283581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0158203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b702182a030a048382008201581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd82018201581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd83028201581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb497305a1581df129fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd1903e807582058ec01578fcdfdc376f09631a7b2adc608eaf57e3720484c7ff37c13cff90fdf08182f09a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a24874657374436f696e1a007838624875657374436f696e3a007838610b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70f01",
+        additionalWitnessPaths=["m/1854'/1815'/0'/0/0", "m/1854'/1815'/0'/2/0"],
+    ),
 ]
 
 testsBabbageTrezorComparison: List[SignTxTestCase] = [
-    SignTxTestCase("Full test for trezor feature parity - Babbage elements (Plutus)",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["trezorParity2"],
-                                outputs["trezorParityDatumHash2"]],
-                               42,
-                               10,
-                               validityIntervalStart=47,
-                               includeNetworkId=True,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               collateralInputs=[inputs["utxoShelley"]],
-                               collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
-                               totalCollateral=10,
-                               referenceInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "ab00818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000182825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09821a001e8480a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a14874657374436f696e1a0078386283581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0158203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b702182a030a08182f0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000f0110825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b0901110a12818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700"),
-    SignTxTestCase("Full test for trezor feature parity - Babbage elements (ordinary)",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["trezorParityBabbageOutputs"]],
-                               42,
-                               10,
-                               validityIntervalStart=47,
-                               includeNetworkId=True),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a400581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0101028201d818565579657420616e6f746865722063686f636f6c61746503d81858390080f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b427702182a030a08182f0f01"),
+    SignTxTestCase(
+        "Full test for trezor feature parity - Babbage elements (Plutus)",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["trezorParity2"], outputs["trezorParityDatumHash2"]],
+            42,
+            10,
+            validityIntervalStart=47,
+            includeNetworkId=True,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            collateralInputs=[inputs["utxoShelley"]],
+            collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
+            totalCollateral=10,
+            referenceInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "ab00818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000182825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09821a001e8480a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a14874657374436f696e1a0078386283581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0158203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b702182a030a08182f0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000f0110825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b0901110a12818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700",
+    ),
+    SignTxTestCase(
+        "Full test for trezor feature parity - Babbage elements (ordinary)",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["trezorParityBabbageOutputs"]],
+            42,
+            10,
+            validityIntervalStart=47,
+            includeNetworkId=True,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a400581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0101028201d818565579657420616e6f746865722063686f636f6c61746503d81858390080f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b427702182a030a08182f0f01",
+    ),
 ]
 
 testsMultidelegation: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with multidelegation keys in all tx elements",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley2"]],
-                               [outputs["trezorParity1"],
-                                outputs["trezorParityDatumHash1"]],
-                               42,
-                               10,
-                               validityIntervalStart=47,
-                               certificates=[Certificate(CertificateType.STAKE_REGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                  "m/1852'/1815'/0'/2/2"))),
-                                             Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                  "m/1852'/1815'/0'/2/2"))),
-                                             Certificate(CertificateType.STAKE_DELEGATION,
-                                                         StakeDelegationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                "m/1852'/1815'/0'/2/2"),
-                                                                               "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973"))],
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                        "m/1852'/1815'/0'/2/3"),
-                                                       1000)],
-                               requiredSigners=[RequiredSigner(TxRequiredSignerType.PATH, "m/1852'/1815'/0'/2/4")],
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               includeNetworkId=True),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "aa00818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821a001e8480a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a14874657374436f696e1a0078386283581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0158203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b702182a030a048382008200581cee6d266f2b60add5a249a3754f91cf1f423ac94c6cd964b3814f21a382018200581cee6d266f2b60add5a249a3754f91cf1f423ac94c6cd964b3814f21a383028200581cee6d266f2b60add5a249a3754f91cf1f423ac94c6cd964b3814f21a3581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb497305a1581de198acedf1c6b691f963d928147f66697c7cda3899e30c613037a4e9901903e808182f0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70e81581c86df572e0e28bec8ca8066e9d8c3681b4ac86c43c57cd52eb06ae8640f01",
-                   additionalWitnessPaths=["m/1852'/1815'/0'/0/0", "m/1852'/1815'/0'/2/5"]),
+    SignTxTestCase(
+        "Sign tx with multidelegation keys in all tx elements",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley2"]],
+            [outputs["trezorParity1"], outputs["trezorParityDatumHash1"]],
+            42,
+            10,
+            validityIntervalStart=47,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_REGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/2"
+                        )
+                    ),
+                ),
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/2"
+                        )
+                    ),
+                ),
+                Certificate(
+                    CertificateType.STAKE_DELEGATION,
+                    StakeDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/2"
+                        ),
+                        "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
+                    ),
+                ),
+            ],
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/3"
+                    ),
+                    1000,
+                )
+            ],
+            requiredSigners=[
+                RequiredSigner(TxRequiredSignerType.PATH, "m/1852'/1815'/0'/2/4")
+            ],
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            includeNetworkId=True,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "aa00818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff821a001e8480a1581c0d63e8d2c5a00cbcffbdf9112487c443466e1ea7d8c834df5ac5c425a14874657374436f696e1a0078386283581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0158203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b702182a030a048382008200581cee6d266f2b60add5a249a3754f91cf1f423ac94c6cd964b3814f21a382018200581cee6d266f2b60add5a249a3754f91cf1f423ac94c6cd964b3814f21a383028200581cee6d266f2b60add5a249a3754f91cf1f423ac94c6cd964b3814f21a3581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb497305a1581de198acedf1c6b691f963d928147f66697c7cda3899e30c613037a4e9901903e808182f0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70e81581c86df572e0e28bec8ca8066e9d8c3681b4ac86c43c57cd52eb06ae8640f01",
+        additionalWitnessPaths=["m/1852'/1815'/0'/0/0", "m/1852'/1815'/0'/2/5"],
+    ),
 ]
 
 testsConwayWithoutCertificates: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with treasury",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               treasury=27),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a15181b"),
-    SignTxTestCase("Sign tx with donation",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               donation=28),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a16181c"),
-    SignTxTestCase("Sign tx with treasury and donation",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               treasury=27,
-                               donation=28),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a15181b16181c"),
+    SignTxTestCase(
+        "Sign tx with treasury",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            treasury=27,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a15181b",
+    ),
+    SignTxTestCase(
+        "Sign tx with donation",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            donation=28,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a16181c",
+    ),
+    SignTxTestCase(
+        "Sign tx with treasury and donation",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            treasury=27,
+            donation=28,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a15181b16181c",
+    ),
 ]
 
-vote1 = Vote(GovActionId("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                         3),
-             VotingProcedure(VoteOption.ABSTAIN,
-                             AnchorParams("www.vacuumlabs.com",
-                                          "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef")))
-vote2 = Vote(GovActionId("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                         3),
-             VotingProcedure(VoteOption.NO))
-vote3 = Vote(GovActionId("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                         3),
-             VotingProcedure(VoteOption.YES))
+vote1 = Vote(
+    GovActionId("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", 3),
+    VotingProcedure(
+        VoteOption.ABSTAIN,
+        AnchorParams(
+            "www.vacuumlabs.com",
+            "1afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+        ),
+    ),
+)
+vote2 = Vote(
+    GovActionId("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", 3),
+    VotingProcedure(VoteOption.NO),
+)
+vote3 = Vote(
+    GovActionId("3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7", 3),
+    VotingProcedure(VoteOption.YES),
+)
 
 testsConwayVotingProcedures: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with voting procedures, COMMITTEE_KEY_PATH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.COMMITTEE_KEY_PATH,
-                                                                 "m/1852'/1815'/0'/5/0"),
-                                                            [vote1])]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18200581cd098c6a0a621f3343abe55877ee88fd5a83363e3c7887b3c48839092a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef"),
-    SignTxTestCase("Sign tx with voting procedures, DREP_KEY_PATH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.DREP_KEY_PATH,
-                                                                 "m/1852'/1815'/0'/3/0"),
-                                                            [vote2])]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18202581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a1a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038200f6"),
-    SignTxTestCase("Sign tx with voting procedures, STAKE_POOL_KEY_PATH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.STAKE_POOL_KEY_PATH,
-                                                                 "m/1853'/1815'/0'/0'"),
-                                                            [vote3])]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18204581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038201f6"),
-    SignTxTestCase("Sign tx with voting procedures, COMMITTEE_KEY_HASH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.COMMITTEE_KEY_HASH,
-                                                                 "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"),
-                                                            [vote1])]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18200581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef"),
-    SignTxTestCase("Sign tx with voting procedures, COMMITTEE_SCRIPT_HASH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.COMMITTEE_SCRIPT_HASH,
-                                                                 "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"),
-                                                            [vote2])]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18201581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038200f6"),
-    SignTxTestCase("Sign tx with voting procedures, DREP_KEY_HASH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.DREP_KEY_HASH,
-                                                                 "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"),
-                                                            [vote3])]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18202581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038201f6"),
-    SignTxTestCase("Sign tx with voting procedures, DREP_SCRIPT_HASH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.DREP_SCRIPT_HASH,
-                                                                 "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"),
-                                                            [vote1])]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18203581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef"),
-    SignTxTestCase("Sign tx with voting procedures, STAKE_POOL_KEY_HASH voter",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               votingProcedures=[VoterVotes(Voter(VoterType.STAKE_POOL_KEY_HASH,
-                                                                 "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8"),
-                                                            [vote1])]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18204581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef"),
+    SignTxTestCase(
+        "Sign tx with voting procedures, COMMITTEE_KEY_PATH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(VoterType.COMMITTEE_KEY_PATH, "m/1852'/1815'/0'/5/0"), [vote1]
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18200581cd098c6a0a621f3343abe55877ee88fd5a83363e3c7887b3c48839092a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+    ),
+    SignTxTestCase(
+        "Sign tx with voting procedures, DREP_KEY_PATH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(VoterType.DREP_KEY_PATH, "m/1852'/1815'/0'/3/0"), [vote2]
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18202581cba41c59ac6e1a0e4ac304af98db801097d0bf8d2a5b28a54752426a1a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038200f6",
+    ),
+    SignTxTestCase(
+        "Sign tx with voting procedures, STAKE_POOL_KEY_PATH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(VoterType.STAKE_POOL_KEY_PATH, "m/1853'/1815'/0'/0'"), [vote3]
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18204581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038201f6",
+    ),
+    SignTxTestCase(
+        "Sign tx with voting procedures, COMMITTEE_KEY_HASH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(
+                        VoterType.COMMITTEE_KEY_HASH,
+                        "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                    ),
+                    [vote1],
+                )
+            ],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18200581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+    ),
+    SignTxTestCase(
+        "Sign tx with voting procedures, COMMITTEE_SCRIPT_HASH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(
+                        VoterType.COMMITTEE_SCRIPT_HASH,
+                        "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                    ),
+                    [vote2],
+                )
+            ],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18201581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038200f6",
+    ),
+    SignTxTestCase(
+        "Sign tx with voting procedures, DREP_KEY_HASH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(
+                        VoterType.DREP_KEY_HASH,
+                        "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                    ),
+                    [vote3],
+                )
+            ],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18202581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7038201f6",
+    ),
+    SignTxTestCase(
+        "Sign tx with voting procedures, DREP_SCRIPT_HASH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(
+                        VoterType.DREP_SCRIPT_HASH,
+                        "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                    ),
+                    [vote1],
+                )
+            ],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18203581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+    ),
+    SignTxTestCase(
+        "Sign tx with voting procedures, STAKE_POOL_KEY_HASH voter",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            votingProcedures=[
+                VoterVotes(
+                    Voter(
+                        VoterType.STAKE_POOL_KEY_HASH,
+                        "7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8",
+                    ),
+                    [vote1],
+                )
+            ],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a13a18204581c7afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8a18258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b703820282727777772e76616375756d6c6162732e636f6d58201afd028b504c3668102b129b37a86c09a2872f76741dc7a68e2149c8deadbeef",
+    ),
 ]
 
 # =================
 # signTxCVote
 # =================
 testsCatalystRegistration: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with Catalyst registration metadata with base address",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_15,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["internalBaseWithStakingPath"],
-                                                                                  1454448,
-                                                                                  "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820e9141b460aea0abb69ce113c7302c7c03690267736d6a382ee62d2a53c2ec9260807"),
-   SignTxTestCase("Sign tx with Catalyst registration metadata with stake address",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_15,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["paymentKeyPath"],
-                                                                                  1454448,
-                                                                                  "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820d19f7cb4d48a6ae8d370c64d2a42fca1f61d6b2cf3d0c0c02801541811338deb",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Sign tx with Catalyst registration metadata with base address",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_15,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["internalBaseWithStakingPath"],
+                    1454448,
+                    "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c",
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820e9141b460aea0abb69ce113c7302c7c03690267736d6a382ee62d2a53c2ec9260807",
+    ),
+    SignTxTestCase(
+        "Sign tx with Catalyst registration metadata with stake address",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_15,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["paymentKeyPath"],
+                    1454448,
+                    "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c",
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820d19f7cb4d48a6ae8d370c64d2a42fca1f61d6b2cf3d0c0c02801541811338deb",
+        nano_skip=True,
+    ),
 ]
 
 testsCVoteRegistrationCIP36: List[SignTxTestCase] = [
-   SignTxTestCase("Sign tx with CIP36 registration with vote key hex",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_36,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["paymentKeyPath"],
-                                                                                  1454448,
-                                                                                  "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a0758201999b3bb9102b585c42616e40cf1290518d788f967ab4b3329dcb712ac933da0",
-                   nano_skip=True),
-   SignTxTestCase("Sign tx with CIP36 registration with vote key path",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_36,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["internalBaseWithStakingPath"],
-                                                                                  1454448,
-                                                                                  "m/1694'/1815'/0'/0/1"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820d05698c555a117014a3b360a66931ec43bf18e2aa16560fc99dbd92dd7f6f6540807",
-                   nano_skip=True),
-   SignTxTestCase("Sign tx with CIP36 registration with unusual vote key path",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_36,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["internalBaseWithStakingPath"],
-                                                                                  1454448,
-                                                                                  "m/1694'/1815'/101'/0/1"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a07582077be323b8df4c6aa1bf2f180112f85ffe8d7f658bc8febdf7dbd5a07453a31cb0807",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with CIP36 registration with third-party payment address",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_36,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["externalShelleyBaseKeyhashScripthash"],
-                                                                                  1454448,
-                                                                                  "m/1694'/1815'/0'/0/1"))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a07582042e408fb03986a958be9e2cca01623a31e23f86f31172a5a9b84acdfce6f0e750807",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with CIP36 registration with voting purpose",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_36,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["internalBaseWithStakingPath"],
-                                                                                  1454448,
-                                                                                  "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c",
-                                                                                  0))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820d706aed1ebc1e8af188aae6d37ffdf4e259a0f04635bef5edce7f43ff632c4450807"),
-    SignTxTestCase("Sign tx with CIP36 registration with delegations",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10,
-                               validityIntervalStart=7,
-                               auxiliaryData=TxAuxiliaryData(TxAuxiliaryDataType.CIP36_REGISTRATION,
-                                                             TxAuxiliaryDataCIP36(CIP36VoteRegistrationFormat.CIP_36,
-                                                                                  "m/1852'/1815'/0'/2/0",
-                                                                                  destinations["internalBaseWithStakingPath"],
-                                                                                  1454448,
-                                                                                  votingPurpose=2790,
-                                                                                  delegations=[CIP36VoteDelegation(CIP36VoteDelegationType.KEY,
-                                                                                                                   "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c",
-                                                                                                                   9),
-                                                                                               CIP36VoteDelegation(CIP36VoteDelegationType.PATH,
-                                                                                                                   "m/1694'/1815'/0'/0/1",
-                                                                                                                   0)]))),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820f0e62a047ef597d9fb1bfefb9cd3f4e77558c33510ca552484ee8b5c77bbdf650807",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Sign tx with CIP36 registration with vote key hex",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_36,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["paymentKeyPath"],
+                    1454448,
+                    "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c",
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a0758201999b3bb9102b585c42616e40cf1290518d788f967ab4b3329dcb712ac933da0",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with CIP36 registration with vote key path",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_36,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["internalBaseWithStakingPath"],
+                    1454448,
+                    "m/1694'/1815'/0'/0/1",
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820d05698c555a117014a3b360a66931ec43bf18e2aa16560fc99dbd92dd7f6f6540807",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with CIP36 registration with unusual vote key path",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_36,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["internalBaseWithStakingPath"],
+                    1454448,
+                    "m/1694'/1815'/101'/0/1",
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a07582077be323b8df4c6aa1bf2f180112f85ffe8d7f658bc8febdf7dbd5a07453a31cb0807",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with CIP36 registration with third-party payment address",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_36,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["externalShelleyBaseKeyhashScripthash"],
+                    1454448,
+                    "m/1694'/1815'/0'/0/1",
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a07582042e408fb03986a958be9e2cca01623a31e23f86f31172a5a9b84acdfce6f0e750807",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with CIP36 registration with voting purpose",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_36,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["internalBaseWithStakingPath"],
+                    1454448,
+                    "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c",
+                    0,
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820d706aed1ebc1e8af188aae6d37ffdf4e259a0f04635bef5edce7f43ff632c4450807",
+    ),
+    SignTxTestCase(
+        "Sign tx with CIP36 registration with delegations",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+            validityIntervalStart=7,
+            auxiliaryData=TxAuxiliaryData(
+                TxAuxiliaryDataType.CIP36_REGISTRATION,
+                TxAuxiliaryDataCIP36(
+                    CIP36VoteRegistrationFormat.CIP_36,
+                    "m/1852'/1815'/0'/2/0",
+                    destinations["internalBaseWithStakingPath"],
+                    1454448,
+                    votingPurpose=2790,
+                    delegations=[
+                        CIP36VoteDelegation(
+                            CIP36VoteDelegationType.KEY,
+                            "4b19e27ffc006ace16592311c4d2f0cafc255eaa47a6178ff540c0a46d07027c",
+                            9,
+                        ),
+                        CIP36VoteDelegation(
+                            CIP36VoteDelegationType.PATH, "m/1694'/1815'/0'/0/1", 0
+                        ),
+                    ],
+                ),
+            ),
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a075820f0e62a047ef597d9fb1bfefb9cd3f4e77558c33510ca552484ee8b5c77bbdf650807",
+        nano_skip=True,
+    ),
 ]
 
 # =================
 # signTxPlutus
 # =================
 testsAlonzo: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with script data hash",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [],
-                               42,
-                               10,
-                               scriptDataHash="ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
-                               includeNetworkId=True),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a0b5820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce1880f01"),
+    SignTxTestCase(
+        "Sign tx with script data hash",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [],
+            42,
+            10,
+            scriptDataHash="ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce188",
+            includeNetworkId=True,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a0b5820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce1880f01",
+    ),
     # tx does not contain any Plutus elements, but should be accepted (differs only in UI)
-    SignTxTestCase("Sign tx with change output as array",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a",),
-    SignTxTestCase("Sign tx with datum hash in output as array",
-                   Transaction(Testnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["datumHashExternal"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181835839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e1a006ca7935820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18802182a030a",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with datum hash in output as array with tokens",
-                   Transaction(Testnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["datumHashWithTokens"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181835839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a007838625820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18802182a030a",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Sign tx with change output as array",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70001818258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca79302182a030a",
+    ),
+    SignTxTestCase(
+        "Sign tx with datum hash in output as array",
+        Transaction(
+            Testnet, [inputs["utxoShelley"]], [outputs["datumHashExternal"]], 42, 10
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181835839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e1a006ca7935820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18802182a030a",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with datum hash in output as array with tokens",
+        Transaction(
+            Testnet, [inputs["utxoShelley"]], [outputs["datumHashWithTokens"]], 42, 10
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181835839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a007838625820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18802182a030a",
+        nano_skip=True,
+    ),
     # tests the path where a warning about missing datum hash is shown on Ledger
-    SignTxTestCase("Sign tx with missing datum hash in output with tokens",
-                   Transaction(Testnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["missingDatumHashWithTokens"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a0078386202182a030a",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with collateral inputs",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [],
-                               42,
-                               10,
-                               collateralInputs=[inputs["utxoShelley"]],
-                               includeNetworkId=True),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a0d818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc000f01",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with required signers - mixed",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [],
-                               42,
-                               10,
-                               requiredSigners=[RequiredSigner(TxRequiredSignerType.HASH, "fea6646c67fb467f8a5425e9c752e1e262b0420ba4b638f39514049a"),
-                                                RequiredSigner(TxRequiredSignerType.PATH, "m/1852'/1815'/0'/0/0")],
-                               includeNetworkId=True),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a0e82581cfea6646c67fb467f8a5425e9c752e1e262b0420ba4b638f39514049a581c14c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11240f01",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with mint path in a required signer",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               requiredSigners=[RequiredSigner(TxRequiredSignerType.PATH, "m/1855'/1815'/0'")]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a0e81581c43040068ce85252be6164296d6dca9595644bbf424b56b7424458227",
-                   additionalWitnessPaths=["m/1855'/1815'/0'"]),
-    SignTxTestCase("Sign tx with key hash in stake credential",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_DELEGATION,
-                                                         StakeDelegationParams(CredentialParams(CredentialParamsType.KEY_HASH,
-                                                                                                "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"),
-                                                                               "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973"))],
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.KEY_HASH,
-                                                                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"),
-                                                       1000)],
-                               includeNetworkId=True),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a048183028200581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb497305a1581de129fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd1903e80f01",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Sign tx with missing datum hash in output with tokens",
+        Transaction(
+            Testnet,
+            [inputs["utxoShelley"]],
+            [outputs["missingDatumHashWithTokens"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a0078386202182a030a",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with collateral inputs",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [],
+            42,
+            10,
+            collateralInputs=[inputs["utxoShelley"]],
+            includeNetworkId=True,
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a0d818258201af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc000f01",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with required signers - mixed",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [],
+            42,
+            10,
+            requiredSigners=[
+                RequiredSigner(
+                    TxRequiredSignerType.HASH,
+                    "fea6646c67fb467f8a5425e9c752e1e262b0420ba4b638f39514049a",
+                ),
+                RequiredSigner(TxRequiredSignerType.PATH, "m/1852'/1815'/0'/0/0"),
+            ],
+            includeNetworkId=True,
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a0e82581cfea6646c67fb467f8a5425e9c752e1e262b0420ba4b638f39514049a581c14c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11240f01",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with mint path in a required signer",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            requiredSigners=[
+                RequiredSigner(TxRequiredSignerType.PATH, "m/1855'/1815'/0'")
+            ],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018182582b82d818582183581c9e1c71de652ec8b85fec296f0685ca3988781c94a2e1a5d89d92f45fa0001a0d0c25611a002dd2e802182a030a0e81581c43040068ce85252be6164296d6dca9595644bbf424b56b7424458227",
+        additionalWitnessPaths=["m/1855'/1815'/0'"],
+    ),
+    SignTxTestCase(
+        "Sign tx with key hash in stake credential",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DELEGATION,
+                    StakeDelegationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_HASH,
+                            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                        ),
+                        "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973",
+                    ),
+                )
+            ],
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.KEY_HASH,
+                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                    ),
+                    1000,
+                )
+            ],
+            includeNetworkId=True,
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a048183028200581c29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd581cf61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb497305a1581de129fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd1903e80f01",
+        nano_skip=True,
+    ),
 ]
 
 testsBabbage: List[SignTxTestCase] = [
-    SignTxTestCase("Sign tx with short inline datum in output with tokens",
-                   Transaction(Testnet_legacy,
-                               [inputs["utxoShelley"]],
-                               [outputs["inlineDatumWithTokensMap"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a00783862028201d818565579657420616e6f746865722063686f636f6c61746502182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with long inline datum (480 B) in output",
-                   Transaction(Testnet_legacy,
-                               [inputs["utxoShelley"]],
-                               [outputs["inlineDatum480Map"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca793028201d8185901e012b8240c5470b47c159597b6f71d78c7fc99d1d8d911cb19b8f50211938ef361a22d30cd8f6354ec50e99a7d3cf3e06797ed4af3d358e01b2a957caa4010da328720b9fbe7a3a6d10209a13d2eb11933eb1bf2ab02713117e421b6dcc66297c41b95ad32d3457a0e6b44d8482385f311465964c3daff226acfb7bbda47011f1a6531db30e5b5977143c48f8b8eb739487f87dc13896f58529cfb48e415fc6123e708cdc3cb15cc1900ecf88c5fc9ff66d8ad6dae18c79e4a3c392a0df4d16ffa3e370f4dad8d8e9d171c5656bb317c78a2711057e7ae0beb1dc66ba01aa69d0c0db244e6742d7758ce8da00dfed6225d4aed4b01c42a0352688ed5803f3fd64873f11355305d9db309f4a2a6673cc408a06b8827a5edef7b0fd8742627fb8aa102a084b7db72fcb5c3d1bf437e2a936b738902a9c0258b462b9f2e9befd2c6bcfc036143bb34342b9124888a5b29fa5d60909c81319f034c11542b05ca3ff6c64c7642ff1e2b25fb60dc9bb6f5c914dd4149f31896955d4d204d822deddc46f852115a479edf7521cdf4ce596805875011855158fd303c33a2a7916a9cb7acaaf5aeca7e6efb75960e9597cd845bd9a93610bf1ab47ab0de943e8a96e26a24c4996f7b07fad437829fee5bc3496192608d4c04ac642cdec7bdbb8a948ad1d43402182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with long inline datum (304 B) in output with tokens",
-                   Transaction(Testnet_legacy,
-                               [inputs["utxoShelley"]],
-                               [outputs["inlineDatum304WithTokensMap"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a00783862028201d8185901305579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f7468657220637468657202182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Sign tx with short inline datum in output with tokens",
+        Transaction(
+            Testnet_legacy,
+            [inputs["utxoShelley"]],
+            [outputs["inlineDatumWithTokensMap"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a00783862028201d818565579657420616e6f746865722063686f636f6c61746502182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with long inline datum (480 B) in output",
+        Transaction(
+            Testnet_legacy,
+            [inputs["utxoShelley"]],
+            [outputs["inlineDatum480Map"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca793028201d8185901e012b8240c5470b47c159597b6f71d78c7fc99d1d8d911cb19b8f50211938ef361a22d30cd8f6354ec50e99a7d3cf3e06797ed4af3d358e01b2a957caa4010da328720b9fbe7a3a6d10209a13d2eb11933eb1bf2ab02713117e421b6dcc66297c41b95ad32d3457a0e6b44d8482385f311465964c3daff226acfb7bbda47011f1a6531db30e5b5977143c48f8b8eb739487f87dc13896f58529cfb48e415fc6123e708cdc3cb15cc1900ecf88c5fc9ff66d8ad6dae18c79e4a3c392a0df4d16ffa3e370f4dad8d8e9d171c5656bb317c78a2711057e7ae0beb1dc66ba01aa69d0c0db244e6742d7758ce8da00dfed6225d4aed4b01c42a0352688ed5803f3fd64873f11355305d9db309f4a2a6673cc408a06b8827a5edef7b0fd8742627fb8aa102a084b7db72fcb5c3d1bf437e2a936b738902a9c0258b462b9f2e9befd2c6bcfc036143bb34342b9124888a5b29fa5d60909c81319f034c11542b05ca3ff6c64c7642ff1e2b25fb60dc9bb6f5c914dd4149f31896955d4d204d822deddc46f852115a479edf7521cdf4ce596805875011855158fd303c33a2a7916a9cb7acaaf5aeca7e6efb75960e9597cd845bd9a93610bf1ab47ab0de943e8a96e26a24c4996f7b07fad437829fee5bc3496192608d4c04ac642cdec7bdbb8a948ad1d43402182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with long inline datum (304 B) in output with tokens",
+        Transaction(
+            Testnet_legacy,
+            [inputs["utxoShelley"]],
+            [outputs["inlineDatum304WithTokensMap"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a00783862028201d8185901305579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f746865722063686f636f6c6174655579657420616e6f7468657220637468657202182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        nano_skip=True,
+    ),
     # reference script
-    SignTxTestCase("Sign tx with datum hash and short ref. script in output",
-                   Transaction(Testnet_legacy,
-                               [inputs["utxoShelley"]],
-                               [outputs["datumHashRefScriptExternalMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a4005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca7930282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18803d81854deadbeefdeadbeefdeadbeefdeadbeefdeadbeef02182a030a",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with datum hash and ref. script (240 B) in output in Babbage format",
-                   Transaction(Testnet_legacy,
-                               [inputs["utxoShelley"]],
-                               [outputs["datumHashRefScript240ExternalMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a4005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca7930282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18803d81858f04784392787cc567ac21d7b5346a4a89ae112b7ff7610e402284042aa4e6efca7956a53c3f5cb3ec6745f5e21150f2a77bd71a2adc3f8b9539e9bab41934b477f60a8b302584d1a619ed9b178b5ce6fcad31adc0d6fc17023ede474c09f29fdbfb290a5b30b5240fae5de71168036201772c0d272ae90220181f9bf8c3198e79fc2ae32b076abf4d0e10d3166923ce56994b25c00909e3faab8ef1358c136cd3b197488efc883a7c6cfa3ac63ca9cebc62121c6e22f594420c2abd54e78282adec20ee7dba0e6de65554adb8ee8314f23f86cf7cf0906d4b6c643966baf6c54240c19f4131374e298f38a626a4ad63e6102182a030a",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with datum hash and script reference (304 B) in output as map",
-                   Transaction(Testnet_legacy,
-                               [inputs["utxoShelley"]],
-                               [outputs["datumHashRefScript304ExternalMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a4005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca7930282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18803d818590130deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeef02182a030a",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Sign tx with datum hash and short ref. script in output",
+        Transaction(
+            Testnet_legacy,
+            [inputs["utxoShelley"]],
+            [outputs["datumHashRefScriptExternalMap"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a4005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca7930282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18803d81854deadbeefdeadbeefdeadbeefdeadbeefdeadbeef02182a030a",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with datum hash and ref. script (240 B) in output in Babbage format",
+        Transaction(
+            Testnet_legacy,
+            [inputs["utxoShelley"]],
+            [outputs["datumHashRefScript240ExternalMap"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a4005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca7930282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18803d81858f04784392787cc567ac21d7b5346a4a89ae112b7ff7610e402284042aa4e6efca7956a53c3f5cb3ec6745f5e21150f2a77bd71a2adc3f8b9539e9bab41934b477f60a8b302584d1a619ed9b178b5ce6fcad31adc0d6fc17023ede474c09f29fdbfb290a5b30b5240fae5de71168036201772c0d272ae90220181f9bf8c3198e79fc2ae32b076abf4d0e10d3166923ce56994b25c00909e3faab8ef1358c136cd3b197488efc883a7c6cfa3ac63ca9cebc62121c6e22f594420c2abd54e78282adec20ee7dba0e6de65554adb8ee8314f23f86cf7cf0906d4b6c643966baf6c54240c19f4131374e298f38a626a4ad63e6102182a030a",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with datum hash and script reference (304 B) in output as map",
+        Transaction(
+            Testnet_legacy,
+            [inputs["utxoShelley"]],
+            [outputs["datumHashRefScript304ExternalMap"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a4005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e011a006ca7930282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18803d818590130deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeaddeadbeef02182a030a",
+        nano_skip=True,
+    ),
     # various output combinations
-    SignTxTestCase("Sign tx with datum hash in output with tokens in Babbage format",
-                   Transaction(Testnet_legacy,
-                               [inputs["utxoShelley"]],
-                               [outputs["datumHashWithTokensMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a007838620282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18802182a030a",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with a complex multiasset output Babbage",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetManyTokensBabbage"],
-                                outputs["internalBaseWithStakingPathBabbage"]],
-                               42,
-                               10,
-                               validityIntervalStart=7),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000182a200583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff01821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a00783862a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0807",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Sign tx with datum hash in output with tokens in Babbage format",
+        Transaction(
+            Testnet_legacy,
+            [inputs["utxoShelley"]],
+            [outputs["datumHashWithTokensMap"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a3005839105e2f080eb93bad86d401545e0ce5f2221096d6477e11e6643922fa8d2ed495234dc0d667c1316ff84e572310e265edb31330448b36b7179e01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a2487564247542686911182f4875642475426869121a007838620282005820ffd4d009f554ba4fd8ed1f1d703244819861a9d34fd4753bcf3ff32f043ce18802182a030a",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with a complex multiasset output Babbage",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [
+                outputs["multiassetManyTokensBabbage"],
+                outputs["internalBaseWithStakingPathBabbage"],
+            ],
+            42,
+            10,
+            validityIntervalStart=7,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000182a200583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff01821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a00783862a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0807",
+        nano_skip=True,
+    ),
     # reference inputs
-    SignTxTestCase("Sign tx with change output as map and multiple reference inputs",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPathMap"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               collateralInputs=[inputs["utxoShelley"]],
-                               referenceInputs=[inputs["utxoShelley"], inputs["utxoShelley"]]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70012828258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7008258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700"),
+    SignTxTestCase(
+        "Sign tx with change output as map and multiple reference inputs",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPathMap"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            collateralInputs=[inputs["utxoShelley"]],
+            referenceInputs=[inputs["utxoShelley"], inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70012828258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7008258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700",
+    ),
     # total collateral and collateral return output
-    SignTxTestCase("Sign tx with change output as map and total collateral",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPathMap"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               totalCollateral=10),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7110a"),
-    SignTxTestCase("Sign tx with change output as map and collateral output as array",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPathMap"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7"),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7108258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca793",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with change collateral output as map without total collateral",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPathMap"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               collateralInputs=[inputs["utxoShelley"]],
-                               collateralOutput=outputs["internalBaseWithTokensMap"]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a1487564247542686911182f",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with change collateral output as map with total collateral",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPathMap"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               collateralInputs=[inputs["utxoShelley"]],
-                               collateralOutput=outputs["internalBaseWithTokensMap"],
-                               totalCollateral=5),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a800818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a1487564247542686911182f1105",
-                   nano_skip=True),
-    SignTxTestCase("Sign tx with third-party collateral output as map without total collateral",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetManyTokensBabbage"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               collateralInputs=[inputs["utxoShelley"]],
-                               collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a200583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff01821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a0078386202182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b0901"),
-    SignTxTestCase("Sign tx with third-party collateral output as map with total collateral",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["multiassetManyTokensBabbage"]],
-                               42,
-                               10,
-                               scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
-                               collateralInputs=[inputs["utxoShelley"]],
-                               collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
-                               totalCollateral=5),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "a800818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a200583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff01821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a0078386202182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09011105"),
+    SignTxTestCase(
+        "Sign tx with change output as map and total collateral",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPathMap"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            totalCollateral=10,
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7110a",
+    ),
+    SignTxTestCase(
+        "Sign tx with change output as map and collateral output as array",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPathMap"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7108258390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c1a006ca793",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with change collateral output as map without total collateral",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPathMap"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            collateralInputs=[inputs["utxoShelley"]],
+            collateralOutput=outputs["internalBaseWithTokensMap"],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a1487564247542686911182f",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with change collateral output as map with total collateral",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPathMap"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            collateralInputs=[inputs["utxoShelley"]],
+            collateralOutput=outputs["internalBaseWithTokensMap"],
+            totalCollateral=5,
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a800818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c011a006ca79302182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010a20058390114c16d7f43243bd81478e68b9db53a8528fd4fb1078d58d54a7f11241d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c01821a006ca793a1581c75a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a1487564247542686911182f1105",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Sign tx with third-party collateral output as map without total collateral",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["multiassetManyTokensBabbage"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            collateralInputs=[inputs["utxoShelley"]],
+            collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a700818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a200583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff01821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a0078386202182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b0901",
+    ),
+    SignTxTestCase(
+        "Sign tx with third-party collateral output as map with total collateral",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["multiassetManyTokensBabbage"]],
+            42,
+            10,
+            scriptDataHash="3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+            collateralInputs=[inputs["utxoShelley"]],
+            collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
+            totalCollateral=5,
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "a800818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a200583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff01821904d2a2581c7eae28af2208be856f7a119668ae52a49b73725e326dc16579dcc373a34003581c1e349c9bdea19fd6c147626a5260bc44b71635f398b67c59881df209015820000000000000000000000000000000000000000000000000000000000000000002581c95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39a248456c204e69c3b16f1904d24874652474436f696e1a0078386202182a030a0b58203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70d818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b70010825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b09011105",
+    ),
 ]
 
 # =================
 # signTxPoolRegistration
 # =================
 poolRegistrationOwnerTestCases: List[SignTxTestCase] = [
-     SignTxTestCase("Witness valid multiple mixed owners all relays pool registration",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad848400190bb84436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c2078301190bb86d616161612e626262622e636f6d82026d616161612e626262632e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness valid single path owner ipv4 relay pool registration",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationDefault"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad81581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c818400190bb84436e44b9af682782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness valid multiple mixed owners ipv4 relay pool registration",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationMixedOwners"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad818400190bb84436e44b9af682782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness valid multiple mixed owners mixed ipv4, single host relays pool registration",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationMixedOwnersIpv4SingleHostRelays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad828400190bb84436e44b9af68301190bb86d616161612e626262622e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness valid multiple mixed owners mixed ipv4 ipv6 relays pool registration",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationMixedOwnersIpv4Ipv6Relays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad828400190fa04436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c20782782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness valid single path owner no relays pool registration",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationNoRelays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad81581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c8082782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness pool registration with no metadata",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationNoMetadata"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad81581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c818400190bb84436e44b9af6f6",
-                   nano_skip=True),
-     SignTxTestCase("Witness pool registration without outputs",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad848400190bb84436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c2078301190bb86d616161612e626262622e636f6d82026d616161612e626262632e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Witness valid multiple mixed owners all relays pool registration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad848400190bb84436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c2078301190bb86d616161612e626262622e636f6d82026d616161612e626262632e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness valid single path owner ipv4 relay pool registration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationDefault"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad81581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c818400190bb84436e44b9af682782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness valid multiple mixed owners ipv4 relay pool registration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationMixedOwners"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad818400190bb84436e44b9af682782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness valid multiple mixed owners mixed ipv4, single host relays pool registration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[
+                certificates["poolRegistrationMixedOwnersIpv4SingleHostRelays"]
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad828400190bb84436e44b9af68301190bb86d616161612e626262622e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness valid multiple mixed owners mixed ipv4 ipv6 relays pool registration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationMixedOwnersIpv4Ipv6Relays"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad828400190fa04436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c20782782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness valid single path owner no relays pool registration",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationNoRelays"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad81581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c8082782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness pool registration with no metadata",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationNoMetadata"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad81581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c818400190bb84436e44b9af6f6",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness pool registration without outputs",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018002182a030a04818a03581c13381d918ec0283ceeff60f7f4fc21e1540e053ccf8a77307a7a32ad582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad848400190bb84436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c2078301190bb86d616161612e626262622e636f6d82026d616161612e626262632e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
 ]
 
 poolRegistrationOperatorTestCases: List[SignTxTestCase] = [
-     SignTxTestCase("Witness pool registration as operator with no owners and no relays",
-                   Transaction(Mainnet,
-                               [inputs["utxoWithPath0"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationOperatorNoOwnersNoRelays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad808082782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness pool registration as operator with one owner and no relays",
-                   Transaction(Mainnet,
-                               [inputs["utxoWithPath0"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationOperatorOneOwnerOperatorNoRelays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1eef1689a3970b7880dcf3cb4ca9f22453b3833824fea34105117c84081581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad8082782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
-     SignTxTestCase("Witness pool registration as operator with multiple owners and all relays",
-                   Transaction(Mainnet,
-                               [inputs["utxoWithPath0"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegistrationOperatorMultipleOwnersAllRelays"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad581c0bd5d796f5e54866a14300ec2a18d706f7461b8f0502cc2a182bc88d848400190bb84436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c2078301190bb86d616161612e626262622e636f6d82026d616161612e626262632e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
-                   nano_skip=True),
+    SignTxTestCase(
+        "Witness pool registration as operator with no owners and no relays",
+        Transaction(
+            Mainnet,
+            [inputs["utxoWithPath0"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["poolRegistrationOperatorNoOwnersNoRelays"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad808082782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness pool registration as operator with one owner and no relays",
+        Transaction(
+            Mainnet,
+            [inputs["utxoWithPath0"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[
+                certificates["poolRegistrationOperatorOneOwnerOperatorNoRelays"]
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1eef1689a3970b7880dcf3cb4ca9f22453b3833824fea34105117c84081581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad8082782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
+    SignTxTestCase(
+        "Witness pool registration as operator with multiple owners and all relays",
+        Transaction(
+            Mainnet,
+            [inputs["utxoWithPath0"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[
+                certificates["poolRegistrationOperatorMultipleOwnersAllRelays"]
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "a500818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181825839017cb05fce110fb999f01abb4f62bc455e217d4a51fde909fa9aea545443ac53c046cf6a42095e3c60310fa802771d0672f8fe2d1861138b090102182a030a04818a03581cdbfee4665e58c8f8e9b9ff02b17f32e08a42c855476a5d867c2737b7582007821cd344d7fd7e3ae5f2ed863218cb979ff1d59e50c4276bdc479b0d0844501b0000000ba43b74001a1443fd00d81e82031864581de1794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad82581c794d9b3408c9fb67b950a48a0690f070f117e9978f7fc1d120fc58ad581c0bd5d796f5e54866a14300ec2a18d706f7461b8f0502cc2a182bc88d848400190bb84436e44b9af68400190bb84436e44b9b500178ff2483e3a2330a34c4a5e576c2078301190bb86d616161612e626262622e636f6d82026d616161612e626262632e636f6d82782968747470733a2f2f7777772e76616375756d6c6162732e636f6d2f73616d706c6555726c2e6a736f6e5820cdb714fd722c24aeb10c93dbb0ff03bd4783441cd5ba2a8b6f373390520535bb",
+        nano_skip=True,
+    ),
 ]
 
 # =================
 # Rejects signTx
 # =================
 transactionInitRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Non-mainnet protocol magic",
-                   Transaction(NetworkDesc(0x01, 764824072),
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-     SignTxTestCase("Invalid network id",
-                   Transaction(NetworkDesc(0x10, 764824073),
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_INVALID_DATA),
-    SignTxTestCase("Pool registration (operator) - too few certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - too few certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (operator) - too many certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"],
-                                             certificates["poolRegParamOperator"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - too many certificates",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"],
-                                             certificates["poolRegParamOwner"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (operator) - too many withdrawals",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]],
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"),
-                                                       1000)]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - too many withdrawals",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"]],
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"),
-                                                       1000)]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (operator) - mint included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]],
-                               mint=mints["reject"]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - mint included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"]],
-                               mint=mints["reject"]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Non-mainnet protocol magic",
+        Transaction(
+            NetworkDesc(0x01, 764824072),
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Invalid network id",
+        Transaction(
+            NetworkDesc(0x10, 764824073),
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_INVALID_DATA,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - too few certificates",
+        Transaction(
+            Mainnet, [inputs["utxoShelley"]], [outputs["externalByronMainnet"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - too few certificates",
+        Transaction(
+            Mainnet, [inputs["utxoMultisig"]], [outputs["externalByronMainnet"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - too many certificates",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                certificates["poolRegParamOperator"],
+                certificates["poolRegParamOperator"],
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - too many certificates",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[
+                certificates["poolRegParamOwner"],
+                certificates["poolRegParamOwner"],
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - too many withdrawals",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.SCRIPT_HASH,
+                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                    ),
+                    1000,
+                )
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - too many withdrawals",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOwner"]],
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.SCRIPT_HASH,
+                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                    ),
+                    1000,
+                )
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - mint included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+            mint=mints["reject"],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - mint included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOwner"]],
+            mint=mints["reject"],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
     # collateral inputs
-    SignTxTestCase("Ordinary tx - collateral inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               collateralInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Multisig tx - collateral inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               collateralInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (operator) - collateral inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]],
-                               collateralInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - collateral inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"]],
-                               collateralInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Ordinary tx - collateral inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            collateralInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Multisig tx - collateral inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            collateralInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - collateral inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+            collateralInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - collateral inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOwner"]],
+            collateralInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
     # required signers
-    SignTxTestCase("Pool registration (operator) - required signers included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]],
-                               requiredSigners=[RequiredSigner(TxRequiredSignerType.PATH, "m/1855'/1815'/0'/0/0")]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - required signers included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"]],
-                               requiredSigners=[RequiredSigner(TxRequiredSignerType.PATH, "m/1855'/1815'/0'/0/0")]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Pool registration (operator) - required signers included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+            requiredSigners=[
+                RequiredSigner(TxRequiredSignerType.PATH, "m/1855'/1815'/0'/0/0")
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - required signers included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOwner"]],
+            requiredSigners=[
+                RequiredSigner(TxRequiredSignerType.PATH, "m/1855'/1815'/0'/0/0")
+            ],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
     # collateral return output included
-    SignTxTestCase("Ordinary tx - collateral output included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Multisig tx - collateral output included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (operator) - collateral output included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]],
-                               collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - collateral output included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"]],
-                               collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Ordinary tx - collateral output included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Multisig tx - collateral output included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - collateral output included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+            collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - collateral output included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOwner"]],
+            collateralOutput=outputs["externalShelleyBaseKeyhashKeyhash"],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
     # total collateral included
-    SignTxTestCase("Ordinary tx - total collateral included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               totalCollateral=8),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Multisig tx - total collateral included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               totalCollateral=8),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (operator) - total collateral included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]],
-                               totalCollateral=8),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - total collateral included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"]],
-                               totalCollateral=8),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Ordinary tx - total collateral included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            totalCollateral=8,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Multisig tx - total collateral included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            totalCollateral=8,
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - total collateral included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+            totalCollateral=8,
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - total collateral included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOwner"]],
+            totalCollateral=8,
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
     # reference inputs included
-    SignTxTestCase("Ordinary tx - reference inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               referenceInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Multisig tx - reference inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               referenceInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (operator) - reference inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]],
-                               referenceInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration (owner) - reference inputs included",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOwner"]],
-                               referenceInputs=[inputs["utxoShelley"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Ordinary tx - reference inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            referenceInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Multisig tx - reference inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            referenceInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (operator) - reference inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+            referenceInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration (owner) - reference inputs included",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOwner"]],
+            referenceInputs=[inputs["utxoShelley"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 addressParamsRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Reward address - key",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [TxOutputAlonzo(destinations["paymentScriptPath"], 10)],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Reward address - script",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [TxOutputAlonzo(destinations["paymentScriptHash"], 10)],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("No spending path - Ordinary Tx 1",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [TxOutputAlonzo(destinations["reject1"], 3003112)],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("No spending path - Ordinary Tx 2",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [TxOutputAlonzo(destinations["reject2"], 3003112)],
-                               42,
-                               10),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool operator - spending choice not path",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [TxOutputAlonzo(destinations["reject3"], 10)],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Multisig - unconditionally",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool owner - unconditionally",
-                   Transaction(Mainnet,
-                               [inputs["utxoMultisig"]],
-                               [outputs["internalBaseWithStakingPath"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Reward address - key",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [TxOutputAlonzo(destinations["paymentScriptPath"], 10)],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Reward address - script",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [TxOutputAlonzo(destinations["paymentScriptHash"], 10)],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "No spending path - Ordinary Tx 1",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [TxOutputAlonzo(destinations["reject1"], 3003112)],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "No spending path - Ordinary Tx 2",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [TxOutputAlonzo(destinations["reject2"], 3003112)],
+            42,
+            10,
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool operator - spending choice not path",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [TxOutputAlonzo(destinations["reject3"], 10)],
+            42,
+            10,
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Multisig - unconditionally",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool owner - unconditionally",
+        Transaction(
+            Mainnet,
+            [inputs["utxoMultisig"]],
+            [outputs["internalBaseWithStakingPath"]],
+            42,
+            10,
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 certificateRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Pool registration in Ordinary Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration in Multisig Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool registration in Plutus Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]]),
-                   TransactionSigningMode.PLUTUS_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Pool registration in Ordinary Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration in Multisig Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool registration in Plutus Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+        ),
+        TransactionSigningMode.PLUTUS_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
     # TODO: Debug navigation
     # SignTxTestCase("Pool retirement in Multisig Tx",
     #                Transaction(Mainnet,
@@ -2849,18 +4310,30 @@ certificateRejectTestCases: List[SignTxTestCase] = [
 ]
 
 certificateStakingRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Script hash in Ordinary Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [TxOutputAlonzo(destinations["paymentScriptHash"], 10)],
-                               42,
-                               10,
-                               certificates=[Certificate(CertificateType.STAKE_REGISTRATION,
-                                                         StakeRegistrationParams(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                                                  "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd")))]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Script hash in Ordinary Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [TxOutputAlonzo(destinations["paymentScriptHash"], 10)],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_REGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.SCRIPT_HASH,
+                            "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                        )
+                    ),
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
     # TODO: Debug navigation
     # SignTxTestCase("Non-staking path in Ordinary Tx",
     #                Transaction(Mainnet,
@@ -2889,16 +4362,20 @@ certificateStakingRejectTestCases: List[SignTxTestCase] = [
 ]
 
 certificateStakePoolRetirementRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Non-pool cold key in Ordinary Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               certificates=[certificates["poolRegParamOperator"]]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Non-pool cold key in Ordinary Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            certificates=[certificates["poolRegParamOperator"]],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 withdrawalRejectTestCases: List[SignTxTestCase] = [
@@ -2930,42 +4407,70 @@ withdrawalRejectTestCases: List[SignTxTestCase] = [
     #                TransactionSigningMode.PLUTUS_TRANSACTION,
     #                "",
     #                expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Script hash as stake credential in Ordinary Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.SCRIPT_HASH,
-                                                                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd"),
-                                                       1000)]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Non-staking path as stake credential in Ordinary Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                        "m/1852'/1815'/0'/0/0"),
-                                                       1000)]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Staking path as stake credential in Multisig Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoShelley"]],
-                               [outputs["externalByronMainnet"]],
-                               42,
-                               10,
-                               withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                        "m/1852'/1815'/0'/0/0"),
-                                                       1000)]),
-                   TransactionSigningMode.MULTISIG_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Script hash as stake credential in Ordinary Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.SCRIPT_HASH,
+                        "29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd",
+                    ),
+                    1000,
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Non-staking path as stake credential in Ordinary Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/0/0"
+                    ),
+                    1000,
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Staking path as stake credential in Multisig Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [outputs["externalByronMainnet"]],
+            42,
+            10,
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/0/0"
+                    ),
+                    1000,
+                )
+            ],
+        ),
+        TransactionSigningMode.MULTISIG_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 witnessRejectTestCases: List[SignTxTestCase] = [
@@ -3363,34 +4868,61 @@ singleAccountRejectTestCases: List[SignTxTestCase] = [
     #                TransactionSigningMode.ORDINARY_TRANSACTION,
     #                "",
     #                expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Change output and withdrawal account mismatch",
-                   Transaction(Mainnet,
-                            [inputs["utxoShelley"]],
-                            [TxOutputBabbage(destinations["multiassetThirdParty"], 1),
-                            outputs["internalBaseWithStakingPath"]],
-                            42,
-                            10,
-                            withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                     "m/1852'/1815'/1'/2/0"),
-                                                    1000)]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Stake deregistration certificate and withdrawal account mismatch",
-                   Transaction(Mainnet,
-                            [inputs["utxoShelley"]],
-                            [TxOutputBabbage(destinations["multiassetThirdParty"], 1)],
-                            42,
-                            10,
-                            certificates=[Certificate(CertificateType.STAKE_DEREGISTRATION,
-                                                        StakeRegistrationParams(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                                                "m/1852'/1815'/0'/2/0")))],
-                            withdrawals=[Withdrawal(CredentialParams(CredentialParamsType.KEY_PATH,
-                                                                     "m/1852'/1815'/1'/2/0"),
-                                                    1000)]),
-                   TransactionSigningMode.ORDINARY_TRANSACTION,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Change output and withdrawal account mismatch",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [
+                TxOutputBabbage(destinations["multiassetThirdParty"], 1),
+                outputs["internalBaseWithStakingPath"],
+            ],
+            42,
+            10,
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.KEY_PATH, "m/1852'/1815'/1'/2/0"
+                    ),
+                    1000,
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Stake deregistration certificate and withdrawal account mismatch",
+        Transaction(
+            Mainnet,
+            [inputs["utxoShelley"]],
+            [TxOutputBabbage(destinations["multiassetThirdParty"], 1)],
+            42,
+            10,
+            certificates=[
+                Certificate(
+                    CertificateType.STAKE_DEREGISTRATION,
+                    StakeRegistrationParams(
+                        CredentialParams(
+                            CredentialParamsType.KEY_PATH, "m/1852'/1815'/0'/2/0"
+                        )
+                    ),
+                )
+            ],
+            withdrawals=[
+                Withdrawal(
+                    CredentialParams(
+                        CredentialParamsType.KEY_PATH, "m/1852'/1815'/1'/2/0"
+                    ),
+                    1000,
+                )
+            ],
+        ),
+        TransactionSigningMode.ORDINARY_TRANSACTION,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 collateralOutputRejectTestCases: List[SignTxTestCase] = [
@@ -3473,78 +5005,82 @@ testsCVoteRegistrationRejects: List[SignTxTestCase] = [
 
 poolRegistrationOwnerRejectTestCases: List[SignTxTestCase] = [
     # TODO: Debug navigation
-#    SignTxTestCase("Different index",
-#                   Transaction(Mainnet,
-#                               [inputs["utxoNoPath"]],
-#                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-#                               42,
-#                               10,
-#                               certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]]),
-#                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-#                   "",
-#                   expected_sw=Errors.SW_REJECTED_BY_POLICY,
-#                   additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
-#                                           "m/1852'/1815'/0'/2/1"]),
-#    SignTxTestCase("Different prefix",
-#                    Transaction(Mainnet,
-#                                [inputs["utxoNoPath"]],
-#                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
-#                                42,
-#                                10,
-#                                certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]]),
-#                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-#                    "",
-#                    expected_sw=Errors.SW_REJECTED_BY_POLICY,
-#                    additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
-#                                            "m/1854'/1815'/0'/2/0"]),
-#    SignTxTestCase("No path given",
-#                    Transaction(Mainnet,
-#                                [inputs["utxoNoPath"]],
-#                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
-#                                42,
-#                                10,
-#                                certificates=[certificates["rejectNoGivenPath"]]),
-#                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-#                    "",
-#                    expected_sw=Errors.SW_REJECTED_BY_POLICY,
-#                    additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
-#                                            "m/1854'/1815'/0'/2/0"]),
-#    SignTxTestCase("Invalid numerator-denominator relationship",
-#                    Transaction(Mainnet,
-#                                [inputs["utxoNoPath"]],
-#                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
-#                                42,
-#                                10,
-#                                certificates=[certificates["poolRegistrationWrongMargin"]]),
-#                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-#                    "",
-#                    expected_sw=Errors.SW_REJECTED_BY_POLICY,
-#                    additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
-#                                            "m/1854'/1815'/0'/2/0"]),
+    #    SignTxTestCase("Different index",
+    #                   Transaction(Mainnet,
+    #                               [inputs["utxoNoPath"]],
+    #                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
+    #                               42,
+    #                               10,
+    #                               certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]]),
+    #                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+    #                   "",
+    #                   expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    #                   additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
+    #                                           "m/1852'/1815'/0'/2/1"]),
+    #    SignTxTestCase("Different prefix",
+    #                    Transaction(Mainnet,
+    #                                [inputs["utxoNoPath"]],
+    #                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
+    #                                42,
+    #                                10,
+    #                                certificates=[certificates["poolRegistrationMixedOwnersAllRelays"]]),
+    #                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+    #                    "",
+    #                    expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    #                    additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
+    #                                            "m/1854'/1815'/0'/2/0"]),
+    #    SignTxTestCase("No path given",
+    #                    Transaction(Mainnet,
+    #                                [inputs["utxoNoPath"]],
+    #                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
+    #                                42,
+    #                                10,
+    #                                certificates=[certificates["rejectNoGivenPath"]]),
+    #                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+    #                    "",
+    #                    expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    #                    additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
+    #                                            "m/1854'/1815'/0'/2/0"]),
+    #    SignTxTestCase("Invalid numerator-denominator relationship",
+    #                    Transaction(Mainnet,
+    #                                [inputs["utxoNoPath"]],
+    #                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
+    #                                42,
+    #                                10,
+    #                                certificates=[certificates["poolRegistrationWrongMargin"]]),
+    #                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+    #                    "",
+    #                    expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    #                    additionalWitnessPaths=["m/1852'/1815'/0'/2/0",
+    #                                            "m/1854'/1815'/0'/2/0"]),
 ]
 
 invalidCertificates: List[SignTxTestCase] = [
     # TODO: Debug navigation
-#    SignTxTestCase("pool registration with multiple path owners",
-#                    Transaction(Mainnet,
-#                                [inputs["utxoNoPath"]],
-#                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
-#                                42,
-#                                10,
-#                                certificates=[certificates["rejectInvalid1"]]),
-#                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-#                    "",
-#                    expected_sw=Errors.SW_REJECTED_BY_POLICY),
-   SignTxTestCase("pool registration with no owners",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["rejectInvalid2"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    #    SignTxTestCase("pool registration with multiple path owners",
+    #                    Transaction(Mainnet,
+    #                                [inputs["utxoNoPath"]],
+    #                                [outputs["externalShelleyBaseKeyhashKeyhash"]],
+    #                                42,
+    #                                10,
+    #                                certificates=[certificates["rejectInvalid1"]]),
+    #                    TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+    #                    "",
+    #                    expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "pool registration with no owners",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["rejectInvalid2"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 invalidPoolMetadataTestCases: List[SignTxTestCase] = [
@@ -3628,94 +5164,106 @@ invalidRelayTestCases: List[SignTxTestCase] = [
 ]
 
 stakePoolRegistrationPoolIdRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Path sent in for Pool Registration Owner Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["rejectStakePool1"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Hash sent in for Pool Registration Operator Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["rejectStakePool2"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Path sent in for Pool Registration Owner Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["rejectStakePool1"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Hash sent in for Pool Registration Operator Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["rejectStakePool2"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 stakePoolRegistrationOwnerRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Non-staking path for Pool Registration Owner Tx",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["externalShelleyBaseKeyhashKeyhash"]],
-                               42,
-                               10,
-                               certificates=[certificates["rejectStakePool1"]]),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Non-staking path for Pool Registration Owner Tx",
+        Transaction(
+            Mainnet,
+            [inputs["utxoNoPath"]],
+            [outputs["externalShelleyBaseKeyhashKeyhash"]],
+            42,
+            10,
+            certificates=[certificates["rejectStakePool1"]],
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]
 
 outputRejectTestCases: List[SignTxTestCase] = [
-    SignTxTestCase("Pool operator - datum hash",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["datumHashExternalMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool operator - datum inline",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["inlineDatum480Map"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool operator - reference script",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["refScriptExternalMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool owner - datum hash",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["datumHashExternalMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool owner - datum inline",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["inlineDatum480Map"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
-    SignTxTestCase("Pool owner - reference script",
-                   Transaction(Mainnet,
-                               [inputs["utxoNoPath"]],
-                               [outputs["refScriptExternalMap"]],
-                               42,
-                               10),
-                   TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                   "",
-                   expected_sw=Errors.SW_REJECTED_BY_POLICY),
+    SignTxTestCase(
+        "Pool operator - datum hash",
+        Transaction(
+            Mainnet, [inputs["utxoNoPath"]], [outputs["datumHashExternalMap"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool operator - datum inline",
+        Transaction(
+            Mainnet, [inputs["utxoNoPath"]], [outputs["inlineDatum480Map"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool operator - reference script",
+        Transaction(
+            Mainnet, [inputs["utxoNoPath"]], [outputs["refScriptExternalMap"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool owner - datum hash",
+        Transaction(
+            Mainnet, [inputs["utxoNoPath"]], [outputs["datumHashExternalMap"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool owner - datum inline",
+        Transaction(
+            Mainnet, [inputs["utxoNoPath"]], [outputs["inlineDatum480Map"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
+    SignTxTestCase(
+        "Pool owner - reference script",
+        Transaction(
+            Mainnet, [inputs["utxoNoPath"]], [outputs["refScriptExternalMap"]], 42, 10
+        ),
+        TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+        "",
+        expected_sw=Errors.SW_REJECTED_BY_POLICY,
+    ),
 ]

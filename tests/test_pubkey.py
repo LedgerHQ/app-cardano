@@ -19,21 +19,38 @@ from application_client.command_sender import CommandSender
 from application_client.command_builder import P1Type
 
 from input_files.pubkey import PubKeyTestCase
-from input_files.pubkey import rejectTestCases, testsShelleyUsualNoConfirm, testsCVoteKeysNoConfirm
-from input_files.pubkey import byronTestCases, testsShelleyUsual, testsShelleyUnusual, testsColdKeys, testsCVoteKeys
+from input_files.pubkey import (
+    rejectTestCases,
+    testsShelleyUsualNoConfirm,
+    testsCVoteKeysNoConfirm,
+)
+from input_files.pubkey import (
+    byronTestCases,
+    testsShelleyUsual,
+    testsShelleyUnusual,
+    testsColdKeys,
+    testsCVoteKeys,
+)
 
 from utils import idTestFunc, get_device_pubkey
 
+
 @pytest.mark.parametrize(
     "testCase",
-    byronTestCases + testsShelleyUsual + testsShelleyUnusual + testsColdKeys + testsCVoteKeys,
-    ids=idTestFunc
+    byronTestCases
+    + testsShelleyUsual
+    + testsShelleyUnusual
+    + testsColdKeys
+    + testsCVoteKeys,
+    ids=idTestFunc,
 )
-def test_pubkey_confirm(firmware: Firmware,
-                        backend: BackendInterface,
-                        navigator: Navigator,
-                        scenario_navigator: NavigateWithScenario,
-                        testCase: PubKeyTestCase) -> None:
+def test_pubkey_confirm(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: PubKeyTestCase,
+) -> None:
     """Check Public Key with confirmation"""
 
     # Use the app interface instead of raw interface
@@ -69,10 +86,12 @@ def test_pubkey_confirm(firmware: Firmware,
         (testsShelleyUnusual + byronTestCases + testsColdKeys + testsShelleyUsual),
     ],
 )
-def test_pubkey_several(firmware: Firmware,
-                        backend: BackendInterface,
-                        navigator: Navigator,
-                        testCase: List[PubKeyTestCase]) -> None:
+def test_pubkey_several(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    testCase: List[PubKeyTestCase],
+) -> None:
     """Check Several Public Key with confirmation"""
 
     # Use the app interface instead of raw interface
@@ -92,14 +111,19 @@ def test_pubkey_several(firmware: Firmware,
         # Send the APDU
         with client.get_pubkey_async(p1, test.path, remainingKeysData):
             if p1 == P1Type.P1_KEY_INIT:
-                navigator.navigate(valid_instr,
-                                   screen_change_after_last_instruction=False)
+                navigator.navigate(
+                    valid_instr, screen_change_after_last_instruction=False
+                )
             if test.nav_with_several:
                 if firmware.is_nano:
                     navigator.navigate_until_text(nav_inst, valid_instr, "Confirm")
                 else:
-                    navigator.navigate_until_text(nav_inst, valid_instr, "Confirm",
-                                   screen_change_after_last_instruction=False)
+                    navigator.navigate_until_text(
+                        nav_inst,
+                        valid_instr,
+                        "Confirm",
+                        screen_change_after_last_instruction=False,
+                    )
             else:
                 pass
         # Check the status (Asynchronous)
@@ -114,9 +138,7 @@ def test_pubkey_several(firmware: Firmware,
 
 
 @pytest.mark.parametrize(
-    "testCase",
-    testsShelleyUsualNoConfirm + testsCVoteKeysNoConfirm,
-    ids=idTestFunc
+    "testCase", testsShelleyUsualNoConfirm + testsCVoteKeysNoConfirm, ids=idTestFunc
 )
 def test_pubkey(backend: BackendInterface, testCase: PubKeyTestCase) -> None:
     """Check Public Key without confirmation"""
@@ -134,13 +156,8 @@ def test_pubkey(backend: BackendInterface, testCase: PubKeyTestCase) -> None:
     _check_pubkey_result(response.data, testCase.path)
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    rejectTestCases,
-    ids=idTestFunc
-)
-def test_pubkey_reject(backend: BackendInterface,
-                       testCase: PubKeyTestCase) -> None:
+@pytest.mark.parametrize("testCase", rejectTestCases, ids=idTestFunc)
+def test_pubkey_reject(backend: BackendInterface, testCase: PubKeyTestCase) -> None:
     """Check Reject Public Key"""
 
     # Use the app interface instead of raw interface

@@ -10,7 +10,13 @@ from dataclasses import dataclass
 
 from ragger.navigator import NavInsID
 
-from application_client.app_def import NetworkDesc, AddressType, Mainnet, Testnet, FakeNet
+from application_client.app_def import (
+    NetworkDesc,
+    AddressType,
+    Mainnet,
+    Testnet,
+    FakeNet,
+)
 
 
 @dataclass
@@ -18,11 +24,15 @@ class DeriveAddressTestCase:
     name: str
     netDesc: NetworkDesc
     addrType: AddressType
-    spendingValue: str      # spending path or keyHash
+    spendingValue: str  # spending path or keyHash
     stakingValue: str = ""  # staking path or keyHash
     result: Optional[str] = ""
-    nano_nav_confirm: Optional[List[NavInsID]] = None  # list of specific navigation instructions for Nano
-    nano_nav_show: Optional[List[NavInsID]] = None  # list of specific navigation instructions for Nano
+    nano_nav_confirm: Optional[List[NavInsID]] = (
+        None  # list of specific navigation instructions for Nano
+    )
+    nano_nav_show: Optional[List[NavInsID]] = (
+        None  # list of specific navigation instructions for Nano
+    )
 
 
 def pointer_to_str(blockIndex: int, txIndex: int, certificateIndex: int) -> str:
@@ -35,328 +45,530 @@ def pointer_to_str(blockIndex: int, txIndex: int, certificateIndex: int) -> str:
 
 # pylint: disable=line-too-long
 byronTestCases = [
-    DeriveAddressTestCase("Mainnet 1",
-                  Mainnet,
-                  AddressType.BYRON,
-                  "m/44'/1815'/1'/0/55'"),
-    DeriveAddressTestCase("Mainnet 2",
-                  Mainnet,
-                  AddressType.BYRON,
-                  "m/44'/1815'/1'/0/12'"),
-    DeriveAddressTestCase("Mainnet 3",
-                  Mainnet,
-                  AddressType.BYRON,
-                  "m/44'/1815'/101'/0/12'"),
-    DeriveAddressTestCase("Mainnet 4",
-                  Mainnet,
-                  AddressType.BYRON,
-                  "m/44'/1815'/0'/0/1000001'"),
-    DeriveAddressTestCase("Testnet 1",
-                  Testnet,
-                  AddressType.BYRON,
-                  "m/44'/1815'/1'/0/12'",
-                  result="2657WMsDfac5679tC5DgShwENgGLwAuGNanDjDaCzuEEqXDsP6i2345FcVkwRYVqX"),
+    DeriveAddressTestCase(
+        "Mainnet 1", Mainnet, AddressType.BYRON, "m/44'/1815'/1'/0/55'"
+    ),
+    DeriveAddressTestCase(
+        "Mainnet 2", Mainnet, AddressType.BYRON, "m/44'/1815'/1'/0/12'"
+    ),
+    DeriveAddressTestCase(
+        "Mainnet 3", Mainnet, AddressType.BYRON, "m/44'/1815'/101'/0/12'"
+    ),
+    DeriveAddressTestCase(
+        "Mainnet 4", Mainnet, AddressType.BYRON, "m/44'/1815'/0'/0/1000001'"
+    ),
+    DeriveAddressTestCase(
+        "Testnet 1",
+        Testnet,
+        AddressType.BYRON,
+        "m/44'/1815'/1'/0/12'",
+        result="2657WMsDfac5679tC5DgShwENgGLwAuGNanDjDaCzuEEqXDsP6i2345FcVkwRYVqX",
+    ),
 ]
 
 
 rejectTestCases = [
-    DeriveAddressTestCase("path too short",
-             Mainnet,
-             AddressType.BYRON,
-             "m/44'/1815'/1'"),
-    DeriveAddressTestCase("invalid path",
-             Mainnet,
-             AddressType.BYRON,
-             "m/44'/1815'/1'/5/10'"),
-    DeriveAddressTestCase("Byron with Shelley path",
-             Mainnet,
-             AddressType.BYRON,
-             "m/1852'/1815'/1'/0/10"),
-    DeriveAddressTestCase("base key/key with Byron spending path",
-             Mainnet,
-             AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-             "m/44'/1815'/1'/0/1",
-             "m/1852'/1815'/1'/2/0"),
-    DeriveAddressTestCase("base key/key with wrong spending path",
-             Mainnet,
-             AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-             "m/1852'/1815'/1'/2/0",
-             "m/1852'/1815'/1'/2/0"),
-    DeriveAddressTestCase("base key/key with wrong staking path 1",
-             Mainnet,
-             AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-             "m/1852'/1815'/1'/0/0",
-             "m/1852'/1815'/1'/0/1"),
-    DeriveAddressTestCase("base key/script with Byron spending path",
-             Mainnet,
-             AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
-             "m/44'/1815'/1'/0/1",
-             "222a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277"),
-    DeriveAddressTestCase("base address scripthash/keyhash not allowed",
-             Mainnet,
-             AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
-             "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-             "222a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277"),
-    DeriveAddressTestCase("pointer with Byron spending path",
-             Mainnet,
-             AddressType.POINTER_KEY,
-             "m/44'/1815'/1'/0/0",
-             pointer_to_str(1, 2, 3)),
-    DeriveAddressTestCase("pointer with wrong spending path",
-             Mainnet,
-             AddressType.POINTER_KEY,
-             "m/1852'/1815'/1'/2/0",
-             pointer_to_str(1, 2, 3)),
-    DeriveAddressTestCase("enterprise with Byron spending path",
-             Mainnet,
-             AddressType.ENTERPRISE_KEY,
-             "m/44'/1815'/1'/0/0"),
-    DeriveAddressTestCase("enterprise with wrong spending path",
-             Mainnet,
-             AddressType.ENTERPRISE_KEY,
-             "m/1852'/1815'/1'/2/0"),
+    DeriveAddressTestCase(
+        "path too short", Mainnet, AddressType.BYRON, "m/44'/1815'/1'"
+    ),
+    DeriveAddressTestCase(
+        "invalid path", Mainnet, AddressType.BYRON, "m/44'/1815'/1'/5/10'"
+    ),
+    DeriveAddressTestCase(
+        "Byron with Shelley path", Mainnet, AddressType.BYRON, "m/1852'/1815'/1'/0/10"
+    ),
+    DeriveAddressTestCase(
+        "base key/key with Byron spending path",
+        Mainnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/44'/1815'/1'/0/1",
+        "m/1852'/1815'/1'/2/0",
+    ),
+    DeriveAddressTestCase(
+        "base key/key with wrong spending path",
+        Mainnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/1'/2/0",
+        "m/1852'/1815'/1'/2/0",
+    ),
+    DeriveAddressTestCase(
+        "base key/key with wrong staking path 1",
+        Mainnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/1'/0/0",
+        "m/1852'/1815'/1'/0/1",
+    ),
+    DeriveAddressTestCase(
+        "base key/script with Byron spending path",
+        Mainnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
+        "m/44'/1815'/1'/0/1",
+        "222a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+    ),
+    DeriveAddressTestCase(
+        "base address scripthash/keyhash not allowed",
+        Mainnet,
+        AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        "222a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+    ),
+    DeriveAddressTestCase(
+        "pointer with Byron spending path",
+        Mainnet,
+        AddressType.POINTER_KEY,
+        "m/44'/1815'/1'/0/0",
+        pointer_to_str(1, 2, 3),
+    ),
+    DeriveAddressTestCase(
+        "pointer with wrong spending path",
+        Mainnet,
+        AddressType.POINTER_KEY,
+        "m/1852'/1815'/1'/2/0",
+        pointer_to_str(1, 2, 3),
+    ),
+    DeriveAddressTestCase(
+        "enterprise with Byron spending path",
+        Mainnet,
+        AddressType.ENTERPRISE_KEY,
+        "m/44'/1815'/1'/0/0",
+    ),
+    DeriveAddressTestCase(
+        "enterprise with wrong spending path",
+        Mainnet,
+        AddressType.ENTERPRISE_KEY,
+        "m/1852'/1815'/1'/2/0",
+    ),
 ]
 
 
 shelleyTestCasesNoConfirm = [
-    DeriveAddressTestCase("base address path/path 1",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    "m/1852'/1815'/0'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/path 2",
-                    Testnet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    "m/1852'/1815'/0'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/path multidelegation stake key usual",
-                    Testnet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    "m/1852'/1815'/0'/2/60",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/keyHash 1",
-                    Testnet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    "1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/keyHash 2",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address scriptHash/path",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    "m/1852'/1815'/0'/2/0",
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address scriptHash/path multidelegation",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    "m/1852'/1815'/0'/2/3",
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/scriptHash",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
-                    "m/1852'/1815'/0'/0/1",
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address scriptHash/scriptHash",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_SCRIPT_STAKE_SCRIPT,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("enterprise path 1",
-                    Testnet,
-                    AddressType.ENTERPRISE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("enterprise path 2",
-                    FakeNet,
-                    AddressType.ENTERPRISE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("enterprise script 1",
-                    Testnet,
-                    AddressType.ENTERPRISE_SCRIPT,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("enterprise script 2",
-                    FakeNet,
-                    AddressType.ENTERPRISE_SCRIPT,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer path 1",
-                    Testnet,
-                    AddressType.POINTER_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    pointer_to_str(1, 2, 3),
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer path 2",
-                    FakeNet,
-                    AddressType.POINTER_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    pointer_to_str(24157, 177, 42),
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer path 3",
-                    FakeNet,
-                    AddressType.POINTER_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    pointer_to_str(0, 0, 0),
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer script 1",
-                    Testnet,
-                    AddressType.POINTER_SCRIPT,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    pointer_to_str(1, 2, 3),
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer script 2",
-                    FakeNet,
-                    AddressType.POINTER_SCRIPT,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    pointer_to_str(24157, 177, 42),
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer script 3",
-                    FakeNet,
-                    AddressType.POINTER_SCRIPT,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    pointer_to_str(0, 0, 0),
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward path 1",
-                    Testnet,
-                    AddressType.REWARD_KEY,
-                    "",
-                    "m/1852'/1815'/0'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward path 2",
-                    FakeNet,
-                    AddressType.REWARD_KEY,
-                    "",
-                    "m/1852'/1815'/0'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward multidelegation usual",
-                    Testnet,
-                    AddressType.REWARD_KEY,
-                    "",
-                    "m/1852'/1815'/0'/2/1",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward script 1",
-                    Testnet,
-                    AddressType.REWARD_SCRIPT,
-                    "",
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward script 2",
-                    FakeNet,
-                    AddressType.REWARD_SCRIPT,
-                    "",
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_show=[NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
+    DeriveAddressTestCase(
+        "base address path/path 1",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        "m/1852'/1815'/0'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/path 2",
+        Testnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        "m/1852'/1815'/0'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/path multidelegation stake key usual",
+        Testnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        "m/1852'/1815'/0'/2/60",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/keyHash 1",
+        Testnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        "1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+        nano_nav_show=[NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/keyHash 2",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_show=[NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address scriptHash/path",
+        FakeNet,
+        AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        "m/1852'/1815'/0'/2/0",
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address scriptHash/path multidelegation",
+        FakeNet,
+        AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        "m/1852'/1815'/0'/2/3",
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/scriptHash",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
+        "m/1852'/1815'/0'/0/1",
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_show=[NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address scriptHash/scriptHash",
+        FakeNet,
+        AddressType.BASE_PAYMENT_SCRIPT_STAKE_SCRIPT,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "enterprise path 1",
+        Testnet,
+        AddressType.ENTERPRISE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "enterprise path 2",
+        FakeNet,
+        AddressType.ENTERPRISE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "enterprise script 1",
+        Testnet,
+        AddressType.ENTERPRISE_SCRIPT,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "enterprise script 2",
+        FakeNet,
+        AddressType.ENTERPRISE_SCRIPT,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer path 1",
+        Testnet,
+        AddressType.POINTER_KEY,
+        "m/1852'/1815'/0'/0/1",
+        pointer_to_str(1, 2, 3),
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer path 2",
+        FakeNet,
+        AddressType.POINTER_KEY,
+        "m/1852'/1815'/0'/0/1",
+        pointer_to_str(24157, 177, 42),
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer path 3",
+        FakeNet,
+        AddressType.POINTER_KEY,
+        "m/1852'/1815'/0'/0/1",
+        pointer_to_str(0, 0, 0),
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer script 1",
+        Testnet,
+        AddressType.POINTER_SCRIPT,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        pointer_to_str(1, 2, 3),
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer script 2",
+        FakeNet,
+        AddressType.POINTER_SCRIPT,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        pointer_to_str(24157, 177, 42),
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer script 3",
+        FakeNet,
+        AddressType.POINTER_SCRIPT,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        pointer_to_str(0, 0, 0),
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward path 1",
+        Testnet,
+        AddressType.REWARD_KEY,
+        "",
+        "m/1852'/1815'/0'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward path 2",
+        FakeNet,
+        AddressType.REWARD_KEY,
+        "",
+        "m/1852'/1815'/0'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward multidelegation usual",
+        Testnet,
+        AddressType.REWARD_KEY,
+        "",
+        "m/1852'/1815'/0'/2/1",
+        nano_nav_show=[NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward script 1",
+        Testnet,
+        AddressType.REWARD_SCRIPT,
+        "",
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward script 2",
+        FakeNet,
+        AddressType.REWARD_SCRIPT,
+        "",
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_show=[NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
 ]
 
-nav_inst_1 = [NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2
-nav_inst_2 = [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 3
+nav_inst_1 = (
+    [NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2
+)
+nav_inst_2 = (
+    [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 3
+)
 
 shelleyTestCasesWithConfirm = [
-    DeriveAddressTestCase("base address path/path unusual spending path account",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/101'/0/1",
-                    "m/1852'/1815'/0'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/path unusual spending path address index",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/1'/0/1000001",
-                    "m/1852'/1815'/0'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/path unusual staking path account",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/10'/0/4",
-                    "m/1852'/1815'/101'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/path multidelegation stake key unusual account",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    "m/1852'/1815'/101'/2/60",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/path multidelegation stake key unusual index",
-                    FakeNet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1",
-                    "m/1852'/1815'/0'/2/1000001",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/keyHash unusual account",
-                    Testnet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/101'/0/1",
-                    "1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
-                    nano_nav_confirm=nav_inst_1,
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/keyHash unusual address index",
-                    Testnet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                    "m/1852'/1815'/0'/0/1'",
-                    "1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
-                    nano_nav_confirm=nav_inst_1,
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address scriptHash/path unusual account",
-                    Testnet, AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    "m/1852'/1815'/200'/2/0",
-                    nano_nav_confirm=nav_inst_2,
-                    nano_nav_show=[NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/scriptHash unusual account",
-                    Testnet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
-                    "m/1852'/1815'/101'/0/1",
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_confirm=nav_inst_1,
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("base address path/scriptHash unusual address index",
-                    Testnet,
-                    AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
-                    "m/1852'/1815'/0'/0/1'",
-                    "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
-                    nano_nav_confirm=nav_inst_1,
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] * 2 + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer address unusual account",
-                    Testnet,
-                    AddressType.POINTER_KEY,
-                    "m/1852'/1815'/1000'/0/1",
-                    pointer_to_str(1, 0, 0),
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("pointer address unusual address index",
-                    Testnet,
-                    AddressType.POINTER_KEY,
-                    "m/1852'/1815'/0'/0/1'",
-                    pointer_to_str(0, 7, 0),
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward multidelegation unusual account",
-                    Testnet,
-                    AddressType.REWARD_KEY,
-                    "",
-                    "m/1852'/1815'/101'/2/1",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward multidelegation unusual index",
-                    Testnet,
-                    AddressType.REWARD_KEY,
-                    "",
-                    "m/1852'/1815'/0'/2/20000000",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
-    DeriveAddressTestCase("reward path unusual account",
-                    FakeNet,
-                    AddressType.REWARD_KEY,
-                    "",
-                    "m/1852'/1815'/300'/2/0",
-                    nano_nav_show=[NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2),
+    DeriveAddressTestCase(
+        "base address path/path unusual spending path account",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/101'/0/1",
+        "m/1852'/1815'/0'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 3
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/path unusual spending path address index",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/1'/0/1000001",
+        "m/1852'/1815'/0'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 3
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/path unusual staking path account",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/10'/0/4",
+        "m/1852'/1815'/101'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 3
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/path multidelegation stake key unusual account",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        "m/1852'/1815'/101'/2/60",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 3
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/path multidelegation stake key unusual index",
+        FakeNet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1",
+        "m/1852'/1815'/0'/2/1000001",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 3
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/keyHash unusual account",
+        Testnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/101'/0/1",
+        "1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+        nano_nav_confirm=nav_inst_1,
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/keyHash unusual address index",
+        Testnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+        "m/1852'/1815'/0'/0/1'",
+        "1d227aefa4b773149170885aadba30aab3127cc611ddbc4999def61c",
+        nano_nav_confirm=nav_inst_1,
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address scriptHash/path unusual account",
+        Testnet,
+        AddressType.BASE_PAYMENT_SCRIPT_STAKE_KEY,
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        "m/1852'/1815'/200'/2/0",
+        nano_nav_confirm=nav_inst_2,
+        nano_nav_show=[NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/scriptHash unusual account",
+        Testnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
+        "m/1852'/1815'/101'/0/1",
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_confirm=nav_inst_1,
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "base address path/scriptHash unusual address index",
+        Testnet,
+        AddressType.BASE_PAYMENT_KEY_STAKE_SCRIPT,
+        "m/1852'/1815'/0'/0/1'",
+        "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+        nano_nav_confirm=nav_inst_1,
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK]
+        + [NavInsID.RIGHT_CLICK] * 2
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer address unusual account",
+        Testnet,
+        AddressType.POINTER_KEY,
+        "m/1852'/1815'/1000'/0/1",
+        pointer_to_str(1, 0, 0),
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 3
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "pointer address unusual address index",
+        Testnet,
+        AddressType.POINTER_KEY,
+        "m/1852'/1815'/0'/0/1'",
+        pointer_to_str(0, 7, 0),
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 3
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward multidelegation unusual account",
+        Testnet,
+        AddressType.REWARD_KEY,
+        "",
+        "m/1852'/1815'/101'/2/1",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward multidelegation unusual index",
+        Testnet,
+        AddressType.REWARD_KEY,
+        "",
+        "m/1852'/1815'/0'/2/20000000",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
+    DeriveAddressTestCase(
+        "reward path unusual account",
+        FakeNet,
+        AddressType.REWARD_KEY,
+        "",
+        "m/1852'/1815'/300'/2/0",
+        nano_nav_show=[NavInsID.BOTH_CLICK] * 2
+        + [NavInsID.RIGHT_CLICK]
+        + [NavInsID.BOTH_CLICK] * 2,
+    ),
 ]

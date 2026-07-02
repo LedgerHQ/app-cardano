@@ -5,6 +5,7 @@
 This module provides Ragger tests Client application.
 It contains the application definitions.
 """
+
 from enum import IntEnum
 from dataclasses import dataclass
 from typing import Union
@@ -13,18 +14,18 @@ from typing import Union
 class Errors(IntEnum):
     """Application Errors definitions"""
 
-    SW_MALFORMED_REQUEST_HEADER   = 0x6E01
-    SW_BAD_CLA                    = 0x6E02
-    SW_UNKNOWN_INS                = 0x6E03
-    SW_STILL_IN_CALL              = 0x6E04
+    SW_MALFORMED_REQUEST_HEADER = 0x6E01
+    SW_BAD_CLA = 0x6E02
+    SW_UNKNOWN_INS = 0x6E03
+    SW_STILL_IN_CALL = 0x6E04
     SW_INVALID_REQUEST_PARAMETERS = 0x6E05
-    SW_INVALID_STATE              = 0x6E06
-    SW_INVALID_DATA               = 0x6E07
-    SW_REJECTED_BY_USER           = 0x6E09
-    SW_REJECTED_BY_POLICY         = 0x6E10
-    SW_DEVICE_LOCKED              = 0x6E11
-    SW_SWAP_CHECKING_FAIL         = 0x6E13
-    SW_SUCCESS                    = 0x9000
+    SW_INVALID_STATE = 0x6E06
+    SW_INVALID_DATA = 0x6E07
+    SW_REJECTED_BY_USER = 0x6E09
+    SW_REJECTED_BY_POLICY = 0x6E10
+    SW_DEVICE_LOCKED = 0x6E11
+    SW_SWAP_CHECKING_FAIL = 0x6E13
+    SW_SUCCESS = 0x9000
 
 
 class InsType(IntEnum):
@@ -40,9 +41,9 @@ class InsType(IntEnum):
 
 
 class ProtocolMagics(IntEnum):
-    MAINNET = 0x2D964A09        # 764824073
-    TESTNET = 0x2A              # 42, For integration tests
-    TESTNET_LEGACY = 0x4170CB17 # 1097911063
+    MAINNET = 0x2D964A09  # 764824073
+    TESTNET = 0x2A  # 42, For integration tests
+    TESTNET_LEGACY = 0x4170CB17  # 1097911063
     TESTNET_PREPROD = 1
     TESTNET_PREVIEW = 2
     FAKE = 47

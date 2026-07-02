@@ -18,12 +18,13 @@ from application_client.command_sender import CommandSender
 #########################
 
 # Pull all features from the base ragger conftest using the overridden configuration
-pytest_plugins = ("ragger.conftest.base_conftest", )
+pytest_plugins = ("ragger.conftest.base_conftest",)
 
 
 ##########################
 # CONFIGURATION OVERRIDE #
 ##########################
+
 
 @pytest.fixture(scope=configuration.OPTIONAL.BACKEND_SCOPE)
 def appFlags(backend: BackendInterface) -> dict:
@@ -31,9 +32,10 @@ def appFlags(backend: BackendInterface) -> dict:
     client = CommandSender(backend)
     # Send the APDU
     version = client.get_version()
+    # fmt: off
     app_flags = {
         "isDebug": bool(version[3] & 0x01),
         "isAppXS": bool(version[3] & 0x04)
     }
-
+    # fmt: on
     return app_flags

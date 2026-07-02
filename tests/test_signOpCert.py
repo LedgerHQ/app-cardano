@@ -20,20 +20,18 @@ from input_files.signOpCert import opCertTestCases, OpCertTestCase
 from utils import idTestFunc, verify_signature
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    opCertTestCases,
-    ids=idTestFunc
-)
-def test_opCert(firmware: Firmware,
-                backend: BackendInterface,
-                navigator: Navigator,
-                scenario_navigator: NavigateWithScenario,
-                testCase: OpCertTestCase,
-                appFlags: dict) -> None:
+@pytest.mark.parametrize("testCase", opCertTestCases, ids=idTestFunc)
+def test_opCert(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: OpCertTestCase,
+    appFlags: dict,
+) -> None:
     """Check Sign Operational Certificate"""
 
-    if appFlags['isAppXS']:
+    if appFlags["isAppXS"]:
         pytest.skip("Operational Certificate is not supported by 'AppXS' version")
 
     # Use the app interface instead of raw interface
@@ -58,7 +56,7 @@ def test_opCert(firmware: Firmware,
     # Check the response
     msg = bytes()
     msg += bytes.fromhex(testCase.opCert.kesPublicKeyHex)
-    msg += testCase.opCert.issueCounter.to_bytes(8, 'big')
-    msg += testCase.opCert.kesPeriod.to_bytes(8, 'big')
+    msg += testCase.opCert.issueCounter.to_bytes(8, "big")
+    msg += testCase.opCert.kesPeriod.to_bytes(8, "big")
 
     verify_signature(testCase.opCert.path, response.data, msg)
