@@ -17,7 +17,11 @@ from ragger.navigator.navigation_scenario import NavigateWithScenario
 from application_client.app_def import Errors, AddressType, Mainnet
 from application_client.command_sender import CommandSender
 
-from input_files.signMsg import signMsgTestCases, SignMsgTestCase, MessageAddressFieldType
+from input_files.signMsg import (
+    signMsgTestCases,
+    SignMsgTestCase,
+    MessageAddressFieldType,
+)
 
 from test_derive_address import DeriveAddressTestCase
 
@@ -25,16 +29,14 @@ from utils import pop_sized_buf_from_buffer, pop_size_prefixed_buf_from_buf
 from utils import idTestFunc, get_device_pubkey, verify_signature, derive_address
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    signMsgTestCases,
-    ids=idTestFunc
-)
-def test_sign_message(firmware: Firmware,
-                      backend: BackendInterface,
-                      navigator: Navigator,
-                      scenario_navigator: NavigateWithScenario,
-                      testCase: SignMsgTestCase) -> None:
+@pytest.mark.parametrize("testCase", signMsgTestCases, ids=idTestFunc)
+def test_sign_message(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: SignMsgTestCase,
+) -> None:
     """Check Sign Message"""
 
     # Use the app interface instead of raw interface
@@ -47,16 +49,20 @@ def test_sign_message(firmware: Firmware,
     _signMsg_chunk(firmware, backend, navigator, client, testCase)
 
     # Send the CONFIRM APDUs
-    signedData = _signMsg_confirm(firmware, navigator, scenario_navigator, client, testCase)
+    signedData = _signMsg_confirm(
+        firmware, navigator, scenario_navigator, client, testCase
+    )
 
     # Check the response
     _check_result(testCase, signedData)
 
 
-def _signMsg_init(firmware: Firmware,
-                  navigator: Navigator,
-                  client: CommandSender,
-                  testCase: SignMsgTestCase) -> None:
+def _signMsg_init(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: SignMsgTestCase,
+) -> None:
     """Sign Message INIT
 
     Args:
@@ -80,11 +86,13 @@ def _signMsg_init(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signMsg_chunk(firmware: Firmware,
-                   backend: BackendInterface,
-                   navigator: Navigator,
-                   client: CommandSender,
-                   testCase: SignMsgTestCase) -> None:
+def _signMsg_chunk(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: SignMsgTestCase,
+) -> None:
     """Sign Message CHUNK
 
     Args:
@@ -106,19 +114,23 @@ def _signMsg_chunk(firmware: Firmware,
         else:
             if len(testCase.msgData.messageHex) > 0:
                 backend.wait_for_text_not_on_screen("Processing")
-            navigator.navigate([NavInsID.TAPPABLE_CENTER_TAP],
-                               screen_change_before_first_instruction=False,
-                               screen_change_after_last_instruction=False)
+            navigator.navigate(
+                [NavInsID.TAPPABLE_CENTER_TAP],
+                screen_change_before_first_instruction=False,
+                screen_change_after_last_instruction=False,
+            )
     # Check the status (Asynchronous)
     response = client.get_async_response()
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signMsg_confirm(firmware: Firmware,
-                     navigator: Navigator,
-                     scenario_navigator: NavigateWithScenario,
-                     client: CommandSender,
-                     testCase: SignMsgTestCase) -> bytes:
+def _signMsg_confirm(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignMsgTestCase,
+) -> bytes:
     """Sign Message CONFIRM
 
     Args:
@@ -158,7 +170,10 @@ def _check_result(testCase: SignMsgTestCase, buffer: bytes) -> None:
     PUBLIC_KEY_LENGTH = 32
     MAX_ADDRESS_SIZE = 128
     # Check the response length
-    assert len(buffer) <= ED25519_SIGNATURE_LENGTH + PUBLIC_KEY_LENGTH + 4 + MAX_ADDRESS_SIZE
+    assert (
+        len(buffer)
+        <= ED25519_SIGNATURE_LENGTH + PUBLIC_KEY_LENGTH + 4 + MAX_ADDRESS_SIZE
+    )
     # Get the signature
     buffer, signature = pop_sized_buf_from_buffer(buffer, ED25519_SIGNATURE_LENGTH)
     # Get the public key
@@ -174,10 +189,14 @@ def _check_result(testCase: SignMsgTestCase, buffer: bytes) -> None:
     if testCase.msgData.addressFieldType == MessageAddressFieldType.ADDRESS:
         assert addressField == derive_address(testCase.msgData.addressDesc)
     else:
-        address = derive_address(DeriveAddressTestCase("",
-                                                       Mainnet,
-                                                       AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
-                                                       testCase.msgData.signingPath))
+        address = derive_address(
+            DeriveAddressTestCase(
+                "",
+                Mainnet,
+                AddressType.BASE_PAYMENT_KEY_STAKE_KEY,
+                testCase.msgData.signingPath,
+            )
+        )
         assert addressField == address[1:]
 
     # Check the signature
@@ -196,16 +215,15 @@ def _generate_payload(testCase: SignMsgTestCase, addressField: bytes) -> bytes:
     """
 
     array = []
-    dico = {
-        1: -8,
-        "address": addressField
-    }
+    dico = {1: -8, "address": addressField}
 
     array.append("Signature1")
     array.append(cbor.cbor.dumps_dict(dico))
-    array.append(b'')
+    array.append(b"")
     if testCase.msgData.hashPayload:
-        msgHash = blake2b(bytes.fromhex(testCase.msgData.messageHex), digest_size=28).hexdigest()
+        msgHash = blake2b(
+            bytes.fromhex(testCase.msgData.messageHex), digest_size=28
+        ).hexdigest()
         array.append(bytes.fromhex(msgHash))
     else:
         array.append(bytes.fromhex(testCase.msgData.messageHex))

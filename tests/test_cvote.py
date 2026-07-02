@@ -20,16 +20,14 @@ from input_files.cvote import cvoteTestCases, CVoteTestCase
 from utils import idTestFunc, verify_signature
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    cvoteTestCases,
-    ids=idTestFunc
-)
-def test_cvote(firmware: Firmware,
-               backend: BackendInterface,
-               navigator: Navigator,
-               scenario_navigator: NavigateWithScenario,
-               testCase: CVoteTestCase) -> None:
+@pytest.mark.parametrize("testCase", cvoteTestCases, ids=idTestFunc)
+def test_cvote(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: CVoteTestCase,
+) -> None:
     """Check CIP36 Vote"""
 
     # Use the app interface instead of raw interface
@@ -48,10 +46,12 @@ def test_cvote(firmware: Firmware,
     verify_signature(testCase.cVote.witnessPath, msgSig, msgData)
 
 
-def _cvote_init(firmware: Firmware,
-                navigator: Navigator,
-                client: CommandSender,
-                testCase: CVoteTestCase) -> None:
+def _cvote_init(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: CVoteTestCase,
+) -> None:
     """cVOTE INIT
 
     Args:
@@ -84,10 +84,12 @@ def _cvote_init(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _cvote_confirm(firmware: Firmware,
-                   navigator: Navigator,
-                   scenario_navigator: NavigateWithScenario,
-                   client: CommandSender) -> bytes:
+def _cvote_confirm(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+) -> bytes:
     """cVOTE CONFIRM
 
     Args:
@@ -115,11 +117,13 @@ def _cvote_confirm(firmware: Firmware,
     return response.data
 
 
-def _cvote_witness(firmware: Firmware,
-                   navigator: Navigator,
-                   scenario_navigator: NavigateWithScenario,
-                   client: CommandSender,
-                   testCase: CVoteTestCase) -> bytes:
+def _cvote_witness(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: CVoteTestCase,
+) -> bytes:
     """cVOTE WITNESS
 
     Args:

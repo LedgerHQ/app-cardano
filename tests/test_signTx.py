@@ -19,49 +19,133 @@ from application_client.command_sender import CommandSender
 from application_client.command_builder import P1Type, P2Type
 
 from input_files.derive_address import AddressType
-from input_files.signTx import MAX_SIGN_TX_CHUNK_SIZE, SignTxTestCase, DeriveAddressTestCase, ThirdPartyAddressParams
+from input_files.signTx import (
+    MAX_SIGN_TX_CHUNK_SIZE,
+    SignTxTestCase,
+    DeriveAddressTestCase,
+    ThirdPartyAddressParams,
+)
 from input_files.signTx import AssetGroup, TxAuxiliaryDataCIP36, TxOutputBabbage
-from input_files.signTx import CertificateType, CredentialParamsType, DRepParamsType, VoterType, TxOutputDestinationType
-from input_files.signTx import TxAuxiliaryDataType, CIP36VoteDelegationType, TransactionSigningMode, DatumType
-from input_files.signTx import DRepUpdateParams, DRepRegistrationParams, StakeRegistrationConwayParams
-from input_files.signTx import ResignCommitteeParams, AuthorizeCommitteeParams, VoteDelegationParams
-from input_files.signTx import testsByron, testsShelleyNoCertificates, testsShelleyWithCertificates
-from input_files.signTx import testsConwayWithCertificates, testsMultisig, testsAllegra, testsMary
+from input_files.signTx import (
+    CertificateType,
+    CredentialParamsType,
+    DRepParamsType,
+    VoterType,
+    TxOutputDestinationType,
+)
+from input_files.signTx import (
+    TxAuxiliaryDataType,
+    CIP36VoteDelegationType,
+    TransactionSigningMode,
+    DatumType,
+)
+from input_files.signTx import (
+    DRepUpdateParams,
+    DRepRegistrationParams,
+    StakeRegistrationConwayParams,
+)
+from input_files.signTx import (
+    ResignCommitteeParams,
+    AuthorizeCommitteeParams,
+    VoteDelegationParams,
+)
+from input_files.signTx import (
+    testsByron,
+    testsShelleyNoCertificates,
+    testsShelleyWithCertificates,
+)
+from input_files.signTx import (
+    testsConwayWithCertificates,
+    testsMultisig,
+    testsAllegra,
+    testsMary,
+)
 from input_files.signTx import testsAlonzoTrezorComparison, testsBabbageTrezorComparison
-from input_files.signTx import testsMultidelegation, testsConwayWithoutCertificates, testsConwayVotingProcedures
-from input_files.signTx import testsCatalystRegistration, testsCVoteRegistrationCIP36, testsAlonzo, testsBabbage
-from input_files.signTx import poolRegistrationOwnerTestCases, poolRegistrationOperatorTestCases
-from input_files.signTx import transactionInitRejectTestCases, addressParamsRejectTestCases, certificateStakingRejectTestCases
-from input_files.signTx import withdrawalRejectTestCases, witnessRejectTestCases, testsInvalidTokenBundleOrdering
-from input_files.signTx import singleAccountRejectTestCases, collateralOutputRejectTestCases, testsCVoteRegistrationRejects
-from input_files.signTx import certificateRejectTestCases, certificateStakePoolRetirementRejectTestCases
-from input_files.signTx import poolRegistrationOwnerRejectTestCases, invalidCertificates, invalidPoolMetadataTestCases
-from input_files.signTx import invalidRelayTestCases, stakePoolRegistrationPoolIdRejectTestCases
-from input_files.signTx import stakePoolRegistrationOwnerRejectTestCases, outputRejectTestCases
+from input_files.signTx import (
+    testsMultidelegation,
+    testsConwayWithoutCertificates,
+    testsConwayVotingProcedures,
+)
+from input_files.signTx import (
+    testsCatalystRegistration,
+    testsCVoteRegistrationCIP36,
+    testsAlonzo,
+    testsBabbage,
+)
+from input_files.signTx import (
+    poolRegistrationOwnerTestCases,
+    poolRegistrationOperatorTestCases,
+)
+from input_files.signTx import (
+    transactionInitRejectTestCases,
+    addressParamsRejectTestCases,
+    certificateStakingRejectTestCases,
+)
+from input_files.signTx import (
+    withdrawalRejectTestCases,
+    witnessRejectTestCases,
+    testsInvalidTokenBundleOrdering,
+)
+from input_files.signTx import (
+    singleAccountRejectTestCases,
+    collateralOutputRejectTestCases,
+    testsCVoteRegistrationRejects,
+)
+from input_files.signTx import (
+    certificateRejectTestCases,
+    certificateStakePoolRetirementRejectTestCases,
+)
+from input_files.signTx import (
+    poolRegistrationOwnerRejectTestCases,
+    invalidCertificates,
+    invalidPoolMetadataTestCases,
+)
+from input_files.signTx import (
+    invalidRelayTestCases,
+    stakePoolRegistrationPoolIdRejectTestCases,
+)
+from input_files.signTx import (
+    stakePoolRegistrationOwnerRejectTestCases,
+    outputRejectTestCases,
+)
 from utils import idTestFunc, verify_signature
 
 
 @pytest.mark.parametrize(
     "testCase",
-    testsByron + testsShelleyNoCertificates + testsShelleyWithCertificates + \
-    testsConwayWithCertificates + testsMultisig + testsAllegra + testsMary + \
-    testsAlonzoTrezorComparison + testsBabbageTrezorComparison + \
-    testsMultidelegation + testsConwayWithoutCertificates + testsConwayVotingProcedures + \
-    testsCatalystRegistration + testsCVoteRegistrationCIP36 + testsAlonzo + testsBabbage + \
-    poolRegistrationOwnerTestCases + poolRegistrationOperatorTestCases,
-    ids=idTestFunc
+    testsByron
+    + testsShelleyNoCertificates
+    + testsShelleyWithCertificates
+    + testsConwayWithCertificates
+    + testsMultisig
+    + testsAllegra
+    + testsMary
+    + testsAlonzoTrezorComparison
+    + testsBabbageTrezorComparison
+    + testsMultidelegation
+    + testsConwayWithoutCertificates
+    + testsConwayVotingProcedures
+    + testsCatalystRegistration
+    + testsCVoteRegistrationCIP36
+    + testsAlonzo
+    + testsBabbage
+    + poolRegistrationOwnerTestCases
+    + poolRegistrationOperatorTestCases,
+    ids=idTestFunc,
 )
-def test_signTx(firmware: Firmware,
-                backend: BackendInterface,
-                navigator: Navigator,
-                scenario_navigator: NavigateWithScenario,
-                testCase: SignTxTestCase,
-                appFlags: dict) -> None:
+def test_signTx(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: SignTxTestCase,
+    appFlags: dict,
+) -> None:
     """Check Sign TX"""
 
     pytest.skip("TODO - Navigation DO NOT WORK ANY MORE")
 
-    if appFlags['isAppXS']:
+    if appFlags["isAppXS"]:
         pytest.skip("Not supported by 'AppXS' version")
 
     if firmware.is_nano and testCase.nano_skip is True:
@@ -76,13 +160,17 @@ def test_signTx(firmware: Firmware,
     _signTx_init(firmware, navigator, client, testCase, len(witnessPaths))
 
     # Send the AUX DATA APDU
-    auxData: bool = _signTx_setAuxiliaryData(firmware, navigator, scenario_navigator, client, testCase)
+    auxData: bool = _signTx_setAuxiliaryData(
+        firmware, navigator, scenario_navigator, client, testCase
+    )
 
     # Send the INPUTS APDUs
     _signTx_addInput(client, testCase)
 
     # Send the OUTPUTS APDUs
-    _signTx_addOutputs(firmware, navigator, scenario_navigator, client, testCase, auxData)
+    _signTx_addOutputs(
+        firmware, navigator, scenario_navigator, client, testCase, auxData
+    )
 
     # Send the FEE APDU
     _signTx_setFee(firmware, navigator, client, testCase)
@@ -111,8 +199,10 @@ def test_signTx(firmware: Firmware,
     # Send the REQUIRED SIGNERS APDU
     _signTx_addRequiredSigners(client, testCase)
 
-     # Send the COLLATERAL OUTPUTS APDU
-    _signTx_addCollateralOutputs(firmware, navigator, scenario_navigator, client, testCase)
+    # Send the COLLATERAL OUTPUTS APDU
+    _signTx_addCollateralOutputs(
+        firmware, navigator, scenario_navigator, client, testCase
+    )
 
     # Send the TOTAL COLLATERAL APDU
     _signTx_addTotalCollateral(firmware, navigator, client, testCase)
@@ -130,21 +220,27 @@ def test_signTx(firmware: Firmware,
     _signTx_addDonation(firmware, navigator, client, testCase)
 
     # Send the CONFIRM APDU
-    data = _signTx_confirm(firmware, navigator, scenario_navigator, client, testCase.signingMode)
+    data = _signTx_confirm(
+        firmware, navigator, scenario_navigator, client, testCase.signingMode
+    )
 
     # Send the WITNESS APDUs
-    signatures = _signTx_setWitnesses(firmware, navigator, scenario_navigator, client, testCase, witnessPaths, auxData)
+    signatures = _signTx_setWitnesses(
+        firmware, navigator, scenario_navigator, client, testCase, witnessPaths, auxData
+    )
 
     # Check the signatures validity
     for path, sig in signatures:
         verify_signature(path, sig, data)
 
 
-def _signTx_init(firmware: Firmware,
-                 navigator: Navigator,
-                 client: CommandSender,
-                 testCase: SignTxTestCase,
-                 nbWitnessPaths: int) -> None:
+def _signTx_init(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+    nbWitnessPaths: int,
+) -> None:
     """Sign TX INIT
 
     Args:
@@ -178,11 +274,13 @@ def _signTx_init(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setAuxiliaryData(firmware: Firmware,
-                             navigator: Navigator,
-                             scenario_navigator: NavigateWithScenario,
-                             client: CommandSender,
-                             testCase: SignTxTestCase) -> bool:
+def _signTx_setAuxiliaryData(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> bool:
     """Sign TX Set AUX DATA
 
     Args:
@@ -259,7 +357,10 @@ def _signTx_setAuxiliaryData(firmware: Firmware,
         moves = [NavInsID.SWIPE_CENTER_TO_LEFT]
         if testCase.tx.validityIntervalStart is None:
             moves += [NavInsID.SWIPE_CENTER_TO_LEFT]
-        if testCase.tx.auxiliaryData.params.paymentDestination.type == TxOutputDestinationType.THIRD_PARTY:
+        if (
+            testCase.tx.auxiliaryData.params.paymentDestination.type
+            == TxOutputDestinationType.THIRD_PARTY
+        ):
             moves += [NavInsID.SWIPE_CENTER_TO_LEFT]
     with client.sign_tx_aux_data_payment(testCase.tx.auxiliaryData.params):
         navigator.navigate(moves)
@@ -283,7 +384,9 @@ def _signTx_setAuxiliaryData(firmware: Firmware,
 
     with client.sign_tx_aux_data_confirm():
         if firmware.is_nano:
-            navigator.navigate([NavInsID.BOTH_CLICK], screen_change_after_last_instruction=False)
+            navigator.navigate(
+                [NavInsID.BOTH_CLICK], screen_change_after_last_instruction=False
+            )
         else:
             scenario_navigator.address_review_approve(do_comparison=False)
     # Check the status (Asynchronous)
@@ -293,8 +396,7 @@ def _signTx_setAuxiliaryData(firmware: Firmware,
     return True
 
 
-def _signTx_addInput(client: CommandSender,
-                     testCase: SignTxTestCase) -> None:
+def _signTx_addInput(client: CommandSender, testCase: SignTxTestCase) -> None:
     """Sign TX Add INPUTS
 
     Args:
@@ -308,12 +410,14 @@ def _signTx_addInput(client: CommandSender,
         assert response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addOutputs(firmware: Firmware,
-                       navigator: Navigator,
-                       scenario_navigator: NavigateWithScenario,
-                       client: CommandSender,
-                       testCase: SignTxTestCase,
-                       auxData: bool) -> None:
+def _signTx_addOutputs(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+    auxData: bool,
+) -> None:
     """Sign TX Add OUTPUTS
 
     Args:
@@ -329,52 +433,98 @@ def _signTx_addOutputs(firmware: Firmware,
         moves = []
         if testCase.txBody == "":
             pass
-        elif testCase.tx.auxiliaryData is not None and \
-            testCase.tx.auxiliaryData.type == TxAuxiliaryDataType.CIP36_REGISTRATION:
+        elif (
+            testCase.tx.auxiliaryData is not None
+            and testCase.tx.auxiliaryData.type == TxAuxiliaryDataType.CIP36_REGISTRATION
+        ):
             pass
         elif isinstance(txOutput.destination.params, ThirdPartyAddressParams):
             if firmware.is_nano:
-                if testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION and \
-                    len(testCase.tx.certificates) == 0 and len(testCase.tx.withdrawals) == 0:
+                if (
+                    testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION
+                    and len(testCase.tx.certificates) == 0
+                    and len(testCase.tx.withdrawals) == 0
+                ):
                     moves += [NavInsID.RIGHT_CLICK]
-                if testCase.signingMode != TransactionSigningMode.POOL_REGISTRATION_AS_OWNER:
+                if (
+                    testCase.signingMode
+                    != TransactionSigningMode.POOL_REGISTRATION_AS_OWNER
+                ):
                     moves += [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2
-                if testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION and \
-                    len(testCase.tx.certificates) == 0 and len(testCase.tx.withdrawals) == 0:
+                if (
+                    testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION
+                    and len(testCase.tx.certificates) == 0
+                    and len(testCase.tx.withdrawals) == 0
+                ):
                     moves += [NavInsID.BOTH_CLICK]
             else:
                 if testCase.tx.network.networkId == NetworkIds.TESTNET:
                     moves = [NavInsID.TAPPABLE_CENTER_TAP]
                 if txOutput.datum is None:
-                    moves += [NavInsID.TAPPABLE_CENTER_TAP] + [NavInsID.SWIPE_CENTER_TO_LEFT]
-                if testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION and \
-                    len(testCase.tx.certificates) == 0 and len(testCase.tx.withdrawals) == 0:
-                    moves += [NavInsID.TAPPABLE_CENTER_TAP] + [NavInsID.SWIPE_CENTER_TO_LEFT]
+                    moves += [NavInsID.TAPPABLE_CENTER_TAP] + [
+                        NavInsID.SWIPE_CENTER_TO_LEFT
+                    ]
+                if (
+                    testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION
+                    and len(testCase.tx.certificates) == 0
+                    and len(testCase.tx.withdrawals) == 0
+                ):
+                    moves += [NavInsID.TAPPABLE_CENTER_TAP] + [
+                        NavInsID.SWIPE_CENTER_TO_LEFT
+                    ]
                 if firmware == Firmware.FLEX and txOutput.amount > 10000000:
                     moves += [NavInsID.TAPPABLE_CENTER_TAP]
 
         elif isinstance(txOutput.destination.params, DeriveAddressTestCase):
             if txOutput.destination.params.addrType == AddressType.POINTER_KEY:
                 if firmware.is_nano:
-                    moves = [NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2
+                    moves = (
+                        [NavInsID.BOTH_CLICK] * 3
+                        + [NavInsID.RIGHT_CLICK]
+                        + [NavInsID.BOTH_CLICK] * 2
+                    )
                 else:
-                    moves = [NavInsID.TAPPABLE_CENTER_TAP] + [NavInsID.SWIPE_CENTER_TO_LEFT] + [NavInsID.TAPPABLE_CENTER_TAP] * 2
+                    moves = (
+                        [NavInsID.TAPPABLE_CENTER_TAP]
+                        + [NavInsID.SWIPE_CENTER_TO_LEFT]
+                        + [NavInsID.TAPPABLE_CENTER_TAP] * 2
+                    )
             elif txOutput.destination.params.addrType == AddressType.ENTERPRISE_KEY:
                 if firmware.is_nano:
                     moves = [NavInsID.BOTH_CLICK] * 5
                 else:
-                    moves = [NavInsID.TAPPABLE_CENTER_TAP] + [NavInsID.SWIPE_CENTER_TO_LEFT] + [NavInsID.TAPPABLE_CENTER_TAP] * 2
+                    moves = (
+                        [NavInsID.TAPPABLE_CENTER_TAP]
+                        + [NavInsID.SWIPE_CENTER_TO_LEFT]
+                        + [NavInsID.TAPPABLE_CENTER_TAP] * 2
+                    )
             elif auxData:
                 if firmware.is_nano:
-                    moves = [NavInsID.BOTH_CLICK] * 3 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2
+                    moves = (
+                        [NavInsID.BOTH_CLICK] * 3
+                        + [NavInsID.RIGHT_CLICK]
+                        + [NavInsID.BOTH_CLICK] * 2
+                    )
                 else:
-                    moves = [NavInsID.SWIPE_CENTER_TO_LEFT] + [NavInsID.TAPPABLE_CENTER_TAP] + [NavInsID.TAPPABLE_CENTER_TAP]
+                    moves = (
+                        [NavInsID.SWIPE_CENTER_TO_LEFT]
+                        + [NavInsID.TAPPABLE_CENTER_TAP]
+                        + [NavInsID.TAPPABLE_CENTER_TAP]
+                    )
             elif not txOutput.destination.params.stakingValue.startswith("m/"):
                 if firmware.is_nano:
-                    moves = [NavInsID.BOTH_CLICK] * 2 + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK]
+                    moves = (
+                        [NavInsID.BOTH_CLICK] * 2
+                        + [NavInsID.RIGHT_CLICK]
+                        + [NavInsID.BOTH_CLICK]
+                    )
                     moves += [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK] * 2
                 else:
-                    moves = [NavInsID.TAPPABLE_CENTER_TAP] + [NavInsID.SWIPE_CENTER_TO_LEFT] + [NavInsID.TAPPABLE_CENTER_TAP] * 2
+                    moves = (
+                        [NavInsID.TAPPABLE_CENTER_TAP]
+                        + [NavInsID.SWIPE_CENTER_TO_LEFT]
+                        + [NavInsID.TAPPABLE_CENTER_TAP] * 2
+                    )
 
         with client.sign_tx_outputs_basic(txOutput):
             if len(moves) > 0:
@@ -387,8 +537,17 @@ def _signTx_addOutputs(firmware: Firmware,
         assert response and response.status == Errors.SW_SUCCESS
 
         # Send TOKEN BUNDLE
-        with_nav: bool = txOutput.destination.type == TxOutputDestinationType.THIRD_PARTY
-        _signTx_addTokenBundle(firmware, navigator, client, P1Type.P1_OUTPUTS, txOutput.tokenBundle, with_nav)
+        with_nav: bool = (
+            txOutput.destination.type == TxOutputDestinationType.THIRD_PARTY
+        )
+        _signTx_addTokenBundle(
+            firmware,
+            navigator,
+            client,
+            P1Type.P1_OUTPUTS,
+            txOutput.tokenBundle,
+            with_nav,
+        )
 
         # Send DATUM
         if txOutput.datum is not None:
@@ -397,33 +556,42 @@ def _signTx_addOutputs(firmware: Firmware,
             assert response and response.status == Errors.SW_SUCCESS
             if txOutput.datum.type == DatumType.INLINE:
                 if len(txOutput.datum.datumHex) // 2 > MAX_SIGN_TX_CHUNK_SIZE:
-                    payload = txOutput.datum.datumHex[MAX_SIGN_TX_CHUNK_SIZE * 2:]
+                    payload = txOutput.datum.datumHex[MAX_SIGN_TX_CHUNK_SIZE * 2 :]
                     max_payload_size = MAX_SIGN_TX_CHUNK_SIZE * 2
                     while len(payload) > 0:
-                        response = client.sign_tx_outputs_chunk(P2Type.P2_DATUM_CHUNK, payload[:max_payload_size])
+                        response = client.sign_tx_outputs_chunk(
+                            P2Type.P2_DATUM_CHUNK, payload[:max_payload_size]
+                        )
                         # Check the status
                         assert response and response.status == Errors.SW_SUCCESS
                         payload = payload[max_payload_size:]
 
         # Send REFERENCE SCRIPT
-        if isinstance(txOutput, TxOutputBabbage) and txOutput.referenceScriptHex is not None:
+        if (
+            isinstance(txOutput, TxOutputBabbage)
+            and txOutput.referenceScriptHex is not None
+        ):
             response = client.sign_tx_outputs_ref_script(txOutput.referenceScriptHex)
             # Check the status
             assert response and response.status == Errors.SW_SUCCESS
             if len(txOutput.referenceScriptHex) // 2 > MAX_SIGN_TX_CHUNK_SIZE:
-                payload = txOutput.referenceScriptHex[MAX_SIGN_TX_CHUNK_SIZE * 2:]
+                payload = txOutput.referenceScriptHex[MAX_SIGN_TX_CHUNK_SIZE * 2 :]
                 max_payload_size = MAX_SIGN_TX_CHUNK_SIZE * 2
                 while len(payload) > 0:
-                    response = client.sign_tx_outputs_chunk(P2Type.P2_SCRIPT_CHUNK, payload[:max_payload_size])
+                    response = client.sign_tx_outputs_chunk(
+                        P2Type.P2_SCRIPT_CHUNK, payload[:max_payload_size]
+                    )
                     # Check the status
                     assert response and response.status == Errors.SW_SUCCESS
                     payload = payload[max_payload_size:]
 
         # Send CONFIRM
         with client.sign_tx_outputs_confirm():
-            if (testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION and \
-                len(testCase.tx.certificates) == 0 and len(testCase.tx.withdrawals) == 0) or \
-                (len(txOutput.tokenBundle) > 0 and with_nav):
+            if (
+                testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION
+                and len(testCase.tx.certificates) == 0
+                and len(testCase.tx.withdrawals) == 0
+            ) or (len(txOutput.tokenBundle) > 0 and with_nav):
                 if firmware.is_nano:
                     navigator.navigate([NavInsID.BOTH_CLICK])
                 else:
@@ -436,10 +604,12 @@ def _signTx_addOutputs(firmware: Firmware,
         assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setFee(firmware: Firmware,
-                   navigator: Navigator,
-                   client: CommandSender,
-                   testCase: SignTxTestCase) -> None:
+def _signTx_setFee(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Set FEE
 
     Args:
@@ -452,7 +622,10 @@ def _signTx_setFee(firmware: Firmware,
     with client.sign_tx_fee(testCase):
         moves = []
         if firmware.is_nano:
-            if testCase.signingMode != TransactionSigningMode.POOL_REGISTRATION_AS_OWNER:
+            if (
+                testCase.signingMode
+                != TransactionSigningMode.POOL_REGISTRATION_AS_OWNER
+            ):
                 moves += [NavInsID.BOTH_CLICK]
             if testCase.tx.fee > 5 * 1000000:
                 moves += [NavInsID.BOTH_CLICK]
@@ -470,8 +643,7 @@ def _signTx_setFee(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setTtl(client: CommandSender,
-                   testCase: SignTxTestCase) -> None:
+def _signTx_setTtl(client: CommandSender, testCase: SignTxTestCase) -> None:
     """Sign TX Set TTL
 
     Args:
@@ -485,11 +657,13 @@ def _signTx_setTtl(client: CommandSender,
     assert response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setCertificates(firmware: Firmware,
-                            navigator: Navigator,
-                            scenario_navigator: NavigateWithScenario,
-                            client: CommandSender,
-                            testCase: SignTxTestCase) -> None:
+def _signTx_setCertificates(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Set CERTIFICATES
 
     Args:
@@ -505,52 +679,88 @@ def _signTx_setCertificates(firmware: Firmware,
             if firmware.is_nano:
                 moves = []
                 if testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION:
-                    if certificate.type in (CertificateType.STAKE_REGISTRATION,
-                                            CertificateType.STAKE_DEREGISTRATION,
-                                            CertificateType.STAKE_DELEGATION):
+                    if certificate.type in (
+                        CertificateType.STAKE_REGISTRATION,
+                        CertificateType.STAKE_DEREGISTRATION,
+                        CertificateType.STAKE_DELEGATION,
+                    ):
                         moves += [NavInsID.BOTH_CLICK]
-                        if certificate.params.stakeCredential.type == CredentialParamsType.KEY_PATH:
+                        if (
+                            certificate.params.stakeCredential.type
+                            == CredentialParamsType.KEY_PATH
+                        ):
                             moves += [NavInsID.BOTH_CLICK]
                         moves += [NavInsID.RIGHT_CLICK]
                 if certificate.type == CertificateType.STAKE_POOL_RETIREMENT:
                     moves += [NavInsID.RIGHT_CLICK]
                 moves += [NavInsID.BOTH_CLICK]
                 if testCase.signingMode == TransactionSigningMode.MULTISIG_TRANSACTION:
-                    if certificate.type not in (CertificateType.STAKE_REGISTRATION,
-                                                CertificateType.STAKE_DEREGISTRATION,
-                                                CertificateType.STAKE_DELEGATION):
+                    if certificate.type not in (
+                        CertificateType.STAKE_REGISTRATION,
+                        CertificateType.STAKE_DEREGISTRATION,
+                        CertificateType.STAKE_DELEGATION,
+                    ):
                         moves += [NavInsID.BOTH_CLICK]
                 else:
                     moves += [NavInsID.BOTH_CLICK]
-                if isinstance(certificate.params, (AuthorizeCommitteeParams, ResignCommitteeParams)) and \
-                    certificate.params.coldCredential.type != CredentialParamsType.KEY_PATH:
+                if (
+                    isinstance(
+                        certificate.params,
+                        (AuthorizeCommitteeParams, ResignCommitteeParams),
+                    )
+                    and certificate.params.coldCredential.type
+                    != CredentialParamsType.KEY_PATH
+                ):
                     moves += [NavInsID.RIGHT_CLICK]
-                if isinstance(certificate.params, AuthorizeCommitteeParams) and \
-                    certificate.params.hotCredential.type != CredentialParamsType.KEY_PATH:
+                if (
+                    isinstance(certificate.params, AuthorizeCommitteeParams)
+                    and certificate.params.hotCredential.type
+                    != CredentialParamsType.KEY_PATH
+                ):
                     moves += [NavInsID.RIGHT_CLICK]
                 if certificate.type == CertificateType.AUTHORIZE_COMMITTEE_HOT:
                     moves += [NavInsID.BOTH_CLICK]
                 if isinstance(certificate.params, VoteDelegationParams):
-                    if certificate.params.dRep.type in (DRepParamsType.KEY_HASH, DRepParamsType.SCRIPT_HASH):
+                    if certificate.params.dRep.type in (
+                        DRepParamsType.KEY_HASH,
+                        DRepParamsType.SCRIPT_HASH,
+                    ):
                         moves += [NavInsID.RIGHT_CLICK]
                     moves += [NavInsID.BOTH_CLICK]
                 if isinstance(certificate.params, DRepUpdateParams):
                     moves += [NavInsID.BOTH_CLICK]
-                if isinstance(certificate.params, (StakeRegistrationConwayParams, DRepRegistrationParams)):
+                if isinstance(
+                    certificate.params,
+                    (StakeRegistrationConwayParams, DRepRegistrationParams),
+                ):
                     moves += [NavInsID.BOTH_CLICK]
-                if isinstance(certificate.params, (ResignCommitteeParams,
-                                                   DRepRegistrationParams,
-                                                   DRepUpdateParams)) and \
-                    certificate.params.anchor is not None:
+                if (
+                    isinstance(
+                        certificate.params,
+                        (
+                            ResignCommitteeParams,
+                            DRepRegistrationParams,
+                            DRepUpdateParams,
+                        ),
+                    )
+                    and certificate.params.anchor is not None
+                ):
                     if len(certificate.params.anchor.url) > 50:
                         # For URL, navigation depends on url length :(
                         moves += [NavInsID.RIGHT_CLICK] * 2
                 if certificate.type == CertificateType.RESIGN_COMMITTEE_COLD:
                     moves += [NavInsID.BOTH_CLICK]
-                if isinstance(certificate.params, (ResignCommitteeParams,
-                                                   DRepRegistrationParams,
-                                                   DRepUpdateParams)) and \
-                    certificate.params.anchor is not None:
+                if (
+                    isinstance(
+                        certificate.params,
+                        (
+                            ResignCommitteeParams,
+                            DRepRegistrationParams,
+                            DRepUpdateParams,
+                        ),
+                    )
+                    and certificate.params.anchor is not None
+                ):
                     moves += [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK]
                 moves += [NavInsID.BOTH_CLICK]
 
@@ -574,7 +784,10 @@ def _signTx_setCertificates(firmware: Firmware,
                 moves += [NavInsID.BOTH_CLICK]
             else:
                 moves += [NavInsID.SWIPE_CENTER_TO_LEFT]
-                if testCase.signingMode == TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR:
+                if (
+                    testCase.signingMode
+                    == TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR
+                ):
                     moves += [NavInsID.SWIPE_CENTER_TO_LEFT]
             with client.sign_tx_cert_pool_reg_init(certificate.params):
                 navigator.navigate(moves)
@@ -592,7 +805,10 @@ def _signTx_setCertificates(firmware: Firmware,
             if firmware.is_nano:
                 moves += [NavInsID.BOTH_CLICK]
             else:
-                if testCase.signingMode == TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR:
+                if (
+                    testCase.signingMode
+                    == TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR
+                ):
                     moves += [NavInsID.TAPPABLE_CENTER_TAP]
             with client.sign_tx_cert_pool_reg_vrf(certificate.params.vrfKeyHashHex):
                 if len(moves) > 0:
@@ -654,11 +870,17 @@ def _signTx_setCertificates(firmware: Firmware,
                 moves += [NavInsID.BOTH_CLICK]
             else:
                 moves += [NavInsID.TAPPABLE_CENTER_TAP]
-            if len(certificate.params.poolOwners) <= 1 and len(certificate.params.relays) <= 1 and \
-                certificate.params.metadata is not None:
+            if (
+                len(certificate.params.poolOwners) <= 1
+                and len(certificate.params.relays) <= 1
+                and certificate.params.metadata is not None
+            ):
                 moves += [NavInsID.TAPPABLE_CENTER_TAP]
-            elif len(certificate.params.poolOwners) == 2 and len(certificate.params.relays) == 1 and \
-                firmware == Firmware.STAX:
+            elif (
+                len(certificate.params.poolOwners) == 2
+                and len(certificate.params.relays) == 1
+                and firmware == Firmware.STAX
+            ):
                 moves += [NavInsID.TAPPABLE_CENTER_TAP]
             with client.sign_tx_cert_pool_reg_metadata(certificate.params.metadata):
                 navigator.navigate(moves)
@@ -680,8 +902,7 @@ def _signTx_setCertificates(firmware: Firmware,
             assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setWithdrawals(client: CommandSender,
-                           testCase: SignTxTestCase) -> None:
+def _signTx_setWithdrawals(client: CommandSender, testCase: SignTxTestCase) -> None:
     """Sign TX Set WITHDRAWALS
 
     Args:
@@ -698,8 +919,9 @@ def _signTx_setWithdrawals(client: CommandSender,
         assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setValidityIntervalStart(client: CommandSender,
-                                     testCase: SignTxTestCase) -> None:
+def _signTx_setValidityIntervalStart(
+    client: CommandSender, testCase: SignTxTestCase
+) -> None:
     """Sign TX Set VALIDITY START
 
     Args:
@@ -714,12 +936,14 @@ def _signTx_setValidityIntervalStart(client: CommandSender,
     assert response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addTokenBundle(firmware: Firmware,
-                           navigator: Navigator,
-                           client: CommandSender,
-                           p1: P1Type,
-                           assetGroups: List[AssetGroup],
-                           with_nav: bool = True) -> None:
+def _signTx_addTokenBundle(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    p1: P1Type,
+    assetGroups: List[AssetGroup],
+    with_nav: bool = True,
+) -> None:
     """Sign TX add TOKEN BUNDLE
 
     Args:
@@ -728,7 +952,11 @@ def _signTx_addTokenBundle(firmware: Firmware,
         assetGroups (List[AssetGroup]): The test case
     """
 
-    moves = [NavInsID.BOTH_CLICK] * 2 if firmware.is_nano else [NavInsID.TAPPABLE_CENTER_TAP] * 2
+    moves = (
+        [NavInsID.BOTH_CLICK] * 2
+        if firmware.is_nano
+        else [NavInsID.TAPPABLE_CENTER_TAP] * 2
+    )
     for assetGroup in assetGroups:
         with client.sign_tx_asset_group(p1, assetGroup):
             if firmware.is_nano:
@@ -750,11 +978,13 @@ def _signTx_addTokenBundle(firmware: Firmware,
             assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setMint(firmware: Firmware,
-                    navigator: Navigator,
-                    scenario_navigator: NavigateWithScenario,
-                    client: CommandSender,
-                    testCase: SignTxTestCase) -> None:
+def _signTx_setMint(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Set VALIDITY START
 
     Args:
@@ -768,14 +998,20 @@ def _signTx_setMint(firmware: Firmware,
     if len(testCase.tx.mint) == 0:
         return
 
-    moves = [NavInsID.BOTH_CLICK] if firmware.is_nano else [NavInsID.SWIPE_CENTER_TO_LEFT] * 2
+    moves = (
+        [NavInsID.BOTH_CLICK]
+        if firmware.is_nano
+        else [NavInsID.SWIPE_CENTER_TO_LEFT] * 2
+    )
     with client.sign_tx_mint_init(len(testCase.tx.mint)):
         navigator.navigate(moves)
     # Check the status (Asynchronous)
     response = client.get_async_response()
     assert response and response.status == Errors.SW_SUCCESS
 
-    _signTx_addTokenBundle(firmware, navigator, client, P1Type.P1_MINT, testCase.tx.mint)
+    _signTx_addTokenBundle(
+        firmware, navigator, client, P1Type.P1_MINT, testCase.tx.mint
+    )
 
     with client.sign_tx_mint_confirm():
         if firmware.is_nano:
@@ -787,8 +1023,7 @@ def _signTx_setMint(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_setScriptDataHash(client: CommandSender,
-                              testCase: SignTxTestCase) -> None:
+def _signTx_setScriptDataHash(client: CommandSender, testCase: SignTxTestCase) -> None:
     """Sign TX Set SCRIPT DATA HASH
 
     Args:
@@ -803,11 +1038,13 @@ def _signTx_setScriptDataHash(client: CommandSender,
     assert response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addVoterVotes(firmware: Firmware,
-                          navigator: Navigator,
-                          scenario_navigator: NavigateWithScenario,
-                          client: CommandSender,
-                          testCase: SignTxTestCase) -> None:
+def _signTx_addVoterVotes(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Add VOTING PROCEDURES
 
     Args:
@@ -843,8 +1080,9 @@ def _signTx_addVoterVotes(firmware: Firmware,
         assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addCollateralInputs(client: CommandSender,
-                                testCase: SignTxTestCase) -> None:
+def _signTx_addCollateralInputs(
+    client: CommandSender, testCase: SignTxTestCase
+) -> None:
     """Sign TX Add COLLATERAL INPUTS
 
     Args:
@@ -858,11 +1096,13 @@ def _signTx_addCollateralInputs(client: CommandSender,
         assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addCollateralOutputs(firmware: Firmware,
-                                 navigator: Navigator,
-                                 scenario_navigator: NavigateWithScenario,
-                                 client: CommandSender,
-                                 testCase: SignTxTestCase) -> None:
+def _signTx_addCollateralOutputs(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Add COLLATERAL OUTPUTS
 
     Args:
@@ -881,7 +1121,9 @@ def _signTx_addCollateralOutputs(firmware: Firmware,
         if testCase.txBody == "":
             pass
         elif firmware.is_nano:
-            moves += [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK]
+            moves += (
+                [NavInsID.BOTH_CLICK] + [NavInsID.RIGHT_CLICK] + [NavInsID.BOTH_CLICK]
+            )
         else:
             moves += [NavInsID.TAPPABLE_CENTER_TAP] + [NavInsID.SWIPE_CENTER_TO_LEFT]
             if testCase.tx.totalCollateral is None:
@@ -897,12 +1139,21 @@ def _signTx_addCollateralOutputs(firmware: Firmware,
 
     # Send TOKEN BUNDLE
     if len(testCase.tx.collateralOutput.tokenBundle) > 0:
-        _signTx_addTokenBundle(firmware, navigator, client, P1Type.P1_COLLATERAL_OUTPUT, testCase.tx.collateralOutput.tokenBundle)
+        _signTx_addTokenBundle(
+            firmware,
+            navigator,
+            client,
+            P1Type.P1_COLLATERAL_OUTPUT,
+            testCase.tx.collateralOutput.tokenBundle,
+        )
 
     # Send CONFIRM
     with client.sign_tx_collateral_output_confirm():
-        if testCase.tx.totalCollateral is None and \
-            testCase.tx.collateralOutput.destination.type == TxOutputDestinationType.THIRD_PARTY:
+        if (
+            testCase.tx.totalCollateral is None
+            and testCase.tx.collateralOutput.destination.type
+            == TxOutputDestinationType.THIRD_PARTY
+        ):
             pass
         else:
             if testCase.tx.totalCollateral is not None:
@@ -916,10 +1167,12 @@ def _signTx_addCollateralOutputs(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addTotalCollateral(firmware: Firmware,
-                               navigator: Navigator,
-                               client: CommandSender,
-                               testCase: SignTxTestCase) -> None:
+def _signTx_addTotalCollateral(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Add TOTAL COLLATERAL
 
     Args:
@@ -938,8 +1191,7 @@ def _signTx_addTotalCollateral(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addReferenceInputs(client: CommandSender,
-                               testCase: SignTxTestCase) -> None:
+def _signTx_addReferenceInputs(client: CommandSender, testCase: SignTxTestCase) -> None:
     """Sign TX Add REFERENCE INPUTS
 
     Args:
@@ -953,8 +1205,7 @@ def _signTx_addReferenceInputs(client: CommandSender,
         assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addRequiredSigners(client: CommandSender,
-                               testCase: SignTxTestCase) -> None:
+def _signTx_addRequiredSigners(client: CommandSender, testCase: SignTxTestCase) -> None:
     """Sign TX Add REQUIRED SIGNERS
 
     Args:
@@ -968,10 +1219,12 @@ def _signTx_addRequiredSigners(client: CommandSender,
         assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addTreasury(firmware: Firmware,
-                        navigator: Navigator,
-                        client: CommandSender,
-                        testCase: SignTxTestCase) -> None:
+def _signTx_addTreasury(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Add TREASURY
 
     Args:
@@ -992,10 +1245,12 @@ def _signTx_addTreasury(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_addDonation(firmware: Firmware,
-                        navigator: Navigator,
-                        client: CommandSender,
-                        testCase: SignTxTestCase) -> None:
+def _signTx_addDonation(
+    firmware: Firmware,
+    navigator: Navigator,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+) -> None:
     """Sign TX Add DONATION
 
     Args:
@@ -1016,11 +1271,13 @@ def _signTx_addDonation(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-def _signTx_confirm(firmware: Firmware,
-                    navigator: Navigator,
-                    scenario_navigator: NavigateWithScenario,
-                    client: CommandSender,
-                    signingMode: TransactionSigningMode) -> bytes:
+def _signTx_confirm(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    signingMode: TransactionSigningMode,
+) -> bytes:
     """Sign TX Confirm
 
     Args:
@@ -1048,13 +1305,15 @@ def _signTx_confirm(firmware: Firmware,
     return response.data
 
 
-def _signTx_setWitnesses(firmware: Firmware,
-                         navigator: Navigator,
-                         scenario_navigator: NavigateWithScenario,
-                         client: CommandSender,
-                         testCase: SignTxTestCase,
-                         withnessPaths: List[str],
-                         auxData: bool) -> List[Tuple[str, bytes]]:
+def _signTx_setWitnesses(
+    firmware: Firmware,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    client: CommandSender,
+    testCase: SignTxTestCase,
+    withnessPaths: List[str],
+    auxData: bool,
+) -> List[Tuple[str, bytes]]:
     """Sign TX Set WITNESSES
 
     Args:
@@ -1073,21 +1332,28 @@ def _signTx_setWitnesses(firmware: Firmware,
     signatures = []
     for path in withnessPaths:
         moves = []
-        path_elt = path.replace("'","").split("/") # Remove Hardened info
+        path_elt = path.replace("'", "").split("/")  # Remove Hardened info
         if int(path_elt[1]) > 1852 or (len(path_elt) > 4 and int(path_elt[4]) > 2):
             moves += [NavInsID.BOTH_CLICK] * 2
         elif auxData:
-            if testCase.tx.auxiliaryData is not None and \
-                testCase.tx.auxiliaryData.type == TxAuxiliaryDataType.CIP36_REGISTRATION:
+            if (
+                testCase.tx.auxiliaryData is not None
+                and testCase.tx.auxiliaryData.type
+                == TxAuxiliaryDataType.CIP36_REGISTRATION
+            ):
                 pass
-            elif isinstance(testCase.tx.outputs[0].destination.params, ThirdPartyAddressParams):
+            elif isinstance(
+                testCase.tx.outputs[0].destination.params, ThirdPartyAddressParams
+            ):
                 pass
             else:
                 moves += [NavInsID.BOTH_CLICK] * 3
         elif testCase.signingMode == TransactionSigningMode.PLUTUS_TRANSACTION:
             moves += [NavInsID.BOTH_CLICK] * 2
-        elif testCase.signingMode in (TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
-                                      TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR):
+        elif testCase.signingMode in (
+            TransactionSigningMode.POOL_REGISTRATION_AS_OWNER,
+            TransactionSigningMode.POOL_REGISTRATION_AS_OPERATOR,
+        ):
             moves += [NavInsID.BOTH_CLICK]
 
         with client.sign_tx_witness(path):
@@ -1127,23 +1393,35 @@ def _gatherWitnessPaths(testCase: SignTxTestCase) -> List[str]:
         # certificate witnesses
         if testCase.tx.certificates is not None:
             for cert in testCase.tx.certificates:
-                if cert.type in (CertificateType.STAKE_DEREGISTRATION,
-                                 CertificateType.STAKE_REGISTRATION_CONWAY,
-                                 CertificateType.STAKE_DEREGISTRATION_CONWAY,
-                                 CertificateType.STAKE_DELEGATION,
-                                 CertificateType.VOTE_DELEGATION):
-                    if cert.params.stakeCredential.type == CredentialParamsType.KEY_PATH:
+                if cert.type in (
+                    CertificateType.STAKE_DEREGISTRATION,
+                    CertificateType.STAKE_REGISTRATION_CONWAY,
+                    CertificateType.STAKE_DEREGISTRATION_CONWAY,
+                    CertificateType.STAKE_DELEGATION,
+                    CertificateType.VOTE_DELEGATION,
+                ):
+                    if (
+                        cert.params.stakeCredential.type
+                        == CredentialParamsType.KEY_PATH
+                    ):
                         witnessPaths.append(cert.params.stakeCredential.keyValue)
 
-                elif cert.type in (CertificateType.AUTHORIZE_COMMITTEE_HOT,
-                                   CertificateType.RESIGN_COMMITTEE_COLD):
-                    if cert.params.coldCredential is not None and \
-                        cert.params.coldCredential.type == CredentialParamsType.KEY_PATH:
+                elif cert.type in (
+                    CertificateType.AUTHORIZE_COMMITTEE_HOT,
+                    CertificateType.RESIGN_COMMITTEE_COLD,
+                ):
+                    if (
+                        cert.params.coldCredential is not None
+                        and cert.params.coldCredential.type
+                        == CredentialParamsType.KEY_PATH
+                    ):
                         witnessPaths.append(cert.params.coldCredential.keyValue)
 
-                elif cert.type in (CertificateType.DREP_REGISTRATION,
-                                   CertificateType.DREP_DEREGISTRATION,
-                                   CertificateType.DREP_UPDATE):
+                elif cert.type in (
+                    CertificateType.DREP_REGISTRATION,
+                    CertificateType.DREP_DEREGISTRATION,
+                    CertificateType.DREP_UPDATE,
+                ):
                     assert cert.params.dRepCredential is not None
                     if cert.params.dRepCredential.type == CredentialParamsType.KEY_PATH:
                         witnessPaths.append(cert.params.dRepCredential.keyValue)
@@ -1154,11 +1432,15 @@ def _gatherWitnessPaths(testCase: SignTxTestCase) -> List[str]:
 
                 elif cert.type == CertificateType.STAKE_POOL_REGISTRATION:
                     for poolOwner in cert.params.poolOwners:
-                        if poolOwner.type == TxOutputDestinationType.THIRD_PARTY and \
-                            poolOwner.key.startswith("m/"):
+                        if (
+                            poolOwner.type == TxOutputDestinationType.THIRD_PARTY
+                            and poolOwner.key.startswith("m/")
+                        ):
                             witnessPaths.append(poolOwner.key)
-                    if cert.params.poolKey.type == TxOutputDestinationType.THIRD_PARTY and \
-                        cert.params.poolKey.key.startswith("m/"):
+                    if (
+                        cert.params.poolKey.type == TxOutputDestinationType.THIRD_PARTY
+                        and cert.params.poolKey.key.startswith("m/")
+                    ):
                         witnessPaths.append(cert.params.poolKey.key)
 
         # withdrawal witnesses
@@ -1178,9 +1460,11 @@ def _gatherWitnessPaths(testCase: SignTxTestCase) -> List[str]:
 
         # voting procedures witnesses
         for voterVotes in testCase.tx.votingProcedures:
-            if voterVotes.voter.type in (VoterType.COMMITTEE_KEY_PATH,
-                                        VoterType.DREP_KEY_PATH,
-                                        VoterType.STAKE_POOL_KEY_PATH):
+            if voterVotes.voter.type in (
+                VoterType.COMMITTEE_KEY_PATH,
+                VoterType.DREP_KEY_PATH,
+                VoterType.STAKE_POOL_KEY_PATH,
+            ):
                 witnessPaths.append(voterVotes.voter.keyValue)
 
     for path in testCase.additionalWitnessPaths:
@@ -1192,21 +1476,35 @@ def _gatherWitnessPaths(testCase: SignTxTestCase) -> List[str]:
 
 @pytest.mark.parametrize(
     "testCase",
-    transactionInitRejectTestCases + addressParamsRejectTestCases + certificateStakingRejectTestCases + \
-    withdrawalRejectTestCases + witnessRejectTestCases + testsInvalidTokenBundleOrdering + \
-    singleAccountRejectTestCases + collateralOutputRejectTestCases + testsCVoteRegistrationRejects + \
-    certificateRejectTestCases + certificateStakePoolRetirementRejectTestCases +\
-    poolRegistrationOwnerRejectTestCases + invalidCertificates + invalidPoolMetadataTestCases + \
-    invalidRelayTestCases + stakePoolRegistrationPoolIdRejectTestCases + \
-    stakePoolRegistrationPoolIdRejectTestCases + stakePoolRegistrationOwnerRejectTestCases + outputRejectTestCases,
-    ids=idTestFunc
+    transactionInitRejectTestCases
+    + addressParamsRejectTestCases
+    + certificateStakingRejectTestCases
+    + withdrawalRejectTestCases
+    + witnessRejectTestCases
+    + testsInvalidTokenBundleOrdering
+    + singleAccountRejectTestCases
+    + collateralOutputRejectTestCases
+    + testsCVoteRegistrationRejects
+    + certificateRejectTestCases
+    + certificateStakePoolRetirementRejectTestCases
+    + poolRegistrationOwnerRejectTestCases
+    + invalidCertificates
+    + invalidPoolMetadataTestCases
+    + invalidRelayTestCases
+    + stakePoolRegistrationPoolIdRejectTestCases
+    + stakePoolRegistrationPoolIdRejectTestCases
+    + stakePoolRegistrationOwnerRejectTestCases
+    + outputRejectTestCases,
+    ids=idTestFunc,
 )
-def test_signTx_reject(firmware: Firmware,
-                backend: BackendInterface,
-                navigator: Navigator,
-                scenario_navigator: NavigateWithScenario,
-                testCase: SignTxTestCase,
-                appFlags: dict) -> None:
+def test_signTx_reject(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: SignTxTestCase,
+    appFlags: dict,
+) -> None:
     """Check Sign TX Reject"""
 
     # TODO - Navigation should be set for each test case
@@ -1217,5 +1515,7 @@ def test_signTx_reject(firmware: Firmware,
 
     with pytest.raises(ExceptionRAPDU) as err:
         # Send the APDU
-        test_signTx(firmware, backend, navigator, scenario_navigator, testCase, appFlags)
+        test_signTx(
+            firmware, backend, navigator, scenario_navigator, testCase, appFlags
+        )
     assert err.value.status == testCase.expected_sw

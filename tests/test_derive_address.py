@@ -20,25 +20,26 @@ from application_client.command_builder import P1Type
 
 from input_files.derive_address import DeriveAddressTestCase
 from input_files.derive_address import byronTestCases, rejectTestCases
-from input_files.derive_address import shelleyTestCasesNoConfirm, shelleyTestCasesWithConfirm
+from input_files.derive_address import (
+    shelleyTestCasesNoConfirm,
+    shelleyTestCasesWithConfirm,
+)
 
 from utils import idTestFunc, derive_address
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    byronTestCases,
-    ids=idTestFunc
-)
-def test_derive_address_byron(firmware: Firmware,
-                              backend: BackendInterface,
-                              navigator: Navigator,
-                              scenario_navigator: NavigateWithScenario,
-                              testCase: DeriveAddressTestCase,
-                              appFlags: dict) -> None:
+@pytest.mark.parametrize("testCase", byronTestCases, ids=idTestFunc)
+def test_derive_address_byron(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: DeriveAddressTestCase,
+    appFlags: dict,
+) -> None:
     """Check Derive Byron Address Return"""
 
-    if appFlags['isAppXS']:
+    if appFlags["isAppXS"]:
         pytest.skip("Byron address derivation is not supported by 'AppXS' version")
 
     # Use the app interface instead of raw interface
@@ -65,20 +66,18 @@ def test_derive_address_byron(firmware: Firmware,
         assert encoded == derive_address(testCase)
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    byronTestCases,
-    ids=idTestFunc
-)
-def test_derive_address_byron_show(firmware: Firmware,
-                                   backend: BackendInterface,
-                                   navigator: Navigator,
-                                   scenario_navigator: NavigateWithScenario,
-                                   testCase: DeriveAddressTestCase,
-                                   appFlags: dict) -> None:
+@pytest.mark.parametrize("testCase", byronTestCases, ids=idTestFunc)
+def test_derive_address_byron_show(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: DeriveAddressTestCase,
+    appFlags: dict,
+) -> None:
     """Check Derive Byron Address Show"""
 
-    if appFlags['isAppXS']:
+    if appFlags["isAppXS"]:
         pytest.skip("Byron address derivation is not supported by 'AppXS' version")
 
     # Use the app interface instead of raw interface
@@ -101,13 +100,10 @@ def test_derive_address_byron_show(firmware: Firmware,
     assert response and response.status == Errors.SW_SUCCESS
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    shelleyTestCasesNoConfirm,
-    ids=idTestFunc
-)
-def test_derive_address_shelley(backend: BackendInterface,
-                                testCase: DeriveAddressTestCase) -> None:
+@pytest.mark.parametrize("testCase", shelleyTestCasesNoConfirm, ids=idTestFunc)
+def test_derive_address_shelley(
+    backend: BackendInterface, testCase: DeriveAddressTestCase
+) -> None:
     """Check Derive Shelley Address Return without confirmation"""
 
     # Use the app interface instead of raw interface
@@ -120,16 +116,14 @@ def test_derive_address_shelley(backend: BackendInterface,
     assert response.data == derive_address(testCase)
 
 
-@pytest.mark.parametrize(
-    "testCase",
-    shelleyTestCasesWithConfirm,
-    ids=idTestFunc
-)
-def test_derive_address_shelley_confirm(firmware: Firmware,
-                                        backend: BackendInterface,
-                                        navigator: Navigator,
-                                        scenario_navigator: NavigateWithScenario,
-                                        testCase: DeriveAddressTestCase) -> None:
+@pytest.mark.parametrize("testCase", shelleyTestCasesWithConfirm, ids=idTestFunc)
+def test_derive_address_shelley_confirm(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: DeriveAddressTestCase,
+) -> None:
     """Check Derive Shelley Address Return with confirmation"""
 
     # Use the app interface instead of raw interface
@@ -158,20 +152,22 @@ def test_derive_address_shelley_confirm(firmware: Firmware,
 
 
 @pytest.mark.parametrize(
-    "testCase",
-    shelleyTestCasesNoConfirm + shelleyTestCasesWithConfirm,
-    ids=idTestFunc
+    "testCase", shelleyTestCasesNoConfirm + shelleyTestCasesWithConfirm, ids=idTestFunc
 )
-def test_derive_address_shelley_show(firmware: Firmware,
-                                     backend: BackendInterface,
-                                     navigator: Navigator,
-                                     scenario_navigator: NavigateWithScenario,
-                                     testCase: DeriveAddressTestCase) -> None:
+def test_derive_address_shelley_show(
+    firmware: Firmware,
+    backend: BackendInterface,
+    navigator: Navigator,
+    scenario_navigator: NavigateWithScenario,
+    testCase: DeriveAddressTestCase,
+) -> None:
     """Check Derive Shelley Address Show without confirmation"""
 
     # TODO - Navigation should be set for each test case
     if firmware == Firmware.NANOS:
-        pytest.skip("Not supported on Nanos because Navigation should be set for each test case")
+        pytest.skip(
+            "Not supported on Nanos because Navigation should be set for each test case"
+        )
 
     # Use the app interface instead of raw interface
     client = CommandSender(backend)
@@ -192,14 +188,11 @@ def test_derive_address_shelley_show(firmware: Firmware,
 def p1_fixture(request: pytest.FixtureRequest) -> P1Type:
     return request.param
 
-@pytest.mark.parametrize(
-    "testCase",
-    rejectTestCases,
-    ids=idTestFunc
-)
-def test_derive_address_reject(backend: BackendInterface,
-                               testCase: DeriveAddressTestCase,
-                               p1: P1Type) -> None:
+
+@pytest.mark.parametrize("testCase", rejectTestCases, ids=idTestFunc)
+def test_derive_address_reject(
+    backend: BackendInterface, testCase: DeriveAddressTestCase, p1: P1Type
+) -> None:
     """Check Derive Reject Address"""
 
     # Use the app interface instead of raw interface

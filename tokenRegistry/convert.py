@@ -10,36 +10,40 @@ filename = "tokenList.json"
 
 registry = json.load(open(filename))
 
+
 def formatHexByte(b):
-	return f"0x{b:02x}"
+    return f"0x{b:02x}"
+
 
 def bytestringToC(bstr):
-	return "{ " + ", ".join([formatHexByte(b) for b in bstr]) + " }"
+    return "{ " + ", ".join([formatHexByte(b) for b in bstr]) + " }"
+
 
 def tokenLine(tokenEntry):
-	subject = bytes.fromhex(tokenEntry["assetSubject"])
-	fingerprint = hashlib.blake2b(subject, digest_size=20).digest()
+    subject = bytes.fromhex(tokenEntry["assetSubject"])
+    fingerprint = hashlib.blake2b(subject, digest_size=20).digest()
 
-	policyId = subject[0:28]
-	assetName = subject[28:]
-	#print(f"{policyId.hex()},   {assetName.hex()},   {fingerprint.hex()},   {bytestringToC(policyId)},   {bytestringToC(assetName)}")
+    # policyId = subject[0:28]
+    # assetName = subject[28:]
+    # print(f"{policyId.hex()},   {assetName.hex()},   {fingerprint.hex()},   {bytestringToC(policyId)},   {bytestringToC(assetName)}")
 
-	if "ticker" in tokenEntry and len(tokenEntry["ticker"]) > 0:
-		ticker = tokenEntry["ticker"]
-	else:
-		ticker = tokenEntry["name"]
+    if "ticker" in tokenEntry and len(tokenEntry["ticker"]) > 0:
+        ticker = tokenEntry["ticker"]
+    else:
+        ticker = tokenEntry["name"]
 
-	line = "{ "
-	line += bytestringToC(fingerprint)
-	line += ", "
-	line += str(tokenEntry["decimals"])
-	line += ", "
-	line += '"' + ticker + '"'
-	line += " }"
-	return line
+    line = "{ "
+    line += bytestringToC(fingerprint)
+    line += ", "
+    line += str(tokenEntry["decimals"])
+    line += ", "
+    line += '"' + ticker + '"'
+    line += " }"
+    return line
+
 
 allLines = ",\n".join([tokenLine(t) for t in registry])
 
-outputFile = open('token_data.c', 'w')
+outputFile = open("token_data.c", "w")
 outputFile.write(allLines)
-outputFile.write('\n')
+outputFile.write("\n")

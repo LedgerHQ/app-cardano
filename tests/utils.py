@@ -4,6 +4,7 @@
 """
 This module provides Ragger tests utility functions
 """
+
 from pathlib import Path
 from typing import List, Tuple, Union
 import re
@@ -37,8 +38,9 @@ TestCases = Union[
     PubKeyTestCase,
     OpCertTestCase,
     SignMsgTestCase,
-    SignTxTestCase
+    SignTxTestCase,
 ]
+
 
 def idTestFunc(testCase: TestCases) -> str:
     """Retrieve the test case name for friendly display
@@ -52,7 +54,7 @@ def idTestFunc(testCase: TestCases) -> str:
     return testCase.name
 
 
-def pop_sized_buf_from_buffer(buffer:bytes, size:int) -> Tuple[bytes, bytes]:
+def pop_sized_buf_from_buffer(buffer: bytes, size: int) -> Tuple[bytes, bytes]:
     """Extract a buffer of a given size from a buffer
 
     Args:
@@ -67,7 +69,9 @@ def pop_sized_buf_from_buffer(buffer:bytes, size:int) -> Tuple[bytes, bytes]:
     return buffer[size:], buffer[0:size]
 
 
-def pop_size_prefixed_buf_from_buf(buffer:bytes, lenSize:int) -> Tuple[bytes, int, bytes]:
+def pop_size_prefixed_buf_from_buf(
+    buffer: bytes, lenSize: int
+) -> Tuple[bytes, int, bytes]:
     """Extract a buffer prefixed with its size from a buffer
 
     Args:
@@ -81,7 +85,7 @@ def pop_size_prefixed_buf_from_buf(buffer:bytes, lenSize:int) -> Tuple[bytes, in
             - The extracted buffer
     """
     data_len = int.from_bytes(buffer[0:lenSize], "big")
-    return buffer[lenSize+data_len:], data_len, buffer[lenSize:data_len+lenSize]
+    return buffer[lenSize + data_len :], data_len, buffer[lenSize : data_len + lenSize]
 
 
 def derive_address(testCase: DeriveAddressTestCase) -> Union[bytes, str]:
@@ -102,7 +106,7 @@ def derive_address(testCase: DeriveAddressTestCase) -> Union[bytes, str]:
 def _deriveAddressByron(testCase: DeriveAddressTestCase) -> str:
     """Derive the Byron address from the path"""
 
-   # Generate seed from mnemonic
+    # Generate seed from mnemonic
     seed_bytes = Bip39SeedGenerator(SPECULOS_MNEMONIC).Generate()
 
     # Construct from seed
@@ -111,7 +115,9 @@ def _deriveAddressByron(testCase: DeriveAddressTestCase) -> str:
     # Derive the key for the specified path
     bip32Path: Bip32Path = Bip32PathParser.Parse(testCase.spendingValue).ToList()
     bip44_acc = bip44_mst_ctx.Purpose().Coin().Account(bip32Path[2])
-    bip44_chg = bip44_acc.Change(Bip44Changes.CHAIN_EXT if bip32Path[3] == 0 else Bip44Changes.CHAIN_INT)
+    bip44_chg = bip44_acc.Change(
+        Bip44Changes.CHAIN_EXT if bip32Path[3] == 0 else Bip44Changes.CHAIN_INT
+    )
     bip44_addr = bip44_chg.AddressIndex(bip32Path[4])
 
     # Get the address
@@ -126,8 +132,7 @@ def _deriveAddressShelley(testCase: DeriveAddressTestCase) -> bytes:
         key += hashlib.blake2b(pk, digest_size=28).digest().hex()
     else:
         key += testCase.spendingValue
-    if testCase.addrType in (AddressType.POINTER_KEY,
-                             AddressType.POINTER_SCRIPT):
+    if testCase.addrType in (AddressType.POINTER_KEY, AddressType.POINTER_SCRIPT):
         key += _appenduint32(int(testCase.stakingValue[0:8], 16))
         key += _appenduint32(int(testCase.stakingValue[8:16], 16))
         key += _appenduint32(int(testCase.stakingValue[16:24], 16))
@@ -158,7 +163,7 @@ def _appenduint32(value: int) -> str:
 
 
 def get_device_pubkey(path: str) -> Tuple[bytes, str]:
-    """ Retrieve the Public Key
+    """Retrieve the Public Key
 
     Args:
         path (str): Derivation path
@@ -166,7 +171,9 @@ def get_device_pubkey(path: str) -> Tuple[bytes, str]:
     Returns:
         The Reference PK and the byte Chain Code
     """
-    ref_pk, ref_chain_code = calculate_public_key_and_chaincode(CurveChoice.Ed25519Kholaw, path)
+    ref_pk, ref_chain_code = calculate_public_key_and_chaincode(
+        CurveChoice.Ed25519Kholaw, path
+    )
     return bytes.fromhex(ref_pk[2:]), ref_chain_code
 
 
