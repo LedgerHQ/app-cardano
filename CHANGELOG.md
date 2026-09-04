@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [7.3.2](TBD) - [TBD]
+
+### Fixed
+
+- Do not reboot when signing an output whose serialized inline datum is 1024 bytes or larger. The total inline-datum size was wrongly bounded by `BUFFER_SIZE_PARANOIA` even though the datum is streamed in chunks and never held whole in memory.
+
 ## [7.2.0](TBD) - [TBD]
 
 ### Added

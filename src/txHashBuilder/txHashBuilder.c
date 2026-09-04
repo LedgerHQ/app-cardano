@@ -563,8 +563,13 @@ void txHashBuilder_addOutput_datum(tx_hash_builder_t *builder,
         case DATUM_INLINE:
             // inline datum only supported since Babbage
             ASSERT(builder->outputData.serializationFormat == MAP_BABBAGE);
-            ASSERT(bufferSize < BUFFER_SIZE_PARANOIA);
-            // bufferSize is total size of datum
+            // bufferSize is the total size of the inline datum. It is not held in
+            // a buffer here: only the CBOR length header is written, and the
+            // datum bytes are streamed afterwards in chunks via
+            // txHashBuilder_addOutput_datum_inline_chunk(). So the total must not
+            // be bounded by BUFFER_SIZE_PARANOIA (1024); doing so rebooted the
+            // device on inline datums of 1024 bytes or more. This mirrors the
+            // reference-script path, which also streams without a total cap.
             builder->outputData.datumData.remainingBytes = bufferSize;
             {
                 BUILDER_APPEND_CBOR(CBOR_TYPE_TAG, CBOR_TAG_EMBEDDED_CBOR_BYTE_STRING);

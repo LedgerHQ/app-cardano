@@ -26,6 +26,7 @@ void run_addressUtilsByron_test();
 #endif
 void run_addressUtilsShelley_test();
 void run_auxDataHashBuilder_test();
+void run_txHashBuilder_test();
 #if defined(APP_FEATURE_NATIVE_SCRIPT_HASH)
 void run_nativeScriptHashBuilder_test();
 #endif
