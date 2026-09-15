@@ -241,17 +241,55 @@ static void test_sign_tx_swap_output_policy_allows_plain_ada_device_owned_change
     assert_int_equal(policy, POLICY_HIDE);
 }
 
-static void test_sign_tx_swap_output_policy_rejects_change_tokens(void **state) {
+static void test_sign_tx_swap_output_policy_allows_change_tokens(void **state) {
     (void) state;
 
     reset_context();
 
+    // Native tokens must be allowed on a device-owned change output: Cardano's UTXO model
+    // forces tokens from spent inputs to reappear in an output, and mint/burn is already
+    // denied at swap init, so a token-bearing change output is just a passthrough.
     tx_output_description_t output = {
         .format = MAP_BABBAGE,
         .destination =
             {
                 .type = DESTINATION_DEVICE_OWNED,
                 .params = make_swap_test_standard_change_address_params(),
+            },
+        .amount = 10,
+        .numAssetGroups = 1,
+        .includeDatum = false,
+        .includeRefScript = false,
+    };
+    warning_bits_t w = 0;
+
+    security_policy_t policy = policyForSignTxSwapOutput(&output,
+                                                         SIGN_TX_SIGNINGMODE_ORDINARY,
+                                                         MAINNET_NETWORK_ID,
+                                                         MAINNET_PROTOCOL_MAGIC,
+                                                         &w);
+    assert_int_equal(policy, POLICY_HIDE);
+}
+
+static void test_sign_tx_swap_output_policy_rejects_third_party_tokens(void **state) {
+    (void) state;
+
+    reset_context();
+
+    // A swap must never move native tokens to the partner address: Exchange only validates
+    // the ADA amount and destination, so tokens sent here would be an unverified value
+    // transfer. This must stay denied even though device-owned change now allows tokens.
+    static const uint8_t address_bytes[29] = {
+        0x61, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+        0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+    };
+
+    tx_output_description_t output = {
+        .format = MAP_BABBAGE,
+        .destination =
+            {
+                .type = DESTINATION_THIRD_PARTY,
+                .address = {.buffer = address_bytes, .length = sizeof(address_bytes)},
             },
         .amount = 10,
         .numAssetGroups = 1,
@@ -867,7 +905,8 @@ int main(void) {
         cmocka_unit_test(test_sign_tx_swap_init_policy_rejects_required_signers),
         cmocka_unit_test(test_sign_tx_swap_init_policy_rejects_unrestricted_mode),
         cmocka_unit_test(test_sign_tx_swap_output_policy_allows_plain_ada_device_owned_change),
-        cmocka_unit_test(test_sign_tx_swap_output_policy_rejects_change_tokens),
+        cmocka_unit_test(test_sign_tx_swap_output_policy_allows_change_tokens),
+        cmocka_unit_test(test_sign_tx_swap_output_policy_rejects_third_party_tokens),
         cmocka_unit_test(test_sign_tx_swap_output_policy_rejects_change_datum),
         cmocka_unit_test(test_sign_tx_swap_mode_skips_ui_and_validates_exchange_parameters),
         cmocka_unit_test(test_sign_tx_swap_init_rejects_multiple_witnesses),
