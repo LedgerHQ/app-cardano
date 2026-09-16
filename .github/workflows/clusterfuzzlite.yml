@@ -10,6 +10,7 @@ on:
     - cron: '0 13 * * 6'  # At 01:00 PM, only on Saturday
 
 permissions:
+  actions: read
   contents: read
 
 jobs:
