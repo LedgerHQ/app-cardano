@@ -931,18 +931,25 @@ security_policy_t policyForSignTxSwapOutput(const tx_output_description_t *outpu
     DENY_IF(normal_output_policy == POLICY_DENY);
     DENY_IF(normal_policy_warnings != 0);
 
-    DENY_IF(output->numAssetGroups != 0);
     DENY_IF(output->includeDatum);
     DENY_IF(output->includeRefScript);
 
     switch (output->destination.type) {
         case DESTINATION_THIRD_PARTY:
+            // A swap must not move native tokens to the partner address: Exchange only
+            // validates the ADA amount and destination, so tokens sent here would be an
+            // unverified value transfer.
+            DENY_IF(output->numAssetGroups != 0);
             HIDE();
             break;
 
         case DESTINATION_DEVICE_OWNED:
             // In swap mode there is no Cardano-app UI, so change outputs must be
-            // boring enough for the normal policy to hide.
+            // boring enough for the normal policy to hide. Native tokens are allowed:
+            // minting/burning is denied at swap init (policyForSignTxSwapInit), so any
+            // token in a change output can only be a passthrough of tokens already held
+            // in the spent UTXOs, and the address itself is still constrained above to a
+            // standard base address on the single enforced account.
             DENY_UNLESS(normal_output_policy == POLICY_HIDE);
             HIDE();
             break;
