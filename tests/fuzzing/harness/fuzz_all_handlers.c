@@ -5,6 +5,7 @@
 
 #include "dispatcher.h"
 #include "fuzz_utils.h"
+#include "app_context.h"
 #include "apdu/dispatcher.h"
 
 /**
