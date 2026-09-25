@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated the built-in token list.
 - Documented `parse_pool_relay`'s accepted formats and validation rules.
 - Resolved CodeQL commented-out-code and sizeof-side-effect notes.
 - Standalone sign-tx tests now generate only the `expert` variant for
