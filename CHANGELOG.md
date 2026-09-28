@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [8.0.10]
+
+### Changed
+
+- Governance identifiers are now displayed in CIP-0129 format: DRep and constitutional
+  committee hot/cold credentials (certificates, vote delegations, voters) are shown as
+  Bech32 with a CIP-0129 header byte (`drep`, `cc_hot`, `cc_cold` prefixes), replacing
+  the CIP-0105 format. Votes additionally show the CIP-0129 governance action ID
+  (`gov_action`) alongside the existing tx hash and index.
+
 ## [8.0.9]
 
 ### Fixed
