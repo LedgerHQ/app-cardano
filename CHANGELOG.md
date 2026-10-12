@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [8.0.9]
+
+### Fixed
+
+- Swap: validate the refund-address BIP44 path with `bip44_hasShelleyPrefix` instead
+  of a bare purpose comparison.
+- Fixed a dangling-pointer risk in the transaction render pass's scratch warning bits.
+- Generated test fixtures now conform to `clang-format-14`.
+
+### Changed
+
+- Updated the built-in token list.
+- Documented `parse_pool_relay`'s accepted formats and validation rules.
+- Resolved CodeQL commented-out-code and sizeof-side-effect notes.
+- Standalone sign-tx tests now generate only the `expert` variant for
+  UNRESTRICTED-signing cases instead of generating and skipping a redundant one.
+- Added swap check-address/sign-tx unit tests and fuzzing harnesses.
+- Added a fuzzing dictionary and seed corpora; reset UI warning state between fuzz
+  iterations.
+- Updated fuzzing build docs and dependencies; dropped mocks now provided by the SDK.
+
 ## [8.0.8]
 
 ### Fixed
