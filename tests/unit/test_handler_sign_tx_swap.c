@@ -553,6 +553,28 @@ static void test_sign_tx_swap_init_rejects_second_tx_after_reset(void **state) {
     tx_context_cleanup();
 }
 
+static void test_send_swo_and_reset_exits_swap_after_signing_started(void **state) {
+    (void) state;
+
+    reset_context();
+    assert_true(test_mem_init());
+    swap_test_stubs_reset();
+    G_called_from_swap = true;
+    G_swap_signing_started = true;
+
+    jmp_buf reject_jmp_buf;
+    swap_test_stubs_set_reject_jmp_buf(&reject_jmp_buf);
+    apdu_response_begin(INS_SIGN_TX);
+    if (setjmp(reject_jmp_buf) == 0) {
+        send_swo_and_reset(SWO_WRONG_DATA_LENGTH);
+        fail_msg("Expected swap_reject_and_exit");
+    }
+    apdu_response_finalize_after_handler();
+    swap_test_stubs_set_reject_jmp_buf(NULL);
+    assert_int_equal(g_swap_reject_common_error_code, SWAP_EC_ERROR_GENERIC);
+    assert_int_equal(g_swap_reject_app_error_code, SWAP_APP_CODE_DEFAULT);
+}
+
 static void test_sign_tx_swap_witness_rejects_non_payment_path(void **state) {
     (void) state;
 
@@ -958,6 +980,7 @@ int main(void) {
         cmocka_unit_test(test_sign_tx_swap_init_rejects_unrestricted_mode),
         cmocka_unit_test(test_sign_tx_swap_init_rejects_double_signing),
         cmocka_unit_test(test_sign_tx_swap_init_rejects_second_tx_after_reset),
+        cmocka_unit_test(test_send_swo_and_reset_exits_swap_after_signing_started),
         cmocka_unit_test(test_sign_tx_swap_witness_rejects_non_payment_path),
         cmocka_unit_test(test_sign_tx_swap_witness_finalization_triggers_os_lib_end),
     };
