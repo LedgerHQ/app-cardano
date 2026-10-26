@@ -100,6 +100,16 @@ void app_main(void) {
 
     io_init();
 
+    // Initialize the NVM data if required, before any UI or policy reads it.
+    if (N_storage.initialized != STORAGE_INITIALIZED) {
+        internal_storage_t storage = {0};
+        storage.expert_mode_enabled = SETTINGS_NO;
+        storage.silent_pubkey_export_enabled = SETTINGS_YES;
+        storage.blind_signing_enabled = SETTINGS_NO;
+        storage.initialized = STORAGE_INITIALIZED;
+        nvm_write((void *) &N_storage, &storage, sizeof(internal_storage_t));
+    }
+
 #ifdef HAVE_SWAP
     if (!G_called_from_swap)
 #endif
@@ -109,16 +119,6 @@ void app_main(void) {
 
     // Reset context
     reset_app_context();
-
-    // Initialize the NVM data if required
-    if (N_storage.initialized != STORAGE_INITIALIZED) {
-        internal_storage_t storage = {0};
-        storage.expert_mode_enabled = SETTINGS_NO;
-        storage.silent_pubkey_export_enabled = SETTINGS_YES;
-        storage.blind_signing_enabled = SETTINGS_NO;
-        storage.initialized = STORAGE_INITIALIZED;
-        nvm_write((void *) &N_storage, &storage, sizeof(internal_storage_t));
-    }
 
     for (;;) {
         app_main_process_one_apdu();
