@@ -44,17 +44,17 @@ CollRet is supposed to contain all the excess ADA not consumed as collateral and
 
 (sum of tokens in collateral inputs) = (tokens in collRet)
 
-Since collRet does not affect Plutus script evaluation, displaying tokens in collRet is redundant. But they are only mentioned implicitly through collateral inputs and there is a possibility of an attacker trying to steal tokens through a purposely failing transaction with small collateral value in ADA (in which case the user might be less attentive to collateral details), so it’s safer to display them anyway in expert mode for third-party collateral outputs (i.e. when the HW wallet is giving away control over them).
+Since collRet does not affect Plutus script evaluation, displaying tokens in collRet is redundant. But they are only mentioned implicitly through collateral inputs and there is a possibility of an attacker trying to steal tokens through a purposely failing transaction with small collateral value in ADA (in which case the user might be less attentive to collateral details), so it’s safer to display them anyway in all modes for third-party collateral outputs (i.e. when the HW wallet is giving away control over them).
 
 **If txColl is given**, then
 
 (sum of ADA in collateral inputs) = txColl + (ADA in collRet)
 
-That means it is not possible to lose more than the explicitly given and displayed collateral, and since collateral inputs and outputs don’t affect Plutus script evaluation, we can safely hide collateral inputs. (The collateral inputs contain additional information about the specific distribution of tokens and ADA across UTXOs, but such information is hidden from users by all major SW wallets anyway, and those truly interested in it can use txid displayed at the end of the tx to verify it.)
+That means that if collRet is a change output, it is not possible to lose more than the explicitly given and displayed collateral, and since collateral inputs and outputs don’t affect Plutus script evaluation, we can safely hide collateral inputs. (The collateral inputs contain additional information about the specific distribution of tokens and ADA across UTXOs, but such information is hidden from users by all major SW wallets anyway, and those truly interested in it can use txid displayed at the end of the tx to verify it.)
 
 For collRet, it is not safe to hide it in general since the address might not belong to the user. However, it is reasonable to hide change outputs (i.e. those with the payment part of the address being controlled by the HW wallet, which is proved by giving the key derivation path instead of a key hash).
 
-Even though non-expert users don’t care about collateral, we will show them collRet anyway in case it is not a change output: the sole fact that it is not a change output is suspicious and we will avoid a certain nasty attack by verifying just an address which is familiar to users: otherwise, it would be possible to use valuable user’s UTXOs as collateral inputs in a transaction that purposely fails phase-2 validation, stealing all valuables through a collateral output to an attacker’s address.
+Even though non-expert users don’t care about collateral, we will show them collRet anyway in case it is not a change output (its address, ADA amount and tokens): the sole fact that it is not a change output is suspicious and we will avoid a certain nasty attack by verifying just an address which is familiar to users: otherwise, it would be possible to use valuable user’s UTXOs as collateral inputs in a transaction that purposely fails phase-2 validation, stealing all valuables through a collateral output to an attacker’s address.
 
 **If txColl is not given**, then
 

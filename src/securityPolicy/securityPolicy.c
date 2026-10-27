@@ -1166,11 +1166,13 @@ security_policy_t policyForSignTxCollateralOutputAddress(const tx_output_descrip
 
 security_policy_t policyForSignTxCollateralOutputAdaAmount(security_policy_t outputPolicy,
                                                            sign_tx_signingmode_t txSigningMode,
+                                                           const tx_output_description_t *output,
                                                            bool isTotalCollateralPresent,
                                                            warning_bits_t *w) {
     POLICY_INIT();
     // WARNING: policies for collateral inputs, collateral return output and total collateral are
     // interdependent
+    ASSERT(output != NULL);
     LEDGER_ASSERT(outputPolicy != POLICY_DENY,
                   "Collateral ADA sub-policy called with DENY output policy");
 
@@ -1182,8 +1184,11 @@ security_policy_t policyForSignTxCollateralOutputAdaAmount(security_policy_t out
     switch (txSigningMode) {
         case SIGN_TX_SIGNINGMODE_PLUTUS:
         case SIGN_TX_SIGNINGMODE_UNRESTRICTED:
-            // ADA amount is calculable from total collateral
-            // but only expert users are to be bothered by a possible collateral loss
+            // the amount leaves the wallet and the device cannot infer it from total collateral
+            SHOW_IF(output->destination.type == DESTINATION_THIRD_PARTY);
+            // a device-owned return means the possible loss is the total collateral, which is
+            // always shown; if total collateral is absent, show the return amount in expert mode
+            // only (non-expert users get the unknown-collateral warning instead)
             SHOW_IF(!isTotalCollateralPresent && is_expert_mode());
             HIDE();
             break;
@@ -1217,10 +1222,9 @@ security_policy_t policyForSignTxCollateralOutputTokens(security_policy_t output
         case SIGN_TX_SIGNINGMODE_PLUTUS:
         case SIGN_TX_SIGNINGMODE_UNRESTRICTED: {
             // for non-change outputs, control over the collateral tokens is potentially transferred
-            // to another party, so we should show them in the expert mode (non-expert users are
-            // supposed to not be interested in any collateral loss)
+            // to another party, so we should show them
             const bool lossOfControl = (output->destination.type != DESTINATION_DEVICE_OWNED);
-            SHOW_IF(lossOfControl && is_expert_mode());
+            SHOW_IF(lossOfControl);
             HIDE();
             break;
         }

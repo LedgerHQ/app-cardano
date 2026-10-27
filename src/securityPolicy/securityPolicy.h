@@ -89,6 +89,7 @@ security_policy_t policyForSignTxCollateralOutputAddress(const tx_output_descrip
                                                          warning_bits_t *w);
 security_policy_t policyForSignTxCollateralOutputAdaAmount(security_policy_t outputPolicy,
                                                            sign_tx_signingmode_t txSigningMode,
+                                                           const tx_output_description_t *output,
                                                            bool isTotalCollateralPresent,
                                                            warning_bits_t *w);
 security_policy_t policyForSignTxCollateralOutputTokens(security_policy_t outputPolicy,

@@ -354,6 +354,7 @@ static bool tx_process_collateral_return_output(buffer_t *output_buf,
         collateral_ada_policy =
             policyForSignTxCollateralOutputAdaAmount(output_policy,
                                                      tx_params->txSigningMode,
+                                                     &output_desc,
                                                      tx_params->includeTotalCollateral,
                                                      warning_bits);
         APPLY_POLICY(collateral_ada_policy,
