@@ -370,20 +370,20 @@ static bool isTxNetworkIdVerifiable(bool includeNetworkId,
 
 bool shouldShowNetworkDetails(const tx_params_t *txParams) {
     ASSERT(txParams != NULL);
+    // Network identity is security-critical even for usual networks.
+    return isTxNetworkIdVerifiable(txParams->includeNetworkId,
+                                   txParams->num_outputs,
+                                   txParams->includeCollateralOutput,
+                                   txParams->num_withdrawals,
+                                   txParams->txSigningMode);
+}
 
-    const bool is_network_id_verifiable = isTxNetworkIdVerifiable(txParams->includeNetworkId,
-                                                                  txParams->num_outputs,
-                                                                  txParams->includeCollateralOutput,
-                                                                  txParams->num_withdrawals,
-                                                                  txParams->txSigningMode);
-    if (!is_network_id_verifiable) {
-        // no point in showing the given network id because tx body
-        // does not have any elements containing it
-        return false;
-    }
-
-    // show network details in expert mode or for unusual networks
-    return is_expert_mode() || !isNetworkUsual(txParams->networkId, txParams->protocolMagic);
+bool shouldShowNetworkRawDetails(const tx_params_t *txParams) {
+    ASSERT(txParams != NULL);
+    // the raw network id and protocol magic are only added on top of the always-shown
+    // network name for unusual networks or in expert mode
+    return shouldShowNetworkDetails(txParams) &&
+           (is_expert_mode() || !isNetworkUsual(txParams->networkId, txParams->protocolMagic));
 }
 
 static inline void set_missing_collateral_warning(warning_bits_t *w,

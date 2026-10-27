@@ -31,6 +31,20 @@
 #include "cardano_constants.h"
 #include "cardano_tokens.h"
 
+// Known testnets are not named individually: the protocol magic telling them apart
+// is host-supplied and not in the tx hash. "Unknown" also raises the unusual-network warning.
+static const char *network_display_name(uint8_t networkId, uint32_t protocolMagic) {
+    if (networkId == MAINNET_NETWORK_ID && protocolMagic == MAINNET_PROTOCOL_MAGIC) {
+        return "Mainnet";
+    }
+    if (networkId == TESTNET_NETWORK_ID && (protocolMagic == TESTNET_PROTOCOL_MAGIC_PREPROD ||
+                                            protocolMagic == TESTNET_PROTOCOL_MAGIC_PREVIEW ||
+                                            protocolMagic == TESTNET_PROTOCOL_MAGIC_LEGACY)) {
+        return "Testnet";
+    }
+    return "Unknown";
+}
+
 void tx_ui_plan_or_render_network_details(const tx_processing_mode_t *mode,
                                           const tx_params_t *tx_params) {
     ASSERT(mode != NULL);
@@ -40,19 +54,29 @@ void tx_ui_plan_or_render_network_details(const tx_processing_mode_t *mode,
         return;
     }
 
+    // the network name is always shown; the raw id + magic are added only for unusual
+    // networks or in expert mode
+    const bool show_raw_details = shouldShowNetworkRawDetails(tx_params);
+    const uint16_t network_pairs =
+        UI_PAIRS_NETWORK_NAME + (show_raw_details ? UI_PAIRS_NETWORK_RAW_DETAILS : 0);
+
     if (mode->ui_count_pairs) {
-        tx_body_ctx()->total_ui_pairs += UI_PAIRS_NETWORK_DETAILS;
+        tx_body_ctx()->total_ui_pairs += network_pairs;
     } else if (mode->ui_render) {
         START_COUNT();
-        UI_ADD_FORMAT1(UI_LABEL_BY_SCREEN("Network ID", "Net ID"),
-                       MAX_UINT64_STRING_LENGTH,
-                       format_uint64,
-                       (uint64_t) tx_params->networkId);
-        UI_ADD_FORMAT1(UI_LABEL_BY_SCREEN("Protocol magic", "Prot magic"),
-                       MAX_UINT64_STRING_LENGTH,
-                       format_uint64,
-                       (uint64_t) tx_params->protocolMagic);
-        CHECK_COUNT(UI_PAIRS_NETWORK_DETAILS);
+        UI_ADD_STATIC(UI_STATIC_LABEL("Network"),
+                      network_display_name(tx_params->networkId, tx_params->protocolMagic));
+        if (show_raw_details) {
+            UI_ADD_FORMAT1(UI_LABEL_BY_SCREEN("Network ID", "Net ID"),
+                           MAX_UINT64_STRING_LENGTH,
+                           format_uint64,
+                           (uint64_t) tx_params->networkId);
+            UI_ADD_FORMAT1(UI_LABEL_BY_SCREEN("Protocol magic", "Prot magic"),
+                           MAX_UINT64_STRING_LENGTH,
+                           format_uint64,
+                           (uint64_t) tx_params->protocolMagic);
+        }
+        CHECK_COUNT(network_pairs);
     }
 }
 
