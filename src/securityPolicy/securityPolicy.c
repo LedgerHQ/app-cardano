@@ -847,6 +847,13 @@ static security_policy_t policyForSignTxOutputAddressParams(const tx_output_desc
         case SIGN_TX_SIGNINGMODE_PLUTUS: {
             // the output could affect script validation so it must not be entirely hidden
             // Note: if we relax this, some of the above restrictions may apply
+            if (!is_standard_base_address(params)) {
+                SHOW_IF(mark_unusual_key_derivation(w, &params->paymentKeyPath));
+                if (addressParams_getStakingPartType(params) == STAKING_PART_KEY_PATH) {
+                    SHOW_IF(mark_unusual_key_derivation(w, &params->stakingKeyPath));
+                }
+                SHOW();
+            }
             SHOW_IF(is_expert_mode());
             HIDE();
             break;
