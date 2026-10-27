@@ -208,6 +208,7 @@ security_policy_t policyForSignTxDonation(sign_tx_signingmode_t txSigningMode,
                                           uint64_t donation,
                                           warning_bits_t *w);
 security_policy_t policyForSignTxDisplayTxHash(sign_tx_signingmode_t txSigningMode,
+                                               bool outputPayloadExceedsDisplay,
                                                warning_bits_t *w);
 
 security_policy_t policyForSignTxWitness(sign_tx_signingmode_t txSigningMode,

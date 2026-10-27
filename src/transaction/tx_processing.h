@@ -72,6 +72,8 @@ typedef struct {
     tx_hash_builder_t hash_builder;
 
     uint16_t swap_third_party_output_count;
+    // an output's payload is too large to show in full (inline datum or reference script)
+    bool output_payload_exceeds_display;
 } tx_processing_state_t;
 
 // ---------------------------------------------------------------------------

@@ -2453,6 +2453,7 @@ security_policy_t policyForSignTxDonation(sign_tx_signingmode_t txSigningMode MA
 // ======================================= Tx hash =======================================
 
 security_policy_t policyForSignTxDisplayTxHash(sign_tx_signingmode_t signingMode,
+                                               bool outputPayloadExceedsDisplay,
                                                warning_bits_t *w) {
     POLICY_INIT();
     switch (signingMode) {
@@ -2460,6 +2461,9 @@ security_policy_t policyForSignTxDisplayTxHash(sign_tx_signingmode_t signingMode
         case SIGN_TX_SIGNINGMODE_MULTISIG:
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OWNER:
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR:
+            // inline datums and reference scripts are only previewed, not fully shown, so the
+            // tx hash must be displayed to commit to the bytes the user never sees in full
+            SHOW_IF(outputPayloadExceedsDisplay);
             SHOW_IF(is_expert_mode());
             HIDE();
             break;

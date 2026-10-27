@@ -15,7 +15,7 @@
 //   - Source file and era
 //   - Original Ragger test name
 //
-// Total tests in this era: 24
+// Total tests in this era: 25
 
 #pragma once
 
@@ -2678,6 +2678,100 @@ static const tx_fixture_t
         .num_witnesses = 1,
         .witness_payloads =
             FIXTURE_BABBAGE_SIGN_TX_FULL_TEST_FOR_TREZOR_FEATURE_PARITY_BABBAGE_ELEMENTS_ORDINARY_WITNESS_PAYLOADS,
+        .witness_payload_count = 1,
+        .num_certificates = 0,
+        .num_withdrawals = 0,
+        .num_mint_asset_groups = 0,
+        .include_ttl = true,
+        .include_validity_interval_start = true,
+        .include_aux_data_hash = false,
+        .aux_data_type = 0,
+        .aux_data_init_payload = NULL,
+        .aux_data_init_payload_len = 0,
+        .aux_data_delegations = NULL,
+        .aux_data_delegation_count = 0,
+        .include_script_data_hash = false,
+        .num_collateral_inputs = 0,
+        .num_required_signers = 0,
+        .include_network_id = true,
+        .include_collateral_output = false,
+        .include_total_collateral = false,
+        .num_reference_inputs = 0,
+        .num_voters = 0,
+        .include_treasury = false,
+        .treasury = 0,
+        .include_donation = false,
+        .donation = 0,
+        .aux_data_hash_hex = NULL,
+        .options = 0,
+        .blind_signing_mode = BLIND_SIGNING_MODE_DISABLED,
+        .expected_warning_bits = 0,
+};
+
+// Test 24: Sign_tx_with_inline_datum_without_ref_script_in_output_ordinary
+// Source: tests/standalone/input_files/signTx.py > babbage era tests
+//
+static const uint8_t
+    FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_RAW_TX[] = {
+        0x3B, 0x40, 0x26, 0x51, 0x11, 0xD8, 0xBB, 0x3C, 0x3C, 0x60, 0x8D, 0x95, 0xB3, 0xA0, 0xBF,
+        0x83, 0x46, 0x1A, 0xCE, 0x32, 0xD7, 0x93, 0x36, 0x57, 0x9A, 0x19, 0x39, 0xB3, 0xAA, 0xD1,
+        0xC0, 0xB7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46, 0x01, 0x00, 0x1D, 0x71, 0x47, 0x7E, 0x52,
+        0xB3, 0x11, 0x6B, 0x62, 0xFE, 0x8C, 0xD3, 0x4A, 0x31, 0x26, 0x15, 0xF5, 0xFC, 0xD6, 0x78,
+        0xC9, 0x4E, 0x1D, 0x6C, 0xDB, 0x86, 0xC1, 0xA3, 0x96, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x01, 0x01, 0x02, 0x01, 0x00, 0x00, 0x01, 0x00, 0x16, 0x55, 0x79, 0x65, 0x74,
+        0x20, 0x61, 0x6E, 0x6F, 0x74, 0x68, 0x65, 0x72, 0x20, 0x63, 0x68, 0x6F, 0x63, 0x6F, 0x6C,
+        0x61, 0x74, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2A, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2F,
+};
+
+static const uint8_t
+    FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_WITNESS_0_PAYLOAD
+        [] = {
+            0x05, 0x80, 0x00, 0x07, 0x3C, 0x80, 0x00, 0x07, 0x17, 0x80, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+
+static const uint8_t
+    FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_WITNESS_0_EXPECTED_SIGNATURE
+        [] = {
+            0x7E, 0x96, 0x6D, 0x18, 0x93, 0x08, 0x9D, 0x7C, 0x4C, 0xDB, 0x3A, 0xF1, 0x28,
+            0xBE, 0x0F, 0x97, 0x94, 0x25, 0x56, 0x80, 0xD4, 0x27, 0x28, 0x05, 0x50, 0xF0,
+            0xDE, 0x71, 0xD3, 0x4E, 0xDC, 0x74, 0x2C, 0x14, 0xCF, 0xEB, 0x6A, 0xC5, 0x48,
+            0x5C, 0x5A, 0x57, 0xD5, 0xD0, 0x61, 0x1D, 0x0E, 0x82, 0x7C, 0xAA, 0x95, 0xFD,
+            0xB8, 0xE0, 0x19, 0x61, 0x45, 0x21, 0xD3, 0x4B, 0x58, 0xB6, 0x63, 0x06,
+};
+
+static const witness_payload_t
+    FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_WITNESS_PAYLOADS[] = {
+        {.payload =
+             FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_WITNESS_0_PAYLOAD,
+         .payload_len = sizeof(
+             FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_WITNESS_0_PAYLOAD),
+         .expected_warning_bits = 0,
+         .expected_signature =
+             FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_WITNESS_0_EXPECTED_SIGNATURE},
+};
+
+static const tx_fixture_t
+    FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY = {
+        .name = "Sign_tx_with_inline_datum_without_ref_script_in_output_ordinary",
+        .raw_tx =
+            FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_RAW_TX,
+        .raw_tx_len = sizeof(
+            FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_RAW_TX),
+        .tx_body_cbor_hex =
+            "a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a300"
+            "581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0101028201d8185655796574"
+            "20616e6f746865722063686f636f6c61746502182a030a08182f0f01",
+        .expected_hash_hex = "692b0305f8b04054c7929d9c012e3f18db35e8f32d561ef614e57e533d9d250f",
+        .signing_mode = 3,
+        .network_id = 1,
+        .protocol_magic = 764824073,
+        .num_inputs = 1,
+        .num_outputs = 1,
+        .num_witnesses = 1,
+        .witness_payloads =
+            FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY_WITNESS_PAYLOADS,
         .witness_payload_count = 1,
         .num_certificates = 0,
         .num_withdrawals = 0,
