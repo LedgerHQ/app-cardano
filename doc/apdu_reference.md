@@ -311,7 +311,7 @@ Host                                              Device
   | <--  SW=9000  ---------------------------------- |
   |                                                  |
   |   [Only if AUX_DATA_TYPE_CVOTE_REGISTRATION in INIT:]
-  |----  AUX_DATA INIT (P1=0x13)  -----------------> |  Parse CVote init, show UI page
+  |----  AUX_DATA INIT (P1=0x13)  -----------------> |  Parse CVote init, show streaming start screen
   | <--  SW=9000 / deferred UX  -------------------- |
   |----  AUX_DATA DELEGATION (P1=0x13) x N  -------> |  Each delegation
   | <--  SW=9000 / deferred UX  -------------------- |
@@ -475,7 +475,7 @@ Payload is the raw CIP-36 registration init data (parsed internally — see `cvo
 **Response:**
 
 - `SW=9000` if no delegations expected (device moves directly to confirmation UI), or
-- Deferred (device shows first streaming page) while waiting for delegation APDUs.
+- Deferred while waiting for delegation APDUs: the device first shows the CVote streaming start screen (title and warnings), then the first data page after the user confirms it. `SW=9000` is sent once the user continues past that page; rejecting on the start screen returns `SWO_CONDITIONS_NOT_SATISFIED`.
 
 #### AUX\_DATA DELEGATION — P2 `0x37`
 

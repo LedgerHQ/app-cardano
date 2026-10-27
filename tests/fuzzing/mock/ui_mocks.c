@@ -202,7 +202,10 @@ void nbgl_useCaseAdvancedReviewStreamingStart(nbgl_operationType_t operationType
     UNUSED(reviewTitle);
     UNUSED(reviewSubTitle);
     UNUSED(warning);
-    UNUSED(choiceCallback);
+    // Confirm the start screen so fuzzing reaches the streamed pages.
+    if (choiceCallback != NULL) {
+        choiceCallback(true);
+    }
 }
 
 void nbgl_useCaseReviewStreamingContinue(const nbgl_contentTagValueList_t *tagValueList,
