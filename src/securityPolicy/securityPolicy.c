@@ -2794,16 +2794,26 @@ security_policy_t policyForCVoteRegistrationPaymentDestination(
 
     switch (destination->type) {
         case DESTINATION_DEVICE_OWNED: {
-            DENY_UNLESS(isValidAddressParams(&destination->params));
-            DENY_UNLESS(isShelleyAddressType(destination->params.type));
-            DENY_IF(destination->params.networkId != networkId);
+            const address_params_t *params = &destination->params;
+            DENY_UNLESS(isValidAddressParams(params));
+            DENY_UNLESS(isShelleyAddressType(params->type));
+            DENY_IF(params->networkId != networkId);
+
+            // only a device-derived key controlling receipt counts as owned
+            const bool receipt_key_is_device_owned =
+                addressParams_getPaymentPartType(params) == PAYMENT_PART_KEY_PATH ||
+                (params->type == REWARD_KEY &&
+                 addressParams_getStakingPartType(params) == STAKING_PART_KEY_PATH);
+            if (!receipt_key_is_device_owned) {
+                warning_bits_set(w, WARNING_BIT_CVOTE_PAYMENT_THIRD_PARTY);
+                SHOW();
+            }
 
             // in a typical case, the rewards go to an address controlled by this device
             // and the address is sent in a way allowing a verification of that fact
-            if (!is_standard_base_address(&destination->params)) {
+            if (!is_standard_base_address(params)) {
                 warning_bits_set(w, WARNING_BIT_CVOTE_PAYMENT_NONSTANDARD_OWNED);
             }
-            SHOW_UNLESS(is_standard_base_address(&destination->params));
 
             // we are sure the address belongs to the device
             SHOW();

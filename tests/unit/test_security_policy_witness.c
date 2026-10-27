@@ -30,7 +30,11 @@
 #include <cmocka.h>
 
 #include "securityPolicy/securityPolicy.h"
+#include "securityPolicy/securityWarnings.h"
 #include "addressUtils/bip44.h"
+#include "addressUtils/addressUtilsShelley.h"
+#include "transaction/tx_output_types.h"
+#include "cardano_constants.h"
 #include "globals.h"
 
 static void reset_context(void) {
@@ -475,6 +479,77 @@ static void test_cvote_vote_key_raw_pubkey_allowed_for_cip15(void **state) {
     assert_int_not_equal(policy, POLICY_DENY);
 }
 
+// A device-owned payment destination controlled by a script (no device-derived
+// key) must surface the third-party warning, not the "non-standard owned" one
+// that would falsely assert ownership.
+static void test_cvote_payment_script_address_is_third_party(void **state) {
+    (void) state;
+    reset_context();
+    const uint8_t scriptHash[SCRIPT_HASH_LENGTH] = {0};
+    tx_output_destination_t destination = {0};
+    destination.type = DESTINATION_DEVICE_OWNED;
+    destination.params.type = ENTERPRISE_SCRIPT;
+    destination.params.networkId = MAINNET_NETWORK_ID;
+    destination.params.paymentPartType = PAYMENT_PART_SCRIPT_HASH;
+    destination.params.paymentScriptHash = scriptHash;
+    destination.params.stakingPartType = STAKING_PART_NONE;
+
+    warning_bits_t w = 0;
+    security_policy_t policy =
+        policyForCVoteRegistrationPaymentDestination(&destination, MAINNET_NETWORK_ID, &w);
+
+    assert_int_equal(policy, POLICY_SHOW);
+    assert_true(warning_bits_has(w, WARNING_BIT_CVOTE_PAYMENT_THIRD_PARTY));
+    assert_false(warning_bits_has(w, WARNING_BIT_CVOTE_PAYMENT_NONSTANDARD_OWNED));
+}
+
+// A reward destination whose staking key arrives as a raw hash is not provably owned by the
+// device, so it must surface the third-party warning.
+static void test_cvote_reward_key_hash_address_is_third_party(void **state) {
+    (void) state;
+    reset_context();
+    const uint8_t stakingKeyHash[ADDRESS_KEY_HASH_LENGTH] = {0};
+    tx_output_destination_t destination = {0};
+    destination.type = DESTINATION_DEVICE_OWNED;
+    destination.params.type = REWARD_KEY;
+    destination.params.networkId = MAINNET_NETWORK_ID;
+    destination.params.paymentPartType = PAYMENT_PART_NONE;
+    destination.params.stakingPartType = STAKING_PART_KEY_HASH;
+    destination.params.stakingKeyHash = stakingKeyHash;
+
+    warning_bits_t w = 0;
+    security_policy_t policy =
+        policyForCVoteRegistrationPaymentDestination(&destination, MAINNET_NETWORK_ID, &w);
+
+    assert_int_equal(policy, POLICY_SHOW);
+    assert_true(warning_bits_has(w, WARNING_BIT_CVOTE_PAYMENT_THIRD_PARTY));
+    assert_false(warning_bits_has(w, WARNING_BIT_CVOTE_PAYMENT_NONSTANDARD_OWNED));
+}
+
+// A base address paid to a script is not owned by the device even if its staking key is:
+// only a reward address may rely on the staking key alone.
+static void test_cvote_payment_script_stake_key_address_is_third_party(void **state) {
+    (void) state;
+    reset_context();
+    const uint8_t scriptHash[SCRIPT_HASH_LENGTH] = {0};
+    tx_output_destination_t destination = {0};
+    destination.type = DESTINATION_DEVICE_OWNED;
+    destination.params.type = BASE_PAYMENT_SCRIPT_STAKE_KEY;
+    destination.params.networkId = MAINNET_NETWORK_ID;
+    destination.params.paymentPartType = PAYMENT_PART_SCRIPT_HASH;
+    destination.params.paymentScriptHash = scriptHash;
+    destination.params.stakingPartType = STAKING_PART_KEY_PATH;
+    destination.params.stakingKeyPath = make_shelley_staking_path();
+
+    warning_bits_t w = 0;
+    security_policy_t policy =
+        policyForCVoteRegistrationPaymentDestination(&destination, MAINNET_NETWORK_ID, &w);
+
+    assert_int_equal(policy, POLICY_SHOW);
+    assert_true(warning_bits_has(w, WARNING_BIT_CVOTE_PAYMENT_THIRD_PARTY));
+    assert_false(warning_bits_has(w, WARNING_BIT_CVOTE_PAYMENT_NONSTANDARD_OWNED));
+}
+
 // ======================================================================
 // Main
 // ======================================================================
@@ -511,6 +586,9 @@ int main(void) {
         cmocka_unit_test(test_cvote_vote_key_path_denied_for_cip15),
         cmocka_unit_test(test_cvote_vote_key_path_allowed_for_cip36),
         cmocka_unit_test(test_cvote_vote_key_raw_pubkey_allowed_for_cip15),
+        cmocka_unit_test(test_cvote_payment_script_address_is_third_party),
+        cmocka_unit_test(test_cvote_reward_key_hash_address_is_third_party),
+        cmocka_unit_test(test_cvote_payment_script_stake_key_address_is_third_party),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
