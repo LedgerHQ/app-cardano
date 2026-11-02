@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [8.0.11]
+
+### Fixed
+
+- Swap: a swap approval now signs only one transaction. After signing starts, the app
+  rejects a second transaction and returns to Exchange on an error.
+- The settings screen now shows the correct value of silent public key export on the
+  first launch.
+- A CIP-36 voting reward address is treated as device-owned only when a key of the
+  device controls it.
+- Plutus transactions now show change outputs whose staking credential is not the
+  standard one.
+- The network (Mainnet or Testnet) is now shown in every transaction review.
+- The transaction hash is now shown when an inline datum or reference script is too
+  long to show in full.
+- Streaming CVote review now shows its security warnings before the first data page.
+- The ADA amount and tokens of a third-party collateral return output are now shown in
+  all modes.
+
 ## [8.0.10]
 
 ### Changed
