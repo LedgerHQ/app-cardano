@@ -1129,8 +1129,10 @@ static void test_validate_from_raw_with_tokens_and_mint_success(void **state) {
     bool ok = tx_validate();
 
     assert_true(ok);
-    assert_int_equal(tx_body_ctx()->total_ui_pairs,
-                     9);  // output base + output token + fee + mint summary + mint token
+    assert_int_equal(
+        tx_body_ctx()->total_ui_pairs,
+        10);  // network name (non-expert mainnet, no raw id/magic) + output base + output token +
+              // fee + mint summary + mint token
 }
 
 // ---------------------------------------------------------------------------

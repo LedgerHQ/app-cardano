@@ -509,6 +509,72 @@ static void test_sign_tx_swap_init_rejects_double_signing(void **state) {
     tx_context_cleanup();
 }
 
+static void test_sign_tx_swap_init_rejects_second_tx_after_reset(void **state) {
+    (void) state;
+
+    const tx_fixture_t *fixture = &FIXTURE_SHELLEY_SIGN_TX_WITHOUT_CHANGE_ADDRESS;
+
+    reset_context();
+    assert_true(test_mem_init());
+    swap_test_stubs_reset();
+    swap_test_stubs_set_initialized(true);
+    swap_test_stubs_set_validation_results(true, true, true);
+    G_called_from_swap = true;
+    G_swap_response_ready = false;
+
+    uint8_t init_raw[512];
+    init_apdu_params_t params = build_init_params_from_fixture(fixture, NULL, 0);
+    const size_t init_len = build_init_apdu(&params, init_raw, sizeof(init_raw));
+    assert_true(init_len > 0);
+
+    // First transaction INIT consumes the single-tx swap authorization.
+    run_sign_tx_apdu(&(buffer_t) {.ptr = init_raw, .size = init_len, .offset = 0}, P1_TX_INIT);
+    assert_int_equal(g_last_response_swo, SWO_SUCCESS);
+    assert_true(G_swap_signing_started);
+
+    // Simulate a recoverable reset of the app context.
+    reset_app_context();
+    assert_int_equal(G_context.req_type, REQUEST_NONE);
+    assert_false(G_swap_response_ready);
+    assert_true(G_swap_signing_started);
+
+    // A second transaction under the same Exchange approval must be rejected.
+    run_sign_tx_apdu_expect_swap_reject(
+        &(buffer_t) {
+            .ptr = init_raw,
+            .size = init_len,
+            .offset = 0,
+        },
+        P1_TX_INIT,
+        SWAP_EC_ERROR_GENERIC,
+        SWAP_APP_CODE_MULTI_SIGN);
+    assert_int_equal(g_last_response_swo, SWO_COMMAND_NOT_ALLOWED);
+
+    tx_context_cleanup();
+}
+
+static void test_send_swo_and_reset_exits_swap_after_signing_started(void **state) {
+    (void) state;
+
+    reset_context();
+    assert_true(test_mem_init());
+    swap_test_stubs_reset();
+    G_called_from_swap = true;
+    G_swap_signing_started = true;
+
+    jmp_buf reject_jmp_buf;
+    swap_test_stubs_set_reject_jmp_buf(&reject_jmp_buf);
+    apdu_response_begin(INS_SIGN_TX);
+    if (setjmp(reject_jmp_buf) == 0) {
+        send_swo_and_reset(SWO_WRONG_DATA_LENGTH);
+        fail_msg("Expected swap_reject_and_exit");
+    }
+    apdu_response_finalize_after_handler();
+    swap_test_stubs_set_reject_jmp_buf(NULL);
+    assert_int_equal(g_swap_reject_common_error_code, SWAP_EC_ERROR_GENERIC);
+    assert_int_equal(g_swap_reject_app_error_code, SWAP_APP_CODE_DEFAULT);
+}
+
 static void test_sign_tx_swap_witness_rejects_non_payment_path(void **state) {
     (void) state;
 
@@ -913,6 +979,8 @@ int main(void) {
         cmocka_unit_test(test_sign_tx_swap_init_rejects_policy_denial),
         cmocka_unit_test(test_sign_tx_swap_init_rejects_unrestricted_mode),
         cmocka_unit_test(test_sign_tx_swap_init_rejects_double_signing),
+        cmocka_unit_test(test_sign_tx_swap_init_rejects_second_tx_after_reset),
+        cmocka_unit_test(test_send_swo_and_reset_exits_swap_after_signing_started),
         cmocka_unit_test(test_sign_tx_swap_witness_rejects_non_payment_path),
         cmocka_unit_test(test_sign_tx_swap_witness_finalization_triggers_os_lib_end),
     };

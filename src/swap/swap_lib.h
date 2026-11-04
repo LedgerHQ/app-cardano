@@ -61,6 +61,18 @@ bool swap_check_fee_validity(uint64_t fee);
 bool swap_transaction_params_initialized(void);
 
 /**
+ * Latch marking that a swap transaction signing has begun (the single-transaction swap
+ * authorization has been consumed). Set on the first SIGN_TX INIT in swap mode.
+ *
+ * It lives in BSS and is zeroed once per authenticated swap by swap_copy_transaction_parameters()
+ * (os_explicit_zero_BSS_segment). It deliberately survives reset_app_context(), which only clears
+ * G_context, so a recoverable reset after releasing a non-final witness cannot be used to start a
+ * second transaction under the same Exchange approval. Must never be cleared by
+ * reset_app_context().
+ */
+extern bool G_swap_signing_started;
+
+/**
  * Send a swap error and terminate processing.
  *
  * This wrapper keeps call-sites explicit about non-returning behavior even if

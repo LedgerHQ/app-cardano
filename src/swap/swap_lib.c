@@ -32,6 +32,7 @@ typedef struct swap_validated_s {
 } swap_validated_t;
 
 static swap_validated_t G_swap_validated;
+bool G_swap_signing_started;
 
 bool swap_transaction_params_initialized(void) {
     return G_swap_validated.initialized;

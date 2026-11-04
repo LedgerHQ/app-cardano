@@ -83,8 +83,9 @@
 #define UI_PAIRS_REQUIRED_SIGNER  1  // key 14: "Required signer"
 #define UI_PAIRS_NETWORK_ID       1  // "Network ID"
 #define UI_PAIRS_PROTOCOL_MAGIC   1  // "Protocol magic"
-#define UI_PAIRS_NETWORK_DETAILS \
-    (UI_PAIRS_NETWORK_ID + UI_PAIRS_PROTOCOL_MAGIC)  // network details block
+#define UI_PAIRS_NETWORK_NAME     1  // always-shown "Network" line with the resolved name
+#define UI_PAIRS_NETWORK_RAW_DETAILS \
+    (UI_PAIRS_NETWORK_ID + UI_PAIRS_PROTOCOL_MAGIC)  // raw id + magic, expert/unusual only
 #define UI_PAIRS_COLLATERAL_OUTPUT_ADDRESS 1         // key 16: "Collateral address"
 #define UI_PAIRS_COLLATERAL_OUTPUT_DEVICE_OWNED \
     (UI_PAIRS_PAYMENT_INFO +                    \

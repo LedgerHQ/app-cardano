@@ -302,8 +302,12 @@ def _run_sign_tx_test(
                 screen_change_after_last_instruction=False,
             )
         else:
+            instructions = [NavInsID.USE_CASE_REVIEW_NEXT] * nb_steps
+            if is_cip36_auxiliary_review and nb_steps == 2 and _is_cip36_aux_review_streaming():
+                # AUX init in streaming mode: pass the CVote streaming start screen first
+                instructions = [NavInsID.USE_CASE_REVIEW_TAP, *instructions]
             navigator.navigate(
-                [NavInsID.USE_CASE_REVIEW_NEXT] * nb_steps,
+                instructions,
                 screen_change_before_first_instruction=False,
                 screen_change_after_last_instruction=False,
             )

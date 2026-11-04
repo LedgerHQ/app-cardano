@@ -551,6 +551,11 @@ outputs: dict[str, TxOutput] = {
         datum=Datum(DatumType.INLINE, "5579657420616e6f746865722063686f636f6c617465"),
         referenceScriptHex="0080f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
     ),
+    "trezorParityBabbageOutputInlineDatumOnly": TxOutputBabbage(
+        destinations["trezorParityDatumHash"],
+        1,
+        datum=Datum(DatumType.INLINE, "5579657420616e6f746865722063686f636f6c617465"),
+    ),
     "datumHashExternal": TxOutputAlonzo(
         destinations["externalShelleyBaseScripthashKeyhash"],
         7120787,
@@ -3856,6 +3861,29 @@ testsBabbageTrezorComparison: list[SignTxTestCase] = [
                 Witness(
                     path="m/1852'/1815'/0'/0/0",
                     witnessSignatureHex="510a5dc70a5a09cc3cbba9dd78830028ddab4ad673f6dbb9bc82c8328af3a3b4bd462cf78a59095a61dcbc53c0571e3d17732ceff819d62403a891baa954b50d",
+                ),
+            ),
+        ),
+    ),
+    SignTxTestCase(
+        name="Sign_tx_with_inline_datum_without_ref_script_in_output_ordinary",
+        tx=Transaction(
+            network=Mainnet,
+            inputs=[inputs["utxoShelley"]],
+            outputs=[outputs["trezorParityBabbageOutputInlineDatumOnly"]],
+            validityIntervalStart=47,
+            includeNetworkId=True,
+        ),
+        signingMode=TransactionSigningMode.ORDINARY,
+        unit_test_expect=SignTxUnitTestExpect(
+            txBodyHex="a600818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7000181a300581d71477e52b3116b62fe8cd34a312615f5fcd678c94e1d6cdb86c1a3964c0101028201d818565579657420616e6f746865722063686f636f6c61746502182a030a08182f0f01"
+        ),
+        ragger_expect=SignTxRaggerExpect(
+            txHashHex="692b0305f8b04054c7929d9c012e3f18db35e8f32d561ef614e57e533d9d250f",
+            witnesses=(
+                Witness(
+                    path="m/1852'/1815'/0'/0/0",
+                    witnessSignatureHex="a99b86ea896e436c30d321d6235f67e30784cba02b651d483c70cbf520709d6586c4d387d6d15d22e04354d8eefa69b4323869f9af0302f07ef3a05da8e1e40f",
                 ),
             ),
         ),

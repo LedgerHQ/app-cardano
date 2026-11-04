@@ -23,6 +23,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 #ifdef HAVE_SWAP
     G_called_from_swap = false;
     G_swap_response_ready = false;
+    G_swap_signing_started = false;
 
     if (size < 1) {
         return 0;
@@ -88,6 +89,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     }
     G_called_from_swap = true;
     G_swap_response_ready = false;
+    G_swap_signing_started = false;
 
     static const uint8_t dummy = 0;
     while (size >= 3) {
@@ -116,6 +118,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
     G_called_from_swap = false;
     G_swap_response_ready = false;
+    G_swap_signing_started = false;
 #else
     (void) data;
     (void) size;

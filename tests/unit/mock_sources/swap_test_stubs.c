@@ -15,6 +15,7 @@
 volatile bool G_called_from_swap = false;
 volatile bool G_swap_response_ready = false;
 volatile uint8_t *G_swap_signing_return_value_address = NULL;
+bool G_swap_signing_started = false;
 
 unsigned int g_swap_stub_fee_check_calls = 0;
 unsigned int g_swap_stub_destination_check_calls = 0;
@@ -34,6 +35,7 @@ void swap_test_stubs_reset(void) {
     G_called_from_swap = false;
     G_swap_response_ready = false;
     G_swap_signing_return_value_address = NULL;
+    G_swap_signing_started = false;
 
     g_swap_stub_fee_check_calls = 0;
     g_swap_stub_destination_check_calls = 0;

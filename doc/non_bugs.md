@@ -62,8 +62,8 @@ Format: -> means explanation why not a bug.
 * Non-mainnet network IDs 2–15 are rendered with mainnet-looking `addr`/`stake` bech32 prefixes.
 -> not a bug. These IDs don't exist on any real network, and `isNetworkUsual()` returns false for them, triggering an unusual-network warning to the user. Behavior matches the old app.
 
-* Tx body field 15 (`network_id`) is hashed without a dedicated per-field review screen.
--> not a bug. Network details (Network ID, Protocol magic) are shown when the network is unusual OR when expert mode is enabled. For usual networks in non-expert mode, details are hidden to avoid bothering users.
+* Hash-only (blind-signing) review shows only the transaction hash, with no network name.
+-> not a bug. It is an explicit blind-signing opt-out whose assurance is out-of-band hash verification; the displayed hash commits to the network (network_id field + the network nibble of every output address), so a cross-network substitution changes it. The mandatory named network screen is enforced in the detailed review path.
 
 * `aux_data_hash_builder.c` trace buffers (`AUX_DATA_TRACE_BUFFER_SIZE` / `CVOTE_PAYLOAD_TRACE_BUFFER_SIZE`) are only 4 KiB each and will assert if a high-delegation CIP-36 registration overflows them.
 -> intentional. Buffers are debug-only (compiled in only under `-DTRACE_AUX_DATA_HASH_BUILDER`, never in production). The assert-on-overflow is deliberate: if a developer enables tracing and hits the limit, they get a loud failure rather than silent truncation of the trace, and can decide how to proceed. Production hashing is unaffected.

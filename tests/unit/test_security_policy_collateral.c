@@ -161,76 +161,81 @@ static void test_collateral_output_subpolicy_matrix(void **state) {
     (void) state;
     reset_context();
 
-    const bool expert_modes[] = {false, true};
-    const bool total_collateral_present_modes[] = {false, true};
-    const bool device_owned_modes[] = {false, true};
-    const uint16_t asset_group_counts[] = {0, 1};
+    typedef struct {
+        sign_tx_signingmode_t signing_mode;
+        bool expert_mode;
+        bool total_collateral_present;
+        bool device_owned;
+        security_policy_t expected_address_policy;
+        security_policy_t expected_ada_policy;
+        security_policy_t expected_tokens_policy;
+    } collateral_output_policy_row_t;
 
-    for (size_t expert_mode_index = 0; expert_mode_index < ARRAY_LEN(expert_modes);
-         expert_mode_index++) {
-        unit_test_expert_mode_enabled = expert_modes[expert_mode_index];
+    // short names for the middle columns of the policy table below
+    const bool expert_off = false;
+    const bool expert_on = true;
+    const bool no_total = false;
+    const bool total = true;
+    const bool third_party = false;
+    const bool device_owned = true;
+    const security_policy_t shown = POLICY_SHOW;
+    const security_policy_t hidden = POLICY_HIDE;
 
-        for (size_t total_collateral_index = 0;
-             total_collateral_index < ARRAY_LEN(total_collateral_present_modes);
-             total_collateral_index++) {
-            const bool total_collateral_present =
-                total_collateral_present_modes[total_collateral_index];
+    // clang-format off
+    const collateral_output_policy_row_t rows[] = {
+        // signing mode,                  expert      total      output        address  ADA      tokens
 
-            for (size_t device_owned_index = 0; device_owned_index < ARRAY_LEN(device_owned_modes);
-                 device_owned_index++) {
-                const bool device_owned = device_owned_modes[device_owned_index];
+        // third-party output: address, ADA amount and tokens are always shown
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_off, no_total,  third_party,  shown,   shown,   POLICY_SHOW},
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_off, total,     third_party,  shown,   shown,   POLICY_SHOW},
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_on,  no_total,  third_party,  shown,   shown,   POLICY_SHOW},
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_on,  total,     third_party,  shown,   shown,   POLICY_SHOW},
+        {SIGN_TX_SIGNINGMODE_UNRESTRICTED, expert_on,  no_total,  third_party,  shown,   shown,   POLICY_SHOW},
+        {SIGN_TX_SIGNINGMODE_UNRESTRICTED, expert_on,  total,     third_party,  shown,   shown,   POLICY_SHOW},
 
-                for (size_t asset_groups_index = 0;
-                     asset_groups_index < ARRAY_LEN(asset_group_counts);
-                     asset_groups_index++) {
-                    const uint16_t num_asset_groups = asset_group_counts[asset_groups_index];
+        // device-owned output with total collateral: the loss is bounded by the total
+        // collateral, so a standard change output is hidden (unrestricted always shows the address)
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_off, total,     device_owned, hidden,  hidden,  POLICY_HIDE},
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_on,  total,     device_owned, hidden,  hidden,  POLICY_HIDE},
+        {SIGN_TX_SIGNINGMODE_UNRESTRICTED, expert_on,  total,     device_owned, shown,   hidden,  POLICY_HIDE},
 
-                    tx_output_description_t output =
-                        device_owned
-                            ? make_collateral_output_description_device_owned(num_asset_groups)
-                            : make_collateral_output_description_third_party(num_asset_groups);
-                    warning_bits_t w = 0;
+        // device-owned output without total collateral: address shown, ADA amount only in expert mode
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_off, no_total,  device_owned, shown,   hidden,  POLICY_HIDE},
+        {SIGN_TX_SIGNINGMODE_PLUTUS,       expert_on,  no_total,  device_owned, shown,   shown,   POLICY_HIDE},
+        {SIGN_TX_SIGNINGMODE_UNRESTRICTED, expert_on,  no_total,  device_owned, shown,   shown,   POLICY_HIDE},
+    };
+    // clang-format on
 
-                    security_policy_t top_level_policy =
-                        policyForSignTxCollateralOutputAddress(&output,
-                                                               SIGN_TX_SIGNINGMODE_PLUTUS,
-                                                               MAINNET_NETWORK_ID,
-                                                               MAINNET_PROTOCOL_MAGIC,
-                                                               total_collateral_present,
-                                                               &w);
-                    assert_true(top_level_policy == POLICY_SHOW || top_level_policy == POLICY_HIDE);
+    for (size_t row_index = 0; row_index < ARRAY_LEN(rows); row_index++) {
+        const collateral_output_policy_row_t *row = &rows[row_index];
+        unit_test_expert_mode_enabled = row->expert_mode;
 
-                    security_policy_t ada_policy =
-                        policyForSignTxCollateralOutputAdaAmount(top_level_policy,
-                                                                 SIGN_TX_SIGNINGMODE_PLUTUS,
-                                                                 total_collateral_present,
-                                                                 &w);
-                    security_policy_t tokens_policy =
-                        policyForSignTxCollateralOutputTokens(top_level_policy,
-                                                              SIGN_TX_SIGNINGMODE_PLUTUS,
-                                                              &output,
-                                                              &w);
+        // one asset group, so that tokens are actually present in the output
+        tx_output_description_t output = row->device_owned
+                                             ? make_collateral_output_description_device_owned(1)
+                                             : make_collateral_output_description_third_party(1);
+        warning_bits_t w = 0;
 
-                    if (top_level_policy == POLICY_HIDE) {
-                        assert_int_equal(ada_policy, POLICY_HIDE);
-                        assert_int_equal(tokens_policy, POLICY_HIDE);
-                        continue;
-                    }
+        security_policy_t address_policy =
+            policyForSignTxCollateralOutputAddress(&output,
+                                                   row->signing_mode,
+                                                   MAINNET_NETWORK_ID,
+                                                   MAINNET_PROTOCOL_MAGIC,
+                                                   row->total_collateral_present,
+                                                   &w);
+        assert_int_equal(address_policy, row->expected_address_policy);
 
-                    const security_policy_t expected_ada_policy =
-                        (!total_collateral_present && unit_test_expert_mode_enabled) ? POLICY_SHOW
-                                                                                     : POLICY_HIDE;
-                    assert_int_equal(ada_policy, expected_ada_policy);
+        security_policy_t ada_policy =
+            policyForSignTxCollateralOutputAdaAmount(address_policy,
+                                                     row->signing_mode,
+                                                     &output,
+                                                     row->total_collateral_present,
+                                                     &w);
+        assert_int_equal(ada_policy, row->expected_ada_policy);
 
-                    const bool loss_of_control =
-                        (output.destination.type == DESTINATION_THIRD_PARTY);
-                    const security_policy_t expected_tokens_policy =
-                        (loss_of_control && unit_test_expert_mode_enabled) ? POLICY_SHOW
-                                                                           : POLICY_HIDE;
-                    assert_int_equal(tokens_policy, expected_tokens_policy);
-                }
-            }
-        }
+        security_policy_t tokens_policy =
+            policyForSignTxCollateralOutputTokens(address_policy, row->signing_mode, &output, &w);
+        assert_int_equal(tokens_policy, row->expected_tokens_policy);
     }
 }
 

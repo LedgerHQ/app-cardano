@@ -192,6 +192,94 @@ static void test_device_owned_output_denied_in_pool_registration_owner_mode(void
     assert_int_equal(policy, POLICY_DENY);
 }
 
+// Both modes share the same non-standard change output rules.
+static const sign_tx_signingmode_t NONSTANDARD_OUTPUT_SIGNING_MODES[] = {
+    SIGN_TX_SIGNINGMODE_ORDINARY,
+    SIGN_TX_SIGNINGMODE_PLUTUS,
+};
+
+static security_policy_t policy_for_device_owned_output(const address_params_t *params,
+                                                        sign_tx_signingmode_t signing_mode,
+                                                        warning_bits_t *w) {
+    tx_output_description_t output = {
+        .format = ARRAY_LEGACY,
+        .destination =
+            {
+                .type = DESTINATION_DEVICE_OWNED,
+                .params = *params,
+            },
+        .amount = 10,
+        .numAssetGroups = 0,
+        .includeDatum = false,
+        .includeRefScript = false,
+    };
+
+    return policyForSignTxOutput(&output, signing_mode, MAINNET_NETWORK_ID, 764824073, w);
+}
+
+static void test_nonstandard_output_unusual_path_shown_with_warning(void **state) {
+    (void) state;
+
+    for (size_t i = 0; i < ARRAY_LEN(NONSTANDARD_OUTPUT_SIGNING_MODES); i++) {
+        const sign_tx_signingmode_t signing_mode = NONSTANDARD_OUTPUT_SIGNING_MODES[i];
+        reset_context();
+
+        address_params_t params = make_standard_device_owned_base_output_params();
+        params.paymentKeyPath.path[4] = 5000000;
+        warning_bits_t w = 0;
+
+        assert_int_equal(policy_for_device_owned_output(&params, signing_mode, &w), POLICY_SHOW);
+        assert_true(warning_bits_has(w, WARNING_BIT_UNUSUAL_KEY_DERIVATION_PATH));
+
+        params = make_standard_device_owned_base_output_params();
+        params.stakingKeyPath.path[4] = 5000000;
+        w = 0;
+
+        assert_int_equal(policy_for_device_owned_output(&params, signing_mode, &w), POLICY_SHOW);
+        assert_true(warning_bits_has(w, WARNING_BIT_UNUSUAL_KEY_DERIVATION_PATH));
+    }
+}
+
+static void test_nonstandard_output_usual_paths_shown_without_warning(void **state) {
+    (void) state;
+
+    static const uint8_t staking_key_hash[ADDRESS_KEY_HASH_LENGTH] = {0};
+
+    for (size_t i = 0; i < ARRAY_LEN(NONSTANDARD_OUTPUT_SIGNING_MODES); i++) {
+        const sign_tx_signingmode_t signing_mode = NONSTANDARD_OUTPUT_SIGNING_MODES[i];
+        reset_context();
+
+        address_params_t params = make_standard_device_owned_base_output_params();
+        params.stakingKeyPath = make_ordinary_staking_path_account_one();
+        warning_bits_t w = 0;
+
+        assert_int_equal(policy_for_device_owned_output(&params, signing_mode, &w), POLICY_SHOW);
+        assert_int_equal(w, 0);
+
+        params = make_standard_device_owned_base_output_params();
+        params.stakingPartType = STAKING_PART_KEY_HASH;
+        params.stakingKeyHash = staking_key_hash;
+
+        assert_int_equal(policy_for_device_owned_output(&params, signing_mode, &w), POLICY_SHOW);
+        assert_int_equal(w, 0);
+    }
+}
+
+static void test_standard_output_hidden_in_non_expert(void **state) {
+    (void) state;
+
+    for (size_t i = 0; i < ARRAY_LEN(NONSTANDARD_OUTPUT_SIGNING_MODES); i++) {
+        const sign_tx_signingmode_t signing_mode = NONSTANDARD_OUTPUT_SIGNING_MODES[i];
+        reset_context();
+
+        address_params_t params = make_standard_device_owned_base_output_params();
+        warning_bits_t w = 0;
+
+        assert_int_equal(policy_for_device_owned_output(&params, signing_mode, &w), POLICY_HIDE);
+        assert_int_equal(w, 0);
+    }
+}
+
 static void test_committee_hot_key_hash_voter_denied_in_ordinary_tx(void **state) {
     (void) state;
     reset_context();
@@ -486,6 +574,9 @@ int main(void) {
         cmocka_unit_test(test_reward_key_third_party_output_denied),
         cmocka_unit_test(test_reward_script_third_party_output_denied),
         cmocka_unit_test(test_device_owned_output_denied_in_pool_registration_owner_mode),
+        cmocka_unit_test(test_nonstandard_output_unusual_path_shown_with_warning),
+        cmocka_unit_test(test_nonstandard_output_usual_paths_shown_without_warning),
+        cmocka_unit_test(test_standard_output_hidden_in_non_expert),
         cmocka_unit_test(test_committee_hot_key_hash_voter_denied_in_ordinary_tx),
         cmocka_unit_test(test_committee_hot_key_hash_voter_denied_in_multisig_tx),
         cmocka_unit_test(test_stake_registration_denied_in_pool_registration_owner),

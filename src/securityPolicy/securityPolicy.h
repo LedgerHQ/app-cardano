@@ -48,6 +48,7 @@ static inline warning_bits_t warning_bits_except_mask(warning_bits_t warnings,
 }
 
 bool shouldShowNetworkDetails(const tx_params_t *txParams);
+bool shouldShowNetworkRawDetails(const tx_params_t *txParams);
 
 security_policy_t policyForDerivePrivateKey(const bip44_path_t *path);
 
@@ -88,6 +89,7 @@ security_policy_t policyForSignTxCollateralOutputAddress(const tx_output_descrip
                                                          warning_bits_t *w);
 security_policy_t policyForSignTxCollateralOutputAdaAmount(security_policy_t outputPolicy,
                                                            sign_tx_signingmode_t txSigningMode,
+                                                           const tx_output_description_t *output,
                                                            bool isTotalCollateralPresent,
                                                            warning_bits_t *w);
 security_policy_t policyForSignTxCollateralOutputTokens(security_policy_t outputPolicy,
@@ -207,6 +209,7 @@ security_policy_t policyForSignTxDonation(sign_tx_signingmode_t txSigningMode,
                                           uint64_t donation,
                                           warning_bits_t *w);
 security_policy_t policyForSignTxDisplayTxHash(sign_tx_signingmode_t txSigningMode,
+                                               bool outputPayloadExceedsDisplay,
                                                warning_bits_t *w);
 
 security_policy_t policyForSignTxWitness(sign_tx_signingmode_t txSigningMode,
