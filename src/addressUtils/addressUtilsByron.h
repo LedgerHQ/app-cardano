@@ -5,6 +5,8 @@
 
 #include "bip44.h"
 
+#define BYRON_ADDRESS_MAX_DISPLAYABLE_SIZE 108
+
 size_t deriveAddress_byron(const bip44_path_t *pathSpec,
                            uint32_t protocolMagic,
                            uint8_t *outBuffer,

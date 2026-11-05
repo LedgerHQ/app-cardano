@@ -622,6 +622,8 @@ static bool is_addressBytes_suitable_for_tx_output(const uint8_t *addressBuffer,
                 return false;
 
             case BYRON: {
+                // longer addresses do not fit on the screen
+                CHECK(addressSize <= BYRON_ADDRESS_MAX_DISPLAYABLE_SIZE);
                 uint32_t extractedMagic;
                 CHECK(extractProtocolMagic(addressBuffer, addressSize, &extractedMagic));
                 CHECK(extractedMagic == protocolMagic);
@@ -638,32 +640,8 @@ static bool is_addressBytes_suitable_for_tx_output(const uint8_t *addressBuffer,
             }
         }
     }
-    {
-        // check address length
-        switch (addressType) {
-            case BASE_PAYMENT_KEY_STAKE_KEY:
-                CHECK(addressSize == 1 + ADDRESS_KEY_HASH_LENGTH + ADDRESS_KEY_HASH_LENGTH);
-                break;
-            case BASE_PAYMENT_KEY_STAKE_SCRIPT:
-                CHECK(addressSize == 1 + ADDRESS_KEY_HASH_LENGTH + SCRIPT_HASH_LENGTH);
-                break;
-            case BASE_PAYMENT_SCRIPT_STAKE_KEY:
-                CHECK(addressSize == 1 + SCRIPT_HASH_LENGTH + ADDRESS_KEY_HASH_LENGTH);
-                break;
-            case BASE_PAYMENT_SCRIPT_STAKE_SCRIPT:
-                CHECK(addressSize == 1 + SCRIPT_HASH_LENGTH + SCRIPT_HASH_LENGTH);
-                break;
-
-            case ENTERPRISE_KEY:
-                CHECK(addressSize == 1 + ADDRESS_KEY_HASH_LENGTH);
-                break;
-            case ENTERPRISE_SCRIPT:
-                CHECK(addressSize == 1 + SCRIPT_HASH_LENGTH);
-                break;
-
-            default:  // not meaningful or complicated to verify address length in the other cases
-                break;
-        }
+    if (addressType != BYRON) {
+        CHECK(isValidShelleyAddressLength(addressType, addressSize));
     }
     return true;
 #undef CHECK
@@ -2840,6 +2818,8 @@ security_policy_t policyForCVoteRegistrationPaymentDestination(
                 getAddressHeader(destination->address.buffer, destination->address.length);
             DENY_UNLESS(isShelleyAddressType(getAddressType(header)));
             DENY_IF(getNetworkId(header) != networkId);
+            DENY_UNLESS(
+                isValidShelleyAddressLength(getAddressType(header), destination->address.length));
 
             // we don't know who owns the address
             // to possibly avoid this warning, send the address as parameters (see above)

@@ -132,6 +132,69 @@ static void test_reward_key_third_party_output_denied(void **state) {
     assert_int_equal(policy, POLICY_DENY);
 }
 
+static security_policy_t policy_for_third_party_output(address_type_t address_type,
+                                                       size_t address_length) {
+    uint8_t address[MAX_ADDRESS_LENGTH] = {0};
+    assert_true(address_length <= sizeof(address));
+    address[0] = constructShelleyAddressHeader(address_type, MAINNET_NETWORK_ID);
+
+    tx_output_description_t output = {
+        .format = ARRAY_LEGACY,
+        .destination =
+            {
+                .type = DESTINATION_THIRD_PARTY,
+                .address =
+                    {
+                        .buffer = address,
+                        .length = address_length,
+                    },
+            },
+        .amount = 10,
+        .numAssetGroups = 0,
+        .includeDatum = false,
+        .includeRefScript = false,
+    };
+    warning_bits_t w = 0;
+    return policyForSignTxOutput(&output,
+                                 SIGN_TX_SIGNINGMODE_ORDINARY,
+                                 MAINNET_NETWORK_ID,
+                                 764824073,
+                                 &w);
+}
+
+static void test_shelley_third_party_output_length_limits(void **state) {
+    (void) state;
+    reset_context();
+
+    const struct {
+        address_type_t address_type;
+        size_t min_length;
+        size_t max_length;
+    } length_limits[] = {
+        {BASE_PAYMENT_KEY_STAKE_KEY, 57, 57},
+        {BASE_PAYMENT_KEY_STAKE_SCRIPT, 57, 57},
+        {BASE_PAYMENT_SCRIPT_STAKE_KEY, 57, 57},
+        {BASE_PAYMENT_SCRIPT_STAKE_SCRIPT, 57, 57},
+        {POINTER_KEY, 32, 40},
+        {POINTER_SCRIPT, 32, 40},
+        {ENTERPRISE_KEY, 29, 29},
+        {ENTERPRISE_SCRIPT, 29, 29},
+    };
+    for (size_t i = 0; i < sizeof(length_limits) / sizeof(length_limits[0]); i++) {
+        const address_type_t address_type = length_limits[i].address_type;
+        assert_int_equal(
+            policy_for_third_party_output(address_type, length_limits[i].min_length - 1),
+            POLICY_DENY);
+        assert_int_equal(policy_for_third_party_output(address_type, length_limits[i].min_length),
+                         POLICY_SHOW);
+        assert_int_equal(policy_for_third_party_output(address_type, length_limits[i].max_length),
+                         POLICY_SHOW);
+        assert_int_equal(
+            policy_for_third_party_output(address_type, length_limits[i].max_length + 1),
+            POLICY_DENY);
+    }
+}
+
 static void test_reward_script_third_party_output_denied(void **state) {
     (void) state;
     reset_context();
@@ -572,6 +635,7 @@ static void test_pool_registration_owner_with_script_hash_denied(void **state) {
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_reward_key_third_party_output_denied),
+        cmocka_unit_test(test_shelley_third_party_output_length_limits),
         cmocka_unit_test(test_reward_script_third_party_output_denied),
         cmocka_unit_test(test_device_owned_output_denied_in_pool_registration_owner_mode),
         cmocka_unit_test(test_nonstandard_output_unusual_path_shown_with_warning),
