@@ -1706,6 +1706,8 @@ security_policy_t policyForSignTxStakePoolRegistrationPoolId(sign_tx_signingmode
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR:
             // operator should see a path
             DENY_UNLESS(poolId->keyReferenceType == KEY_REFERENCE_PATH);
+            DENY_UNLESS(bip44_isPoolColdKeyPath(&poolId->path));
+            SHOW_IF(mark_unusual_key_derivation(w, &poolId->path));
             SHOW();
             break;
 
@@ -1772,6 +1774,9 @@ security_policy_t policyForSignTxStakePoolRegistrationRewardAccount(
     switch (txSigningMode) {
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OWNER:
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR:
+            if (poolRewardAccount->keyReferenceType == KEY_REFERENCE_PATH) {
+                SHOW_IF(mark_unusual_key_derivation(w, &poolRewardAccount->path));
+            }
             SHOW();
             break;
 

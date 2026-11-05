@@ -588,6 +588,53 @@ static void test_pool_registration_reward_account_path_compatibility(void **stat
     assert_int_equal(policy, POLICY_SHOW);
 }
 
+static security_policy_t policy_for_operator_pool_id_path(const bip44_path_t *pool_id_path,
+                                                          warning_bits_t *w) {
+    pool_id_t pool_id;
+    memset(&pool_id, 0, sizeof(pool_id));
+    pool_id.keyReferenceType = KEY_REFERENCE_PATH;
+    pool_id.path = *pool_id_path;
+    return policyForSignTxStakePoolRegistrationPoolId(
+        SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR,
+        &pool_id,
+        w);
+}
+
+static void test_pool_registration_operator_pool_id_payment_path_denied(void **state) {
+    (void) state;
+    reset_context();
+
+    bip44_path_t payment_path = make_ordinary_staking_path();
+    payment_path.path[3] = 0;  // CARDANO_CHAIN_EXTERNAL
+
+    warning_bits_t w = 0;
+    assert_int_equal(policy_for_operator_pool_id_path(&payment_path, &w), POLICY_DENY);
+}
+
+static void test_pool_registration_operator_pool_id_cold_key_path_shown(void **state) {
+    (void) state;
+    reset_context();
+
+    const bip44_path_t pool_cold_key_path = make_pool_cold_key_path();
+
+    warning_bits_t w = 0;
+    assert_int_equal(policy_for_operator_pool_id_path(&pool_cold_key_path, &w), POLICY_SHOW);
+    assert_false(warning_bits_has(w, WARNING_BIT_UNUSUAL_KEY_DERIVATION_PATH));
+}
+
+static void test_pool_registration_operator_pool_id_unusual_cold_key_index_warns(void **state) {
+    (void) state;
+    reset_context();
+
+    bip44_path_t unusual_pool_cold_key_path = make_pool_cold_key_path();
+    unusual_pool_cold_key_path.path[3] = bip44_harden(1000001);  // above the reasonable index
+
+    warning_bits_t w = 0;
+    assert_int_equal(policy_for_operator_pool_id_path(&unusual_pool_cold_key_path, &w),
+                     POLICY_SHOW);
+    assert_true(warning_bits_has(w, WARNING_BIT_UNUSUAL_KEY_DERIVATION_PATH));
+}
+
 // ======================================================================
 // combine_security_policies: exhaustive combination matrix
 // ======================================================================
@@ -657,6 +704,9 @@ int main(void) {
         cmocka_unit_test(test_stake_pool_key_path_voter_allowed_in_unrestricted),
         cmocka_unit_test(test_pool_cold_required_signer_allowed_in_unrestricted),
         cmocka_unit_test(test_pool_registration_reward_account_path_compatibility),
+        cmocka_unit_test(test_pool_registration_operator_pool_id_payment_path_denied),
+        cmocka_unit_test(test_pool_registration_operator_pool_id_cold_key_path_shown),
+        cmocka_unit_test(test_pool_registration_operator_pool_id_unusual_cold_key_index_warns),
         cmocka_unit_test(test_pool_registration_owner_with_script_hash_denied),
         cmocka_unit_test(test_combine_security_policies_all_combinations),
     };
