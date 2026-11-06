@@ -9071,7 +9071,7 @@ witnessDenyTestCases: list[SignTxTestCase] = [
                 Certificate(
                     type=CertificateType.STAKE_POOL_REGISTRATION,
                     params=PoolRegistrationParams(
-                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1852'/1815'/0'/0/0"),
+                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1853'/1815'/0'/0'"),
                         vrfKeyHashHex="0123456789012345678901234567890123456789012345678901234567890123",
                         pledge=0,
                         cost=0,
@@ -9101,7 +9101,7 @@ witnessDenyTestCases: list[SignTxTestCase] = [
                 Certificate(
                     type=CertificateType.STAKE_POOL_REGISTRATION,
                     params=PoolRegistrationParams(
-                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1852'/1815'/0'/0/0"),
+                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1853'/1815'/0'/0'"),
                         vrfKeyHashHex="0123456789012345678901234567890123456789012345678901234567890123",
                         pledge=0,
                         cost=0,
@@ -9131,7 +9131,7 @@ witnessDenyTestCases: list[SignTxTestCase] = [
                 Certificate(
                     type=CertificateType.STAKE_POOL_REGISTRATION,
                     params=PoolRegistrationParams(
-                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1852'/1815'/0'/0/0"),
+                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1853'/1815'/0'/0'"),
                         vrfKeyHashHex="0123456789012345678901234567890123456789012345678901234567890123",
                         pledge=0,
                         cost=0,
@@ -9161,7 +9161,7 @@ witnessDenyTestCases: list[SignTxTestCase] = [
                 Certificate(
                     type=CertificateType.STAKE_POOL_REGISTRATION,
                     params=PoolRegistrationParams(
-                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1852'/1815'/0'/0/0"),
+                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1853'/1815'/0'/0'"),
                         vrfKeyHashHex="0123456789012345678901234567890123456789012345678901234567890123",
                         pledge=0,
                         cost=0,
@@ -9191,7 +9191,7 @@ witnessDenyTestCases: list[SignTxTestCase] = [
                 Certificate(
                     type=CertificateType.STAKE_POOL_REGISTRATION,
                     params=PoolRegistrationParams(
-                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1852'/1815'/0'/0/0"),
+                        poolKey=PoolKey(type=PoolKeyType.DEVICE_OWNED, key="m/1853'/1815'/0'/0'"),
                         vrfKeyHashHex="0123456789012345678901234567890123456789012345678901234567890123",
                         pledge=0,
                         cost=0,

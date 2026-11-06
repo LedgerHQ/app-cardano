@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Streaming CVote review now shows its security warnings before the first data page.
 - The ADA amount and tokens of a third-party collateral return output are now shown in
   all modes.
+- The app now rejects a Shelley address with a wrong length in an output or in a
+  CIP-36 payment address. Before, a too long pointer address reset the app.
+- The app now rejects a Byron address longer than 108 bytes in an output. Before, such
+  an address reset the app because it does not fit on the screen.
+- In pool registration as an operator, the app now accepts only a pool cold key path
+  for the pool ID. It shows a warning for an unusual pool ID or reward account path.
 
 ## [8.0.10]
 

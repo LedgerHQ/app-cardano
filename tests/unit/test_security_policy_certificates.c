@@ -132,6 +132,69 @@ static void test_reward_key_third_party_output_denied(void **state) {
     assert_int_equal(policy, POLICY_DENY);
 }
 
+static security_policy_t policy_for_third_party_output(address_type_t address_type,
+                                                       size_t address_length) {
+    uint8_t address[MAX_ADDRESS_LENGTH] = {0};
+    assert_true(address_length <= sizeof(address));
+    address[0] = constructShelleyAddressHeader(address_type, MAINNET_NETWORK_ID);
+
+    tx_output_description_t output = {
+        .format = ARRAY_LEGACY,
+        .destination =
+            {
+                .type = DESTINATION_THIRD_PARTY,
+                .address =
+                    {
+                        .buffer = address,
+                        .length = address_length,
+                    },
+            },
+        .amount = 10,
+        .numAssetGroups = 0,
+        .includeDatum = false,
+        .includeRefScript = false,
+    };
+    warning_bits_t w = 0;
+    return policyForSignTxOutput(&output,
+                                 SIGN_TX_SIGNINGMODE_ORDINARY,
+                                 MAINNET_NETWORK_ID,
+                                 764824073,
+                                 &w);
+}
+
+static void test_shelley_third_party_output_length_limits(void **state) {
+    (void) state;
+    reset_context();
+
+    const struct {
+        address_type_t address_type;
+        size_t min_length;
+        size_t max_length;
+    } length_limits[] = {
+        {BASE_PAYMENT_KEY_STAKE_KEY, 57, 57},
+        {BASE_PAYMENT_KEY_STAKE_SCRIPT, 57, 57},
+        {BASE_PAYMENT_SCRIPT_STAKE_KEY, 57, 57},
+        {BASE_PAYMENT_SCRIPT_STAKE_SCRIPT, 57, 57},
+        {POINTER_KEY, 32, 40},
+        {POINTER_SCRIPT, 32, 40},
+        {ENTERPRISE_KEY, 29, 29},
+        {ENTERPRISE_SCRIPT, 29, 29},
+    };
+    for (size_t i = 0; i < sizeof(length_limits) / sizeof(length_limits[0]); i++) {
+        const address_type_t address_type = length_limits[i].address_type;
+        assert_int_equal(
+            policy_for_third_party_output(address_type, length_limits[i].min_length - 1),
+            POLICY_DENY);
+        assert_int_equal(policy_for_third_party_output(address_type, length_limits[i].min_length),
+                         POLICY_SHOW);
+        assert_int_equal(policy_for_third_party_output(address_type, length_limits[i].max_length),
+                         POLICY_SHOW);
+        assert_int_equal(
+            policy_for_third_party_output(address_type, length_limits[i].max_length + 1),
+            POLICY_DENY);
+    }
+}
+
 static void test_reward_script_third_party_output_denied(void **state) {
     (void) state;
     reset_context();
@@ -525,6 +588,53 @@ static void test_pool_registration_reward_account_path_compatibility(void **stat
     assert_int_equal(policy, POLICY_SHOW);
 }
 
+static security_policy_t policy_for_operator_pool_id_path(const bip44_path_t *pool_id_path,
+                                                          warning_bits_t *w) {
+    pool_id_t pool_id;
+    memset(&pool_id, 0, sizeof(pool_id));
+    pool_id.keyReferenceType = KEY_REFERENCE_PATH;
+    pool_id.path = *pool_id_path;
+    return policyForSignTxStakePoolRegistrationPoolId(
+        SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR,
+        &pool_id,
+        w);
+}
+
+static void test_pool_registration_operator_pool_id_payment_path_denied(void **state) {
+    (void) state;
+    reset_context();
+
+    bip44_path_t payment_path = make_ordinary_staking_path();
+    payment_path.path[3] = 0;  // CARDANO_CHAIN_EXTERNAL
+
+    warning_bits_t w = 0;
+    assert_int_equal(policy_for_operator_pool_id_path(&payment_path, &w), POLICY_DENY);
+}
+
+static void test_pool_registration_operator_pool_id_cold_key_path_shown(void **state) {
+    (void) state;
+    reset_context();
+
+    const bip44_path_t pool_cold_key_path = make_pool_cold_key_path();
+
+    warning_bits_t w = 0;
+    assert_int_equal(policy_for_operator_pool_id_path(&pool_cold_key_path, &w), POLICY_SHOW);
+    assert_false(warning_bits_has(w, WARNING_BIT_UNUSUAL_KEY_DERIVATION_PATH));
+}
+
+static void test_pool_registration_operator_pool_id_unusual_cold_key_index_warns(void **state) {
+    (void) state;
+    reset_context();
+
+    bip44_path_t unusual_pool_cold_key_path = make_pool_cold_key_path();
+    unusual_pool_cold_key_path.path[3] = bip44_harden(1000001);  // above the reasonable index
+
+    warning_bits_t w = 0;
+    assert_int_equal(policy_for_operator_pool_id_path(&unusual_pool_cold_key_path, &w),
+                     POLICY_SHOW);
+    assert_true(warning_bits_has(w, WARNING_BIT_UNUSUAL_KEY_DERIVATION_PATH));
+}
+
 // ======================================================================
 // combine_security_policies: exhaustive combination matrix
 // ======================================================================
@@ -572,6 +682,7 @@ static void test_pool_registration_owner_with_script_hash_denied(void **state) {
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_reward_key_third_party_output_denied),
+        cmocka_unit_test(test_shelley_third_party_output_length_limits),
         cmocka_unit_test(test_reward_script_third_party_output_denied),
         cmocka_unit_test(test_device_owned_output_denied_in_pool_registration_owner_mode),
         cmocka_unit_test(test_nonstandard_output_unusual_path_shown_with_warning),
@@ -593,6 +704,9 @@ int main(void) {
         cmocka_unit_test(test_stake_pool_key_path_voter_allowed_in_unrestricted),
         cmocka_unit_test(test_pool_cold_required_signer_allowed_in_unrestricted),
         cmocka_unit_test(test_pool_registration_reward_account_path_compatibility),
+        cmocka_unit_test(test_pool_registration_operator_pool_id_payment_path_denied),
+        cmocka_unit_test(test_pool_registration_operator_pool_id_cold_key_path_shown),
+        cmocka_unit_test(test_pool_registration_operator_pool_id_unusual_cold_key_index_warns),
         cmocka_unit_test(test_pool_registration_owner_with_script_hash_denied),
         cmocka_unit_test(test_combine_security_policies_all_combinations),
     };

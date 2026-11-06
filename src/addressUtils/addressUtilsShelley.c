@@ -59,6 +59,54 @@ bool isShelleyAddressType(uint8_t addressType) {
     }
 }
 
+static bool isValidPointerAddressLength(size_t addressSize, size_t paymentHashLength) {
+    const size_t minPointerAddressLength =
+        ADDRESS_HEADER_LENGTH + paymentHashLength +
+        BLOCKCHAIN_POINTER_UINT_COUNT * VARIABLE_LENGTH_UINT_MIN_SIZE;
+    const size_t maxPointerAddressLength =
+        ADDRESS_HEADER_LENGTH + paymentHashLength + SLOT_NO_VARIABLE_LENGTH_MAX_SIZE +
+        TX_INDEX_VARIABLE_LENGTH_MAX_SIZE + CERT_INDEX_VARIABLE_LENGTH_MAX_SIZE;
+    return addressSize >= minPointerAddressLength && addressSize <= maxPointerAddressLength;
+}
+
+bool isValidShelleyAddressLength(address_type_t addressType, size_t addressSize) {
+    switch (addressType) {
+        case BASE_PAYMENT_KEY_STAKE_KEY:
+            return addressSize ==
+                   ADDRESS_HEADER_LENGTH + ADDRESS_KEY_HASH_LENGTH + ADDRESS_KEY_HASH_LENGTH;
+        case BASE_PAYMENT_KEY_STAKE_SCRIPT:
+            return addressSize ==
+                   ADDRESS_HEADER_LENGTH + ADDRESS_KEY_HASH_LENGTH + SCRIPT_HASH_LENGTH;
+        case BASE_PAYMENT_SCRIPT_STAKE_KEY:
+            return addressSize ==
+                   ADDRESS_HEADER_LENGTH + SCRIPT_HASH_LENGTH + ADDRESS_KEY_HASH_LENGTH;
+        case BASE_PAYMENT_SCRIPT_STAKE_SCRIPT:
+            return addressSize == ADDRESS_HEADER_LENGTH + SCRIPT_HASH_LENGTH + SCRIPT_HASH_LENGTH;
+
+        case POINTER_KEY:
+            return isValidPointerAddressLength(addressSize, ADDRESS_KEY_HASH_LENGTH);
+        case POINTER_SCRIPT:
+            return isValidPointerAddressLength(addressSize, SCRIPT_HASH_LENGTH);
+
+        case ENTERPRISE_KEY:
+            return addressSize == ADDRESS_HEADER_LENGTH + ADDRESS_KEY_HASH_LENGTH;
+        case ENTERPRISE_SCRIPT:
+            return addressSize == ADDRESS_HEADER_LENGTH + SCRIPT_HASH_LENGTH;
+
+        case REWARD_KEY:
+            return addressSize == ADDRESS_HEADER_LENGTH + ADDRESS_KEY_HASH_LENGTH;
+        case REWARD_SCRIPT:
+            return addressSize == ADDRESS_HEADER_LENGTH + SCRIPT_HASH_LENGTH;
+
+        // LCOV_EXCL_START
+        default:
+            // callers accept only Shelley address types
+            ASSERT(false);
+            return false;
+            // LCOV_EXCL_STOP
+    }
+}
+
 uint8_t constructShelleyAddressHeader(address_type_t type, uint8_t networkId) {
     ASSERT(isSupportedAddressType(type));
     ASSERT(isValidNetworkId(networkId));
