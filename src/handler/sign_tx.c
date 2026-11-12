@@ -496,13 +496,16 @@ void handler_sign_tx(buffer_t *cdata, uint8_t p1) {
             }
             ASSERT(G_context.state.tx_state == TX_STATE_NONE);
 #ifdef HAVE_SWAP
-            if (G_called_from_swap && G_swap_response_ready) {
-                // Safety against trying to make the app sign multiple TXs in swap mode
+            // Swap allows signing only one transaction per Exchange approval: reject a second
+            // INIT once signing has started (survives a mid-flow reset) or finished.
+            if (G_called_from_swap && (G_swap_signing_started || G_swap_response_ready)) {
                 TRACE_MODULE("Safety against double signing triggered");
                 swap_reject_and_exit(SWAP_EC_ERROR_GENERIC, SWAP_APP_CODE_MULTI_SIGN);
             }
             if (G_called_from_swap) {
                 TRACE_MODULE("Swap mode transaction started");
+                // Consume the single-tx swap authorization; the latch survives reset_app_context().
+                G_swap_signing_started = true;
                 // The transaction hash is an intermediate response in Cardano's swap flow.
                 // Only the final witness response may return control to Exchange.
                 G_swap_response_ready = false;

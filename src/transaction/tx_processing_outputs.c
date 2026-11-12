@@ -242,6 +242,10 @@ static bool tx_process_output(buffer_t *output_buf,
             return false;
         }
 
+        if (datum.type == DATUM_INLINE) {
+            state->output_payload_exceeds_display = true;
+        }
+
         if (mode->run_validation) {
             APPLY_POLICY(datum_policy, tx_ui_plan_or_render_output_datum, mode, &datum);
         }
@@ -271,6 +275,8 @@ static bool tx_process_output(buffer_t *output_buf,
             tx_handle_parse_error(SWO_TX_PARSING_FAIL_OUTPUTS);
             return false;
         }
+
+        state->output_payload_exceeds_display = true;
 
         if (mode->run_validation) {
             APPLY_POLICY(ref_script_policy,
@@ -348,6 +354,7 @@ static bool tx_process_collateral_return_output(buffer_t *output_buf,
         collateral_ada_policy =
             policyForSignTxCollateralOutputAdaAmount(output_policy,
                                                      tx_params->txSigningMode,
+                                                     &output_desc,
                                                      tx_params->includeTotalCollateral,
                                                      warning_bits);
         APPLY_POLICY(collateral_ada_policy,

@@ -128,6 +128,29 @@ static void cvote_streaming_display_current_page(void) {
     nbgl_useCaseReviewStreamingContinue(g_pairsList, cvote_aux_data_streaming_continue_choice);
 }
 
+// The first data page must be displayed only from here; displaying it earlier
+// would replace the start screen and its warnings before the user sees them.
+static void cvote_aux_data_streaming_start_choice(bool confirm) {
+    cvote_aux_data_t *aux_data = &tx_aux_data_ctx()->cvote_aux_data;
+    LEDGER_ASSERT(G_context.req_type == REQUEST_SIGN_TRANSACTION, "bad state");
+    LEDGER_ASSERT(aux_data->ui_streaming.on, "bad state");
+    LEDGER_ASSERT(aux_data->ui_streaming.review_started, "bad state");
+    LEDGER_ASSERT(aux_data->state == CVOTE_AUX_DATA_STATE_STREAMING_INITIAL_PAGE, "bad state");
+
+    if (!confirm) {
+        TRACE_MODULE("User rejected on streaming start screen");
+        cvote_aux_data_review_cleanup();
+        send_swo_and_reset(SWO_CONDITIONS_NOT_SATISFIED);
+        nbgl_useCaseReviewStatus(STATUS_TYPE_OPERATION_REJECTED, ui_menu_main);
+        return;
+    }
+
+    TRACE_MODULE("User confirmed streaming start screen");
+    // Initial page is now ready; next APDU accepted by the state machine is delegation.
+    aux_data->state = CVOTE_AUX_DATA_STATE_RECEIVING_DELEGATIONS;
+    cvote_streaming_display_current_page();
+}
+
 static bool cvote_start_streaming_review(cvote_aux_data_t *aux_data) {
     ASSERT(aux_data != NULL);
     LEDGER_ASSERT(!aux_data->ui_streaming.review_started, "Streaming review already started");
@@ -152,7 +175,7 @@ static bool cvote_start_streaming_review(cvote_aux_data_t *aux_data) {
                                              cvote_review_title,
                                              NULL,
                                              warning_ptr,
-                                             cvote_aux_data_streaming_continue_choice);
+                                             cvote_aux_data_streaming_start_choice);
 
     return true;
 }
@@ -462,13 +485,10 @@ void ui_cvote_aux_data_streaming_show_initial_page(cvote_aux_data_t *aux_data) {
 
     LEDGER_ASSERT(!aux_data->ui_streaming.review_started,
                   "Streaming review should start exactly once from initial page");
+    // The initial page is displayed from cvote_aux_data_streaming_start_choice.
     if (!cvote_start_streaming_review(aux_data)) {
         return;  // LCOV_EXCL_LINE
     }
-
-    // Initial page is now ready; next APDU accepted by the state machine is delegation.
-    aux_data->state = CVOTE_AUX_DATA_STATE_RECEIVING_DELEGATIONS;
-    cvote_streaming_display_current_page();
 }
 
 void ui_cvote_aux_data_add_delegation(cvote_aux_data_t *aux_data,

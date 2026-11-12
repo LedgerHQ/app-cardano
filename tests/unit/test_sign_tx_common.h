@@ -125,6 +125,8 @@ static inline void run_tx_and_verify(const uint8_t *init_raw,
                      include_validity_interval_start);
 
     if (include_aux_data_hash && aux_data_type == AUX_DATA_TYPE_CVOTE_REGISTRATION) {
+        // Confirm the CVote streaming start screen (used with many delegations).
+        nbgl_mock_set_streaming_start_auto_complete(true, true);
         assert_non_null(aux_data_init_payload);
         assert_true(aux_data_init_payload_len > 0);
         test_read_buffer_t aux_init_buffer =
@@ -471,6 +473,8 @@ static inline void run_fixture_reject_with_expert_mode(const tx_fixture_t *fixtu
 
     if (fixture_has_cvote_aux_data(fixture)) {
         assert_int_equal(G_context.state.tx_state, TX_STATE_AUX_DATA);
+        // Confirm the CVote streaming start screen (used with many delegations).
+        nbgl_mock_set_streaming_start_auto_complete(true, true);
         if (reject_stage == REJECT_STAGE_AUX) {
             const bool final_decisions[] = {false};
             nbgl_mock_set_final_decisions(final_decisions, ARRAY_LEN(final_decisions));

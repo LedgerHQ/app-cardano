@@ -83,8 +83,9 @@
 #define UI_PAIRS_REQUIRED_SIGNER  1  // key 14: "Required signer"
 #define UI_PAIRS_NETWORK_ID       1  // "Network ID"
 #define UI_PAIRS_PROTOCOL_MAGIC   1  // "Protocol magic"
-#define UI_PAIRS_NETWORK_DETAILS \
-    (UI_PAIRS_NETWORK_ID + UI_PAIRS_PROTOCOL_MAGIC)  // network details block
+#define UI_PAIRS_NETWORK_NAME     1  // always-shown "Network" line with the resolved name
+#define UI_PAIRS_NETWORK_RAW_DETAILS \
+    (UI_PAIRS_NETWORK_ID + UI_PAIRS_PROTOCOL_MAGIC)  // raw id + magic, expert/unusual only
 #define UI_PAIRS_COLLATERAL_OUTPUT_ADDRESS 1         // key 16: "Collateral address"
 #define UI_PAIRS_COLLATERAL_OUTPUT_DEVICE_OWNED \
     (UI_PAIRS_PAYMENT_INFO +                    \
@@ -94,8 +95,10 @@
 #define UI_PAIRS_REFERENCE_INPUT          1  // key 18: "Ref input"
 #define UI_PAIRS_VOTER \
     2  // key 19: "Voter" index header + voter credential (Committee hot key, DRep key, SPO key)
-#define UI_PAIRS_VOTE     3  // key 19: "Gov action tx hash", "Gov action index", "Vote"
-#define UI_PAIRS_ANCHOR   2  // key 19: "Anchor URL", "Anchor hash" (if anchor included)
-#define UI_PAIRS_TREASURY 1  // key 21: "Treasury"
-#define UI_PAIRS_DONATION 1  // key 22: "Donation"
-#define UI_PAIRS_TX_HASH  1  // Transaction hash display
+#define UI_PAIRS_VOTE_WITH_ID \
+    4  // key 19: "Gov action ID" (CIP-0129), "Gov action tx hash", "Gov action index", "Vote"
+#define UI_PAIRS_VOTE_WITHOUT_ID 3  // key 19: as above without "Gov action ID"
+#define UI_PAIRS_ANCHOR          2  // key 19: "Anchor URL", "Anchor hash" (if anchor included)
+#define UI_PAIRS_TREASURY        1  // key 21: "Treasury"
+#define UI_PAIRS_DONATION        1  // key 22: "Donation"
+#define UI_PAIRS_TX_HASH         1  // Transaction hash display

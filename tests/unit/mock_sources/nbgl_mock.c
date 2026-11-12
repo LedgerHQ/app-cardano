@@ -31,6 +31,7 @@ static bool g_streaming_start_confirm = true;
 static bool g_streaming_continue_reject_enabled = false;
 static size_t g_streaming_continue_reject_at_call = 0;
 static size_t g_streaming_continue_call_count = 0;
+static nbgl_choiceCallback_t g_pending_streaming_start_callback = NULL;
 static char g_last_choice_message[NBGL_MOCK_TEXT_BUFFER_SIZE];
 static char g_last_status_message[NBGL_MOCK_TEXT_BUFFER_SIZE];
 static bool g_last_status_success = false;
@@ -53,6 +54,7 @@ void nbgl_mock_reset(void) {
     g_streaming_continue_reject_enabled = false;
     g_streaming_continue_reject_at_call = 0;
     g_streaming_continue_call_count = 0;
+    g_pending_streaming_start_callback = NULL;
     memset(g_last_choice_message, 0, sizeof(g_last_choice_message));
     memset(g_last_status_message, 0, sizeof(g_last_status_message));
     g_last_status_success = false;
@@ -96,6 +98,21 @@ void nbgl_mock_set_streaming_continue_reject_at_call(size_t call_index) {
     g_streaming_continue_reject_enabled = true;
     g_streaming_continue_reject_at_call = call_index;
     g_streaming_continue_call_count = 0;
+}
+
+size_t nbgl_mock_streaming_continue_call_count(void) {
+    return g_streaming_continue_call_count;
+}
+
+bool nbgl_mock_has_pending_streaming_start(void) {
+    return g_pending_streaming_start_callback != NULL;
+}
+
+void nbgl_mock_complete_pending_streaming_start(bool confirm) {
+    LEDGER_ASSERT(g_pending_streaming_start_callback != NULL, "No pending streaming start");
+    nbgl_choiceCallback_t pending_callback = g_pending_streaming_start_callback;
+    g_pending_streaming_start_callback = NULL;
+    pending_callback(confirm);
 }
 
 static bool nbgl_mock_next_final_decision(void) {
@@ -254,7 +271,10 @@ void nbgl_useCaseAdvancedReviewStreamingStart(nbgl_operationType_t operationType
     (void) warning;
     if (g_streaming_start_auto_complete && choiceCallback != NULL) {
         choiceCallback(g_streaming_start_confirm);
+        return;
     }
+    // Pending until the test calls nbgl_mock_complete_pending_streaming_start().
+    g_pending_streaming_start_callback = choiceCallback;
 }
 
 void nbgl_useCaseReviewStreamingContinue(const nbgl_contentTagValueList_t *tagValueList,

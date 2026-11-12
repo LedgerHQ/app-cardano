@@ -37,6 +37,7 @@
 #include "sign_tx_ctx.h"
 #include "tx.h"
 #include "ui_utils.h"
+#include "ui_warnings.h"
 #include "apdu_finalization_check.h"
 #include "test_read_buffer_helpers.h"
 #include "init_apdu.h"
@@ -375,21 +376,14 @@ static void test_cvote_user_reject_on_final_review_resets_context(void **state) 
 }
 
 // ---------------------------------------------------------------------------
-// Test 5: User rejects on the streaming start screen (streaming mode)
+// Tests 5-7: Streaming start screen (streaming mode)
 //
-// cvote_aux_data_streaming_continue_choice is used both as the callback for
-// nbgl_useCaseAdvancedReviewStreamingStart (streaming start screen) and
-// nbgl_useCaseReviewStreamingContinue (per-delegation pages in streaming mode).
 // Streaming mode is only active when the total UI pair count exceeds MAX_UI_PAIRS,
-// which requires more than ~41 delegations.
+// which requires more than ~41 delegations. These tests use an AUX_DATA_INIT payload
+// with 42 delegations to force streaming mode without sending the delegation APDUs.
 //
-// This test uses an AUX_DATA_INIT payload with 42 delegations to force streaming
-// mode, then rejects on the streaming start screen via nbgl_mock auto-complete
-// with confirm=false.  This exercises the !confirm branch in
-// cvote_aux_data_streaming_continue_choice without sending all 42 delegation APDUs.
-//
-// The streaming start screen fires the callback synchronously in the mock, so
-// the AUX_DATA_INIT APDU itself returns SWO_CONDITIONS_NOT_SATISFIED.
+// The initial data page must be displayed only after the user passes the start screen
+// (warnings and review intro), otherwise it replaces that screen before the user sees it.
 // ---------------------------------------------------------------------------
 
 // AUX_DATA_INIT with 42 delegations: same as CVOTE_UI_TEST_AUX_DATA_INIT_PAYLOAD
@@ -403,31 +397,82 @@ static const uint8_t CVOTE_UI_TEST_AUX_DATA_INIT_42_DELEGATIONS[] = {
     0x00, 0x16, 0x31, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0xE6,
 };
 
+static void test_cvote_streaming_start_screen_waits_for_user_before_initial_page(void **state) {
+    (void) state;
+    reset_test_context();
+
+    send_tx_init_for_cvote_delegations();
+
+    // Start screen is not auto-completed: it stays displayed after the INIT handler returns.
+    run_aux_data_apdu_helper(CVOTE_UI_TEST_AUX_DATA_INIT_42_DELEGATIONS,
+                             sizeof(CVOTE_UI_TEST_AUX_DATA_INIT_42_DELEGATIONS),
+                             P2_AUX_DATA_INIT);
+
+    const cvote_aux_data_t *cvote_aux_data = &tx_aux_data_ctx()->cvote_aux_data;
+    assert_true(cvote_aux_data->ui_streaming.on);
+    assert_true(cvote_aux_data->ui_streaming.review_started);
+    assert_true(nbgl_mock_has_pending_streaming_start());
+    // The start screen must not be replaced by the initial data page yet.
+    assert_int_equal(nbgl_mock_streaming_continue_call_count(), 0);
+    assert_int_equal(cvote_aux_data->state, CVOTE_AUX_DATA_STATE_STREAMING_INITIAL_PAGE);
+    // The AUX_DATA_INIT response stays deferred.
+    assert_int_equal(g_last_response_swo, 0);
+
+    // User passes the start screen: the initial data page is displayed and (mock) confirmed,
+    // which acknowledges the AUX_DATA_INIT APDU.
+    nbgl_mock_complete_pending_streaming_start(true);
+
+    assert_int_equal(nbgl_mock_streaming_continue_call_count(), 1);
+    assert_int_equal(g_last_response_swo, SWO_SUCCESS);
+    assert_int_equal(G_context.req_type, REQUEST_SIGN_TRANSACTION);
+    assert_int_equal(G_context.state.tx_state, TX_STATE_AUX_DATA);
+    assert_int_equal(cvote_aux_data->state, CVOTE_AUX_DATA_STATE_RECEIVING_DELEGATIONS);
+    assert_int_equal(cvote_aux_data->remaining_delegations, 42);
+}
+
 static void test_cvote_user_reject_on_streaming_start_screen_resets_context(void **state) {
     (void) state;
     reset_test_context();
 
     send_tx_init_for_cvote_delegations();
 
-    // Force streaming mode by using an INIT with 42 delegations (exceeds MAX_UI_PAIRS).
-    //
-    // The streaming start screen (nbgl_useCaseAdvancedReviewStreamingStart) is NOT
-    // auto-completed (streaming_start_auto_complete remains false), because auto-completing
-    // start-with-reject causes the code to continue executing after the callback and hit
-    // the subsequent cvote_streaming_display_current_page() call with a reset context.
-    //
-    // Instead, we reject at the first nbgl_useCaseReviewStreamingContinue call (index 0),
-    // which is the INIT's initial page display (cvote_streaming_display_current_page()).
-    // At that point aux_data->ui_streaming.on is true and the context is intact.
+    run_aux_data_apdu_helper(CVOTE_UI_TEST_AUX_DATA_INIT_42_DELEGATIONS,
+                             sizeof(CVOTE_UI_TEST_AUX_DATA_INIT_42_DELEGATIONS),
+                             P2_AUX_DATA_INIT);
+    assert_true(nbgl_mock_has_pending_streaming_start());
+    assert_int_equal(g_last_response_swo, 0);
+
+    // User rejects on the start screen (warnings / review intro page).
+    nbgl_mock_complete_pending_streaming_start(false);
+
+    // The initial data page is never displayed.
+    assert_int_equal(nbgl_mock_streaming_continue_call_count(), 0);
+    assert_int_equal(g_last_response_swo, SWO_CONDITIONS_NOT_SATISFIED);
+    assert_int_equal(G_context.req_type, REQUEST_NONE);
+    assert_int_equal(G_context.state.tx_state, TX_STATE_NONE);
+    assert_null(ui_get_warnings());
+    assert_int_not_equal(g_ui_error_status, UI_STATUS_OUT_OF_MEMORY);
+}
+
+static void test_cvote_user_reject_on_streaming_initial_page_resets_context(void **state) {
+    (void) state;
+    reset_test_context();
+
+    send_tx_init_for_cvote_delegations();
+
+    // Confirm the start screen, then reject on the initial data page (first Continue call).
+    nbgl_mock_set_streaming_start_auto_complete(true, true);
     nbgl_mock_set_streaming_continue_reject_at_call(0);
 
     run_aux_data_apdu_helper(CVOTE_UI_TEST_AUX_DATA_INIT_42_DELEGATIONS,
                              sizeof(CVOTE_UI_TEST_AUX_DATA_INIT_42_DELEGATIONS),
                              P2_AUX_DATA_INIT);
 
+    assert_int_equal(nbgl_mock_streaming_continue_call_count(), 1);
     assert_int_equal(g_last_response_swo, SWO_CONDITIONS_NOT_SATISFIED);
     assert_int_equal(G_context.req_type, REQUEST_NONE);
     assert_int_equal(G_context.state.tx_state, TX_STATE_NONE);
+    assert_null(ui_get_warnings());
     assert_int_not_equal(g_ui_error_status, UI_STATUS_OUT_OF_MEMORY);
 }
 
@@ -441,7 +486,9 @@ int main(void) {
         cmocka_unit_test(test_cvote_delegation_page_starts_on_new_page_with_correct_pair_count),
         cmocka_unit_test(test_cvote_delegation_policy_deny_sends_one_sw_and_resets_context),
         cmocka_unit_test(test_cvote_user_reject_on_final_review_resets_context),
+        cmocka_unit_test(test_cvote_streaming_start_screen_waits_for_user_before_initial_page),
         cmocka_unit_test(test_cvote_user_reject_on_streaming_start_screen_resets_context),
+        cmocka_unit_test(test_cvote_user_reject_on_streaming_initial_page_resets_context),
     };
     return cmocka_run_group_tests(tests, NULL, assert_no_pending_apdu_response);
 }

@@ -1143,7 +1143,9 @@ bool tx_validate(void) {
     txHashBuilder_finalize(&state->hash_builder, G_context.tx_info.tx_hash, TX_HASH_LENGTH);
 
     security_policy_t tx_hash_policy =
-        policyForSignTxDisplayTxHash(state->tx_params->txSigningMode, &tx_body_ctx()->warning_bits);
+        policyForSignTxDisplayTxHash(state->tx_params->txSigningMode,
+                                     state->output_payload_exceeds_display,
+                                     &tx_body_ctx()->warning_bits);
     APPLY_POLICY(tx_hash_policy,
                  tx_ui_plan_or_render_tx_hash,
                  &state->mode,
@@ -1195,6 +1197,7 @@ bool tx_render_ui_chunk(uint16_t from) {
 
     security_policy_t tx_hash_policy =
         policyForSignTxDisplayTxHash(state->tx_params->txSigningMode,
+                                     state->output_payload_exceeds_display,
                                      &tx_body_ctx()->render_run_warnings);
     switch (tx_hash_policy) {
         // LCOV_EXCL_START

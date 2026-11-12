@@ -29,6 +29,18 @@ _Static_assert(LOVELACE_MAX_SUPPLY < LOVELACE_INVALID, "LOVELACE_INVALID must ex
 #define ANCHOR_HASH_LENGTH                     32
 
 /**
+ * Shelley address serialization.
+ * A pointer address ends with 3 variable-length uints (7 data bits per byte):
+ * slot (uint32), tx index (uint16), cert index (uint16), as in cardano-ledger decodePtr.
+ */
+#define ADDRESS_HEADER_LENGTH               1
+#define BLOCKCHAIN_POINTER_UINT_COUNT       3
+#define VARIABLE_LENGTH_UINT_MIN_SIZE       1
+#define SLOT_NO_VARIABLE_LENGTH_MAX_SIZE    5
+#define TX_INDEX_VARIABLE_LENGTH_MAX_SIZE   3
+#define CERT_INDEX_VARIABLE_LENGTH_MAX_SIZE 3
+
+/**
  * Native token policy constants.
  */
 #define MINTING_POLICY_ID_LENGTH 28
@@ -38,6 +50,19 @@ _Static_assert(LOVELACE_MAX_SUPPLY < LOVELACE_INVALID, "LOVELACE_INVALID must ex
  * Reward account serialization.
  */
 #define REWARD_ACCOUNT_LENGTH (1 + ADDRESS_KEY_HASH_LENGTH)
+
+/**
+ * Governance identifiers (CIP-0129): 1-byte header followed by the 28-byte credential hash.
+ * Header: high nibble = key type, low nibble = credential type.
+ */
+#define GOVERNANCE_ID_KEY_TYPE_COMMITTEE_HOT  0x0
+#define GOVERNANCE_ID_KEY_TYPE_COMMITTEE_COLD 0x1
+#define GOVERNANCE_ID_KEY_TYPE_DREP           0x2
+#define GOVERNANCE_ID_CREDENTIAL_KEY_HASH     0x2
+#define GOVERNANCE_ID_CREDENTIAL_SCRIPT_HASH  0x3
+#define GOVERNANCE_ID_LENGTH                  29
+#define GOVERNANCE_ACTION_ID_LENGTH           (TX_HASH_LENGTH + 1)
+#define GOVERNANCE_ACTION_ID_MAX_INDEX        255
 
 /**
  * Network IDs and protocol magics.

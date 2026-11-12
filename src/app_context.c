@@ -13,6 +13,12 @@
 #include "tx_utils.h"
 #include "io.h"
 
+#ifdef HAVE_SWAP
+#include "swap.h"
+#include "swap_error_code_helpers.h"
+#include "swap_lib.h"
+#endif
+
 typedef struct {
     bool response_sent;
     bool response_deferred_to_ux;
@@ -167,6 +173,13 @@ void reset_app_context(void) {
 
 void send_swo_and_reset(uint16_t swo) {
     TRACE("swo=0x%04x", swo);
+#ifdef HAVE_SWAP
+    // Once swap signing has started, an error ends the swap and gives control back to Exchange.
+    // swap_reject_and_exit() never returns, so the status word below is not sent in this case.
+    if (G_called_from_swap && G_swap_signing_started) {
+        swap_reject_and_exit(SWAP_EC_ERROR_GENERIC, SWAP_APP_CODE_DEFAULT);
+    }
+#endif
     apdu_response_send_sw(swo);
     reset_app_context();
 }

@@ -370,20 +370,20 @@ static bool isTxNetworkIdVerifiable(bool includeNetworkId,
 
 bool shouldShowNetworkDetails(const tx_params_t *txParams) {
     ASSERT(txParams != NULL);
+    // Network identity is security-critical even for usual networks.
+    return isTxNetworkIdVerifiable(txParams->includeNetworkId,
+                                   txParams->num_outputs,
+                                   txParams->includeCollateralOutput,
+                                   txParams->num_withdrawals,
+                                   txParams->txSigningMode);
+}
 
-    const bool is_network_id_verifiable = isTxNetworkIdVerifiable(txParams->includeNetworkId,
-                                                                  txParams->num_outputs,
-                                                                  txParams->includeCollateralOutput,
-                                                                  txParams->num_withdrawals,
-                                                                  txParams->txSigningMode);
-    if (!is_network_id_verifiable) {
-        // no point in showing the given network id because tx body
-        // does not have any elements containing it
-        return false;
-    }
-
-    // show network details in expert mode or for unusual networks
-    return is_expert_mode() || !isNetworkUsual(txParams->networkId, txParams->protocolMagic);
+bool shouldShowNetworkRawDetails(const tx_params_t *txParams) {
+    ASSERT(txParams != NULL);
+    // the raw network id and protocol magic are only added on top of the always-shown
+    // network name for unusual networks or in expert mode
+    return shouldShowNetworkDetails(txParams) &&
+           (is_expert_mode() || !isNetworkUsual(txParams->networkId, txParams->protocolMagic));
 }
 
 static inline void set_missing_collateral_warning(warning_bits_t *w,
@@ -622,6 +622,8 @@ static bool is_addressBytes_suitable_for_tx_output(const uint8_t *addressBuffer,
                 return false;
 
             case BYRON: {
+                // longer addresses do not fit on the screen
+                CHECK(addressSize <= BYRON_ADDRESS_MAX_DISPLAYABLE_SIZE);
                 uint32_t extractedMagic;
                 CHECK(extractProtocolMagic(addressBuffer, addressSize, &extractedMagic));
                 CHECK(extractedMagic == protocolMagic);
@@ -638,32 +640,8 @@ static bool is_addressBytes_suitable_for_tx_output(const uint8_t *addressBuffer,
             }
         }
     }
-    {
-        // check address length
-        switch (addressType) {
-            case BASE_PAYMENT_KEY_STAKE_KEY:
-                CHECK(addressSize == 1 + ADDRESS_KEY_HASH_LENGTH + ADDRESS_KEY_HASH_LENGTH);
-                break;
-            case BASE_PAYMENT_KEY_STAKE_SCRIPT:
-                CHECK(addressSize == 1 + ADDRESS_KEY_HASH_LENGTH + SCRIPT_HASH_LENGTH);
-                break;
-            case BASE_PAYMENT_SCRIPT_STAKE_KEY:
-                CHECK(addressSize == 1 + SCRIPT_HASH_LENGTH + ADDRESS_KEY_HASH_LENGTH);
-                break;
-            case BASE_PAYMENT_SCRIPT_STAKE_SCRIPT:
-                CHECK(addressSize == 1 + SCRIPT_HASH_LENGTH + SCRIPT_HASH_LENGTH);
-                break;
-
-            case ENTERPRISE_KEY:
-                CHECK(addressSize == 1 + ADDRESS_KEY_HASH_LENGTH);
-                break;
-            case ENTERPRISE_SCRIPT:
-                CHECK(addressSize == 1 + SCRIPT_HASH_LENGTH);
-                break;
-
-            default:  // not meaningful or complicated to verify address length in the other cases
-                break;
-        }
+    if (addressType != BYRON) {
+        CHECK(isValidShelleyAddressLength(addressType, addressSize));
     }
     return true;
 #undef CHECK
@@ -847,6 +825,13 @@ static security_policy_t policyForSignTxOutputAddressParams(const tx_output_desc
         case SIGN_TX_SIGNINGMODE_PLUTUS: {
             // the output could affect script validation so it must not be entirely hidden
             // Note: if we relax this, some of the above restrictions may apply
+            if (!is_standard_base_address(params)) {
+                SHOW_IF(mark_unusual_key_derivation(w, &params->paymentKeyPath));
+                if (addressParams_getStakingPartType(params) == STAKING_PART_KEY_PATH) {
+                    SHOW_IF(mark_unusual_key_derivation(w, &params->stakingKeyPath));
+                }
+                SHOW();
+            }
             SHOW_IF(is_expert_mode());
             HIDE();
             break;
@@ -1159,11 +1144,13 @@ security_policy_t policyForSignTxCollateralOutputAddress(const tx_output_descrip
 
 security_policy_t policyForSignTxCollateralOutputAdaAmount(security_policy_t outputPolicy,
                                                            sign_tx_signingmode_t txSigningMode,
+                                                           const tx_output_description_t *output,
                                                            bool isTotalCollateralPresent,
                                                            warning_bits_t *w) {
     POLICY_INIT();
     // WARNING: policies for collateral inputs, collateral return output and total collateral are
     // interdependent
+    ASSERT(output != NULL);
     LEDGER_ASSERT(outputPolicy != POLICY_DENY,
                   "Collateral ADA sub-policy called with DENY output policy");
 
@@ -1175,8 +1162,11 @@ security_policy_t policyForSignTxCollateralOutputAdaAmount(security_policy_t out
     switch (txSigningMode) {
         case SIGN_TX_SIGNINGMODE_PLUTUS:
         case SIGN_TX_SIGNINGMODE_UNRESTRICTED:
-            // ADA amount is calculable from total collateral
-            // but only expert users are to be bothered by a possible collateral loss
+            // the amount leaves the wallet and the device cannot infer it from total collateral
+            SHOW_IF(output->destination.type == DESTINATION_THIRD_PARTY);
+            // a device-owned return means the possible loss is the total collateral, which is
+            // always shown; if total collateral is absent, show the return amount in expert mode
+            // only (non-expert users get the unknown-collateral warning instead)
             SHOW_IF(!isTotalCollateralPresent && is_expert_mode());
             HIDE();
             break;
@@ -1210,10 +1200,9 @@ security_policy_t policyForSignTxCollateralOutputTokens(security_policy_t output
         case SIGN_TX_SIGNINGMODE_PLUTUS:
         case SIGN_TX_SIGNINGMODE_UNRESTRICTED: {
             // for non-change outputs, control over the collateral tokens is potentially transferred
-            // to another party, so we should show them in the expert mode (non-expert users are
-            // supposed to not be interested in any collateral loss)
+            // to another party, so we should show them
             const bool lossOfControl = (output->destination.type != DESTINATION_DEVICE_OWNED);
-            SHOW_IF(lossOfControl && is_expert_mode());
+            SHOW_IF(lossOfControl);
             HIDE();
             break;
         }
@@ -1717,6 +1706,8 @@ security_policy_t policyForSignTxStakePoolRegistrationPoolId(sign_tx_signingmode
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR:
             // operator should see a path
             DENY_UNLESS(poolId->keyReferenceType == KEY_REFERENCE_PATH);
+            DENY_UNLESS(bip44_isPoolColdKeyPath(&poolId->path));
+            SHOW_IF(mark_unusual_key_derivation(w, &poolId->path));
             SHOW();
             break;
 
@@ -1783,6 +1774,9 @@ security_policy_t policyForSignTxStakePoolRegistrationRewardAccount(
     switch (txSigningMode) {
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OWNER:
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR:
+            if (poolRewardAccount->keyReferenceType == KEY_REFERENCE_PATH) {
+                SHOW_IF(mark_unusual_key_derivation(w, &poolRewardAccount->path));
+            }
             SHOW();
             break;
 
@@ -2446,6 +2440,7 @@ security_policy_t policyForSignTxDonation(sign_tx_signingmode_t txSigningMode MA
 // ======================================= Tx hash =======================================
 
 security_policy_t policyForSignTxDisplayTxHash(sign_tx_signingmode_t signingMode,
+                                               bool outputPayloadExceedsDisplay,
                                                warning_bits_t *w) {
     POLICY_INIT();
     switch (signingMode) {
@@ -2453,6 +2448,9 @@ security_policy_t policyForSignTxDisplayTxHash(sign_tx_signingmode_t signingMode
         case SIGN_TX_SIGNINGMODE_MULTISIG:
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OWNER:
         case SIGN_TX_SIGNINGMODE_POOL_REGISTRATION_OPERATOR:
+            // inline datums and reference scripts are only previewed, not fully shown, so the
+            // tx hash must be displayed to commit to the bytes the user never sees in full
+            SHOW_IF(outputPayloadExceedsDisplay);
             SHOW_IF(is_expert_mode());
             HIDE();
             break;
@@ -2794,16 +2792,26 @@ security_policy_t policyForCVoteRegistrationPaymentDestination(
 
     switch (destination->type) {
         case DESTINATION_DEVICE_OWNED: {
-            DENY_UNLESS(isValidAddressParams(&destination->params));
-            DENY_UNLESS(isShelleyAddressType(destination->params.type));
-            DENY_IF(destination->params.networkId != networkId);
+            const address_params_t *params = &destination->params;
+            DENY_UNLESS(isValidAddressParams(params));
+            DENY_UNLESS(isShelleyAddressType(params->type));
+            DENY_IF(params->networkId != networkId);
+
+            // only a device-derived key controlling receipt counts as owned
+            const bool receipt_key_is_device_owned =
+                addressParams_getPaymentPartType(params) == PAYMENT_PART_KEY_PATH ||
+                (params->type == REWARD_KEY &&
+                 addressParams_getStakingPartType(params) == STAKING_PART_KEY_PATH);
+            if (!receipt_key_is_device_owned) {
+                warning_bits_set(w, WARNING_BIT_CVOTE_PAYMENT_THIRD_PARTY);
+                SHOW();
+            }
 
             // in a typical case, the rewards go to an address controlled by this device
             // and the address is sent in a way allowing a verification of that fact
-            if (!is_standard_base_address(&destination->params)) {
+            if (!is_standard_base_address(params)) {
                 warning_bits_set(w, WARNING_BIT_CVOTE_PAYMENT_NONSTANDARD_OWNED);
             }
-            SHOW_UNLESS(is_standard_base_address(&destination->params));
 
             // we are sure the address belongs to the device
             SHOW();
@@ -2815,6 +2823,8 @@ security_policy_t policyForCVoteRegistrationPaymentDestination(
                 getAddressHeader(destination->address.buffer, destination->address.length);
             DENY_UNLESS(isShelleyAddressType(getAddressType(header)));
             DENY_IF(getNetworkId(header) != networkId);
+            DENY_UNLESS(
+                isValidShelleyAddressLength(getAddressType(header), destination->address.length));
 
             // we don't know who owns the address
             // to possibly avoid this warning, send the address as parameters (see above)

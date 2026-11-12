@@ -807,6 +807,40 @@ test_sign_tx_full_test_for_trezor_feature_parity_babbage_elements_ordinary_rejec
         true);
 }
 
+static void test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_expert_off(
+    void **state) {
+    (void) state;
+    run_fixture_with_expert_mode(
+        &FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY,
+        false);
+}
+
+static void
+test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_reject_tx_expert_off(
+    void **state) {
+    (void) state;
+    run_fixture_reject_tx_with_expert_mode(
+        &FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY,
+        false);
+}
+
+static void test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_expert_on(
+    void **state) {
+    (void) state;
+    run_fixture_with_expert_mode(
+        &FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY,
+        true);
+}
+
+static void
+test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_reject_tx_expert_on(
+    void **state) {
+    (void) state;
+    run_fixture_reject_tx_with_expert_mode(
+        &FIXTURE_BABBAGE_SIGN_TX_WITH_INLINE_DATUM_WITHOUT_REF_SCRIPT_IN_OUTPUT_ORDINARY,
+        true);
+}
+
 // ======================================================================
 // Main
 // ======================================================================
@@ -979,6 +1013,14 @@ int main(void) {
             test_sign_tx_full_test_for_trezor_feature_parity_babbage_elements_ordinary_expert_on),
         cmocka_unit_test(
             test_sign_tx_full_test_for_trezor_feature_parity_babbage_elements_ordinary_reject_tx_expert_on),
+        cmocka_unit_test(
+            test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_expert_off),
+        cmocka_unit_test(
+            test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_reject_tx_expert_off),
+        cmocka_unit_test(
+            test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_expert_on),
+        cmocka_unit_test(
+            test_sign_tx_with_inline_datum_without_ref_script_in_output_ordinary_reject_tx_expert_on),
     };
     return _cmocka_run_group_tests("test_sign_tx_babbage",
                                    tests,

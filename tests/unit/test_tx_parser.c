@@ -17,6 +17,7 @@
 #include "tx_processing_certificates.h"
 #include "tx_processing_outputs.h"
 #include "cardano_constants.h"
+#include "addressUtilsShelley.h"
 #include "cardano_swo.h"
 #include "cardano_parsers.h"
 #include "mem.h"
@@ -898,8 +899,9 @@ static void test_validate_fails_on_truncated_fee(void **state) {
     // address length: 29 bytes
     raw_tx[offset++] = 0x00;
     raw_tx[offset++] = 0x1D;
-    // address bytes
-    for (size_t i = 0; i < 29; i++) {
+    // enterprise key address header (testnet) + key hash bytes
+    raw_tx[offset++] = constructShelleyAddressHeader(ENTERPRISE_KEY, TESTNET_NETWORK_ID);
+    for (size_t i = 0; i < ADDRESS_KEY_HASH_LENGTH; i++) {
         raw_tx[offset++] = (uint8_t) (0x40 + i);
     }
     // ADA amount (8 bytes)
@@ -946,8 +948,9 @@ static void test_validate_fails_on_truncated_ttl(void **state) {
     // address length: 29 bytes
     raw_tx[offset++] = 0x00;
     raw_tx[offset++] = 0x1D;
-    // address bytes
-    for (size_t i = 0; i < 29; i++) {
+    // enterprise key address header (testnet) + key hash bytes
+    raw_tx[offset++] = constructShelleyAddressHeader(ENTERPRISE_KEY, TESTNET_NETWORK_ID);
+    for (size_t i = 0; i < ADDRESS_KEY_HASH_LENGTH; i++) {
         raw_tx[offset++] = (uint8_t) (0x40 + i);
     }
     // ADA amount (8 bytes)
@@ -995,8 +998,9 @@ static void test_validate_fails_on_truncated_withdrawals(void **state) {
     // address length: 29 bytes
     raw_tx[offset++] = 0x00;
     raw_tx[offset++] = 0x1D;
-    // address bytes
-    for (size_t i = 0; i < 29; i++) {
+    // enterprise key address header (testnet) + key hash bytes
+    raw_tx[offset++] = constructShelleyAddressHeader(ENTERPRISE_KEY, TESTNET_NETWORK_ID);
+    for (size_t i = 0; i < ADDRESS_KEY_HASH_LENGTH; i++) {
         raw_tx[offset++] = (uint8_t) (0x40 + i);
     }
     // ADA amount (8 bytes)
@@ -1130,7 +1134,8 @@ static void test_validate_from_raw_with_tokens_and_mint_success(void **state) {
 
     assert_true(ok);
     assert_int_equal(tx_body_ctx()->total_ui_pairs,
-                     9);  // output base + output token + fee + mint summary + mint token
+                     10);  // network name (non-expert mainnet, no raw id/magic) + output base +
+                           // output token + fee + mint summary + mint token
 }
 
 // ---------------------------------------------------------------------------
